@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>kood/Jõhvi — Cohort Analysis</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-annotation/3.0.1/chartjs-plugin-annotation.min.js"></script>
+<style>
+/* ── Reset & base ── */
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#f8f7f4;--surface:#ffffff;--surface2:#f2f0eb;--surface3:#e8e5de;
+  --tx:#18181a;--tx2:#52514d;--tx3:#8a8880;
+  --bd:rgba(0,0,0,0.08);--bd2:rgba(0,0,0,0.15);
+  --accent:#e04545;--accent2:#c23838;
+  --blue:#185FA5;--eastern:#BA7517;--southern:#3B6D11;
+  --west:#7F77DD;--intl:#73726c;--unk:#B4B2A9;
+  --grid:rgba(0,0,0,0.06);
+  --div-color:rgba(0,0,0,0.15);--yr-color:rgba(0,0,0,0.3);
+  --font:'DM Sans',system-ui,sans-serif;
+  --mono:'DM Mono',monospace;
+}
+.dark{
+  --bg:#131312;--surface:#1e1e1b;--surface2:#272724;--surface3:#2f2f2b;
+  --tx:#f0ede6;--tx2:#9e9b94;--tx3:#636059;
+  --bd:rgba(255,255,255,0.07);--bd2:rgba(255,255,255,0.16);
+  --accent:#f06060;--accent2:#ff7070;
+  --grid:rgba(255,255,255,0.05);
+  --div-color:rgba(255,255,255,0.18);--yr-color:rgba(255,255,255,0.35);
+}
+html{background:var(--bg);color:var(--tx);font-family:var(--font);font-size:15px;line-height:1.6;transition:background .25s,color .25s;}
+body{min-height:100vh;}
+
+/* ── Layout ── */
+.page{max-width:960px;margin:0 auto;padding:0 24px 80px;}
+
+/* ── Header ── */
+header{display:flex;justify-content:space-between;align-items:flex-end;padding:40px 0 0;border-bottom:1px solid var(--bd);margin-bottom:0;}
+.header-left{}
+.wordmark{font-size:11px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--tx3);margin-bottom:6px;}
+h1{font-size:22px;font-weight:400;color:var(--tx);letter-spacing:-.02em;}
+h1 em{font-style:italic;font-weight:300;}
+.header-right{display:flex;align-items:center;gap:12px;padding-bottom:4px;}
+.data-badge{font-family:var(--mono);font-size:10px;color:var(--tx3);background:var(--surface2);border:0.5px solid var(--bd);border-radius:4px;padding:3px 8px;}
+.mode-btn{padding:5px 13px;font-size:12px;font-family:var(--font);border:0.5px solid var(--bd2);border-radius:20px;cursor:pointer;background:var(--surface);color:var(--tx2);transition:background .2s,color .2s;letter-spacing:.01em;}
+.mode-btn:hover{background:var(--surface2);}
+
+/* ── Tab nav ── */
+nav{display:flex;gap:0;border-bottom:1px solid var(--bd);margin-bottom:28px;}
+.nav-tab{padding:16px 24px 14px;font-size:13px;font-weight:400;color:var(--tx3);background:none;border:none;cursor:pointer;position:relative;letter-spacing:.01em;transition:color .15s;white-space:nowrap;}
+.nav-tab:hover{color:var(--tx2);}
+.nav-tab.active{color:var(--tx);font-weight:500;}
+.nav-tab.active::after{content:'';position:absolute;bottom:-1px;left:0;right:0;height:2px;background:var(--accent);}
+
+/* ── Metric cards ── */
+.cards{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin-bottom:28px;}
+.card{background:var(--surface);border:0.5px solid var(--bd);border-radius:10px;padding:14px 16px;transition:border-color .2s;}
+.card:hover{border-color:var(--bd2);}
+.card-label{font-size:11px;color:var(--tx3);margin-bottom:5px;letter-spacing:.02em;}
+.card-value{font-size:21px;font-weight:500;color:var(--tx);letter-spacing:-.02em;font-variant-numeric:tabular-nums;}
+.card-value.green{color:#2d8a4e;}
+.card-value.red{color:#b03030;}
+.card-value.accent{color:var(--accent);}
+
+/* ── Section headings ── */
+.sec{font-size:10px;font-weight:500;color:var(--tx3);text-transform:uppercase;letter-spacing:.1em;margin:28px 0 8px;display:flex;align-items:baseline;gap:8px;}
+.sec-sub{font-weight:400;text-transform:none;letter-spacing:0;font-size:11px;color:var(--tx3);}
+
+/* ── Legend ── */
+.leg{display:flex;flex-wrap:wrap;gap:14px;font-size:12px;color:var(--tx2);margin-bottom:6px;}
+.ld{width:9px;height:9px;border-radius:2px;display:inline-block;flex-shrink:0;}
+.leg-line{display:flex;align-items:center;gap:6px;}
+
+/* ── Charts ── */
+.chart-wrap{position:relative;width:100%;}
+
+/* ── Batch tabs ── */
+.btabs{display:flex;gap:5px;flex-wrap:wrap;margin:20px 0 14px;}
+.btab{padding:5px 13px;font-size:12px;font-family:var(--font);border:0.5px solid var(--bd);border-radius:6px;cursor:pointer;background:transparent;color:var(--tx3);transition:background .12s,color .12s,border-color .12s;border-left-width:0.5px;}
+.btab:not(.on):hover{background:var(--surface2);color:var(--tx2);}
+.btab.on{background:var(--surface) !important;color:var(--tx) !important;font-weight:500 !important;border-color:var(--bd2) !important;border-left:3px solid var(--accent) !important;padding-left:10px !important;}
+
+/* ── Batch detail ── */
+.det-cards{display:grid;gap:8px;margin-bottom:14px;}
+.sub-sec{font-size:10px;font-weight:500;color:var(--tx3);text-transform:uppercase;letter-spacing:.08em;margin:14px 0 6px;}
+table{width:100%;font-size:12px;border-collapse:collapse;}
+th{font-weight:500;color:var(--tx3);text-align:left;padding:5px 8px;border-bottom:0.5px solid var(--bd);font-size:11px;letter-spacing:.02em;text-transform:uppercase;}
+td{padding:5px 8px;border-bottom:0.5px solid var(--bd);color:var(--tx);}
+tr:last-child td{border-bottom:none;}
+.bar-cell div{height:5px;border-radius:3px;}
+.note{font-size:11px;color:var(--tx3);margin-top:8px;line-height:1.5;}
+
+/* ── Insights tab ── */
+.insight-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;}
+.insight-card{border-left:3px solid;border-radius:0 8px 8px 0;padding:14px 16px;background:var(--surface);}
+.ic-amber{border-color:#BA7517;}
+.ic-teal{border-color:#1D9E75;}
+.ic-gray{border-color:var(--bd2);}
+.ic-tag{display:inline-block;font-size:10px;font-weight:500;padding:2px 8px;border-radius:3px;margin-bottom:7px;letter-spacing:.04em;text-transform:uppercase;}
+.ic-tag-amber{background:#FAEEDA;color:#854F0B;}
+.ic-tag-teal{background:#E1F5EE;color:#0F6E56;}
+.ic-tag-gray{background:var(--surface2);color:var(--tx3);}
+.dark .ic-tag-amber{background:#412402;color:#FAC775;}
+.dark .ic-tag-teal{background:#04342C;color:#9FE1CB;}
+.ic-h{font-size:13px;font-weight:500;margin-bottom:5px;line-height:1.4;color:var(--tx);}
+.ic-b{font-size:12px;color:var(--tx2);line-height:1.6;}
+.ic-b strong{font-weight:500;color:var(--tx);}
+.null-row{display:flex;justify-content:space-between;align-items:center;padding:9px 12px;background:var(--surface);border:0.5px solid var(--bd);border-radius:6px;margin-bottom:6px;gap:12px;}
+.nr-l{font-size:12px;font-weight:500;color:var(--tx);}
+.nr-r{font-size:11px;color:var(--tx3);text-align:right;}
+.methodology{background:var(--surface2);border:0.5px solid var(--bd);border-radius:8px;padding:14px 16px;font-size:11px;color:var(--tx3);line-height:1.65;margin-top:24px;}
+.methodology strong{font-weight:500;color:var(--tx2);}
+
+/* ── Responsive ── */
+@media(max-width:680px){
+  .cards{grid-template-columns:repeat(2,1fr);}
+  .insight-grid{grid-template-columns:1fr;}
+  header{flex-direction:column;gap:12px;align-items:flex-start;}
+  .nav-tab{padding:14px 16px 12px;font-size:12px;}
+}
+@media(max-width:400px){
+  .cards{grid-template-columns:1fr 1fr;}
+  .page{padding:0 16px 60px;}
+}
+
+/* ── Utility ── */
+.hidden{display:none;}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;}
+</style>
+</head>
+<body>
+<div class="page">
+
+<header>
+  <div class="header-left">
+    <div class="wordmark">FutureCoders OÜ</div>
+    <h1>kood/Jõhvi — <em>Cohort analysis</em></h1>
+  </div>
+  <div class="header-right">
+    <span class="data-badge">B1–B8 · 2021–2026</span>
+    <button class="mode-btn" id="modeBtn" onclick="toggleMode()">☀ Light</button>
+  </div>
+</header>
+
+<nav>
+  <button class="nav-tab active" id="tab-geo" onclick="switchTab('geo')">Geography</button>
+  <button class="nav-tab" id="tab-demo" onclick="switchTab('demo')">Demographics</button>
+  <button class="nav-tab" id="tab-insights" onclick="switchTab('insights')">Insights</button>
+</nav>
+
+<!-- ═══════════════════════════════════════════════ METRIC CARDS ═══ -->
+<div class="cards" id="metricCards"></div>
+
+<!-- ═══════════════════════════════════════════════ GEOGRAPHY TAB ═══ -->
+<div id="pane-geo">
+
+  <div class="leg" id="regLeg"></div>
+  <div class="sec">Students enrolled per batch by region <span class="sec-sub">— annual intake overlay (right axis)</span></div>
+  <div class="chart-wrap" style="height:280px;"><canvas id="cGeoBar" role="img" aria-label="Stacked bar chart of enrollment per batch by region with annual intake overlay"></canvas></div>
+
+  <div class="sec" style="margin-top:24px;">Regional mix % — trends across all batches</div>
+  <div class="chart-wrap" style="height:260px;"><canvas id="cGeoLine" role="img" aria-label="Line chart of regional mix percentage across batches"></canvas></div>
+  <div class="leg" id="geoLineLeg" style="margin-top:8px;"></div>
+
+  <div class="sec" style="margin-top:24px;">Batch-level breakdown</div>
+  <div class="btabs" id="geoTabs"></div>
+  <div id="geoDet"></div>
+
+</div>
+
+<!-- ═══════════════════════════════════════════ DEMOGRAPHICS TAB ═══ -->
+<div id="pane-demo" class="hidden">
+
+  <div class="leg" id="ageLeg"></div>
+  <div class="sec">Students enrolled per batch by age bracket <span class="sec-sub">— avg age overlay (right axis)</span></div>
+  <div class="chart-wrap" style="height:280px;"><canvas id="cAgeBar" role="img" aria-label="Stacked bar chart of enrollment by age bracket with average age overlay"></canvas></div>
+
+  <div class="sec" style="margin-top:24px;">Age bracket mix % — trends across all batches</div>
+  <div class="chart-wrap" style="height:250px;"><canvas id="cAgeLine" role="img" aria-label="Line chart of age bracket percentage across batches"></canvas></div>
+  <div class="leg" id="ageLineLeg" style="margin-top:8px;"></div>
+
+  <div class="leg" id="genLeg" style="margin-top:24px;margin-bottom:6px;"></div>
+  <div class="sec">Students enrolled per batch by gender <span class="sec-sub">— female share overlay (right axis)</span></div>
+  <div class="chart-wrap" style="height:260px;"><canvas id="cGenBar" role="img" aria-label="Stacked bar chart of enrollment by gender with female share overlay"></canvas></div>
+
+  <div class="sec" style="margin-top:24px;">Gender mix % — trends across all batches</div>
+  <div class="chart-wrap" style="height:220px;"><canvas id="cGenLine" role="img" aria-label="Line chart of gender percentage across batches"></canvas></div>
+  <div class="leg" id="genLineLeg" style="margin-top:8px;"></div>
+
+  <div class="sec" style="margin-top:24px;">Batch-level breakdown</div>
+  <div class="btabs" id="demoTabs"></div>
+  <div id="demoDet"></div>
+
+</div>
+
+<!-- ════════════════════════════════════════════════ INSIGHTS TAB ═══ -->
+<div id="pane-insights" class="hidden">
+
+  <div class="sec">Methodology</div>
+  <div class="methodology">
+    <strong>Cross-reference of geography × age × gender</strong> based on individual-level records from <strong>Batch 3</strong> (Sep 2023, n=212) and <strong>Batch 5</strong> (Sep 2024, n=173) — the two batches with complete joined location, birthdate, and gender data available (n=385 total). Each student's address was classified into the five geographic regions used throughout this dashboard. Findings should be treated as directional hypotheses for marketing experimentation. Batches 1, 2, 4, 6, 7, 8 were not cross-tabbed at individual level.
+  </div>
+
+  <div class="sec" style="margin-top:24px;">Pooled baseline (B3 + B5, n=385)</div>
+  <div class="cards" style="grid-template-columns:repeat(4,minmax(0,1fr));">
+    <div class="card"><div class="card-label">Students analysed</div><div class="card-value">385</div></div>
+    <div class="card"><div class="card-label">Female share (baseline)</div><div class="card-value">18%</div></div>
+    <div class="card"><div class="card-label">Avg enrolment age</div><div class="card-value">27.1y</div></div>
+    <div class="card"><div class="card-label">Under-21 baseline</div><div class="card-value">17%</div></div>
+  </div>
+
+  <div class="sec" style="margin-top:24px;">Significant findings</div>
+  <div class="insight-grid">
+
+    <div class="insight-card ic-amber">
+      <span class="ic-tag ic-tag-amber">Eastern Estonia · n=39</span>
+      <div class="ic-h">Consistently the youngest cohort, by a meaningful margin</div>
+      <div class="ic-b">
+        Avg age <strong>25.3y vs 27.1y</strong> overall (−1.8y). In B5, <strong>50% of Eastern students were under 21</strong>. The 40+ bracket is zero across both batches — Eastern Estonia sends exclusively younger students, likely coming straight from school rather than career-changing.
+        <br><br>
+        <strong>Implication:</strong> Career-change and reskilling messaging is likely less resonant here. School and vocational institution partnerships in Ida-Viru could reinforce the pipeline.
+      </div>
+    </div>
+
+    <div class="insight-card ic-teal">
+      <span class="ic-tag ic-tag-teal">International · n=11</span>
+      <div class="ic-h">Highest female share of any region — 27% vs 18% overall</div>
+      <div class="ic-b">
+        The pattern holds across both batches. International students are <strong>+9pp more female</strong> than the overall average. They also cluster in the 25–29 bracket (45%), suggesting mid-career movers rather than recent graduates.
+        <br><br>
+        <strong>Implication:</strong> International outreach channels (LinkedIn, international tech communities) may be a more efficient route to gender diversity than domestic marketing.
+      </div>
+    </div>
+
+  </div>
+
+  <div class="sec" style="margin-top:8px;">No significant deviation — regions at baseline</div>
+
+  <div class="null-row">
+    <span class="nr-l">Tallinn &amp; Harjumaa <span style="font-weight:400;color:var(--tx3);">(n=191)</span></span>
+    <span class="nr-r">Female 17% (−1pp) · Avg age 27.8 (+0.7y) · Age mix proportional — no actionable signal</span>
+  </div>
+  <div class="null-row">
+    <span class="nr-l">Southern Estonia <span style="font-weight:400;color:var(--tx3);">(n=127)</span></span>
+    <span class="nr-r">Female 20% (+2pp) · Avg age 26.6 (−0.5y) · Slightly younger and more female, within noise margin</span>
+  </div>
+  <div class="null-row">
+    <span class="nr-l">W. Estonia &amp; Islands <span style="font-weight:400;color:var(--tx3);">(n=8)</span></span>
+    <span class="nr-r">Sample too small for reliable conclusions</span>
+  </div>
+
+  <div class="sec" style="margin-top:24px;">Cross-tab charts (pooled B3+B5)</div>
+  <div class="leg" style="margin-bottom:8px;" id="insLeg"></div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+    <div>
+      <div style="font-size:11px;color:var(--tx3);margin-bottom:4px;">Age brackets by region (%)</div>
+      <div class="chart-wrap" style="height:200px;"><canvas id="cInsAge" role="img" aria-label="Stacked bar chart of age bracket percentage by region"></canvas></div>
+    </div>
+    <div>
+      <div style="font-size:11px;color:var(--tx3);margin-bottom:4px;">Female share vs 18% baseline</div>
+      <div class="chart-wrap" style="height:200px;"><canvas id="cInsFem" role="img" aria-label="Bar chart of female percentage by region with 18 percent baseline"></canvas></div>
+    </div>
+  </div>
+
+</div><!-- /insights -->
+
+</div><!-- /page -->
+
+<script>
+/* ══════════════════════════════════════════════════════════ DATA ══ */
+
+const LB = ['B1','B2','B3','B4','B5','B6','B7','B8'];
+const YEARS = ['2021','2022','2023','Jan 2024','Sep 2024','Mar 2025','Sep 2025','Mar 2026'];
+
+/* Geography */
+const RC = {
+  'Tallinn & Harjumaa':'#185FA5',
+  'Eastern Estonia':'#BA7517',
+  'Southern Estonia':'#3B6D11',
+  'W. Estonia & Islands':'#7F77DD',
+  'International':'#73726c',
+  'Unknown':'#B4B2A9'
+};
+const RK = Object.keys(RC);
+const GEO = {
+  1:{t:206,g:99,cg:true, r:[107,48,34,8,7,2]},
+  2:{t:280,g:150,cg:true, r:[118,48,59,9,38,8]},
+  3:{t:212,g:100,cg:true, r:[86,23,55,7,16,25]},
+  4:{t:118,g:39, cg:true, r:[58,19,26,5,7,3]},
+  5:{t:176,g:83, cg:true, r:[81,22,46,14,8,5]},
+  6:{t:106,g:0,  cg:false,r:[74,15,10,3,3,1]},
+  7:{t:136,g:0,  cg:false,r:[72,21,24,6,6,7]},
+  8:{t:82, g:0,  cg:false,r:[40,12,19,5,3,3]},
+};
+const INTAKE_LINE=[206,280,212,294,294,242,242,82];
+const INTAKE_R   =[  5,  5,  5,  5,  0,  5,  0,  5];
+const INTAKE_HR  =[  7,  7,  7,  7,  0,  7,  0,  7];
+const INTAKE_LBL=['206 (2021)','280 (2022)','212 (2023)','294 (2024)','294 (2024)','242 (2025)','242 (2025)','82 (2026 so far)'];
+
+/* Demographics */
+const AC = {'Under 21':'#185FA5','21–24':'#3B6D11','25–29':'#BA7517','30–39':'#7F77DD','40+':'#D85A30'};
+const AK = Object.keys(AC);
+const AGE = {
+  1:{t:206,nd:206,b:[0,0,0,0,0],st:null,avg:null},
+  2:{t:280,nd:7, b:[46,72,64,75,16],st:{avg:27.4,med:26,min:17,max:63},avg:27.4},
+  3:{t:212,nd:2, b:[35,51,59,53,12],st:{avg:27.4,med:26,min:17,max:62},avg:27.4},
+  4:{t:118,nd:1, b:[23,26,30,30,8], st:{avg:27.7,med:27,min:18,max:50},avg:27.7},
+  5:{t:176,nd:1, b:[35,37,50,46,7], st:{avg:26.8,med:26,min:17,max:42},avg:26.8},
+  6:{t:106,nd:0, b:[19,21,24,31,11],st:{avg:28.6,med:27,min:18,max:50},avg:28.6},
+  7:{t:136,nd:0, b:[26,31,36,33,10],st:{avg:27.3,med:26,min:17,max:49},avg:27.3},
+  8:{t:82, nd:1, b:[7,18,28,19,9],  st:{avg:28.9,med:27,min:18,max:54},avg:28.9},
+};
+const GEN = {
+  1:{t:206,g:[160,46,0]},2:{t:280,g:[199,81,0]},3:{t:212,g:[159,51,2]},
+  4:{t:118,g:[95,21,2]}, 5:{t:176,g:[155,20,1]},6:{t:106,g:[86,20,0]},
+  7:{t:136,g:[101,35,0]},8:{t:82, g:[61,20,1]},
+};
+const GC = {Male:'#185FA5',Female:'#D85A30',Other:'#888780'};
+const GK = Object.keys(GC);
+const ADASH=[null,[5,4],[9,3],[3,3],[6,3,2,3]];
+const BM = {
+  1:{grad:99,cg:true},2:{grad:150,cg:true},3:{grad:100,cg:true},
+  4:{grad:39,cg:true},5:{grad:83,cg:true},
+  6:{grad:0,cg:false},7:{grad:0,cg:false},8:{grad:0,cg:false}
+};
+
+/* Insights */
+const INS_REGIONS=['T&H','Eastern','Southern','Intl'];
+const INS_AGE={'Under 21':[14,26,21,27],'21–24':[24,34,19,9],'25–29':[27,16,33,45],'30–39':[30,24,21,18],'40+':[5,0,6,0]};
+const INS_FEM=[17,13,20,27];
+
+/* ══════════════════════════════════════════════════════ STATE/MODE ══ */
+let isDark=false;
+let charts=[];
+let activeTab='geo';
+
+function toggleMode(){
+  isDark=!isDark;
+  document.documentElement.classList.toggle('dark',isDark);
+  document.getElementById('modeBtn').textContent=isDark?'☾ Dark':'☀ Light';
+  buildCharts();
+}
+
+/* ══════════════════════════════════════════════════════ TAB LOGIC ══ */
+function switchTab(tab){
+  activeTab=tab;
+  ['geo','demo','insights'].forEach(t=>{
+    document.getElementById('pane-'+t).classList.toggle('hidden',t!==tab);
+    document.getElementById('tab-'+t).classList.toggle('active',t===tab);
+  });
+  renderMetrics(tab);
+  buildCharts();
+}
+
+/* ══════════════════════════════════════════════════ METRIC CARDS ══ */
+const METRICS={
+  geo:[
+    {l:'Total students',v:'1,316'},
+    {l:'Batches',v:'8'},
+    {l:'Avg batch size',v:'165'},
+    {l:'Graduated (B1–5)',v:'471',cls:'green'},
+    {l:'Grad rate (B1–5)',v:'47%',cls:'green'},
+  ],
+  demo:[
+    {l:'Total students',v:'1,316'},
+    {l:'Batches',v:'8'},
+    {l:'With birthdate (B2–8)',v:'1,110'},
+    {l:'Overall female share',v:'22%'},
+    {l:'Avg enrolment age',v:'27.7y'},
+  ],
+  insights:[
+    {l:'Students cross-tabbed',v:'385'},
+    {l:'Batches used',v:'B3 + B5'},
+    {l:'Female baseline',v:'18%'},
+    {l:'Avg age baseline',v:'27.1y'},
+    {l:'Regions analysed',v:'5'},
+  ],
+};
+
+function renderMetrics(tab){
+  const el=document.getElementById('metricCards');
+  el.innerHTML=METRICS[tab].map(m=>`
+    <div class="card">
+      <div class="card-label">${m.l}</div>
+      <div class="card-value${m.cls?' '+m.cls:''}">${m.v}</div>
+    </div>`).join('');
+}
+
+/* ══════════════════════════════════════════════════════ LEGEND ══ */
+function buildLegend(el,entries){
+  el.innerHTML=entries.map(([label,color,dash])=>{
+    if(dash!==undefined){
+      const da=(dash||[]).join(',');
+      const svg=da
+        ?`<svg width="26" height="12"><line x1="0" y1="6" x2="26" y2="6" stroke="${color}" stroke-width="2" stroke-dasharray="${da}"/><circle cx="13" cy="6" r="3" fill="${color}"/></svg>`
+        :`<svg width="26" height="12"><line x1="0" y1="6" x2="26" y2="6" stroke="${color}" stroke-width="2"/><circle cx="13" cy="6" r="3" fill="${color}"/></svg>`;
+      return`<span class="leg-line">${svg}<span>${label}</span></span>`;
+    }
+    return`<span class="leg-line"><span class="ld" style="background:${color};"></span><span>${label}</span></span>`;
+  }).join('');
+}
+
+/* ══════════════════════════════════════════════ CHART HELPERS ══ */
+function gc(){
+  const s=getComputedStyle(document.documentElement);
+  const g=k=>s.getPropertyValue(k).trim();
+  return{
+    grid:g('--grid'),tx3:g('--tx3'),
+    accent:g('--accent'),divC:g('--div-color'),yrC:g('--yr-color'),
+    nd:isDark?'rgba(180,178,169,0.15)':'rgba(180,178,169,0.28)'
+  };
+}
+function divAnnotations(c){
+  const r={};
+  [0.5,1.5,2.5,4.5,6.5].forEach((x,i)=>{
+    r['d'+i]={type:'line',xMin:x,xMax:x,borderColor:c.divC,borderWidth:1,borderDash:[4,4]};
+  });
+  return r;
+}
+
+const twoTierPlugin={id:'twoTier',afterDraw(chart){
+  const{ctx,scales:{x},chartArea:{bottom}}=chart;
+  const c=gc();
+  ctx.save();
+  ctx.font='500 10px "DM Sans",system-ui,sans-serif';
+  ctx.textAlign='center';ctx.textBaseline='top';
+  x.ticks.forEach((t,i)=>{
+    ctx.fillStyle=c.yrC;
+    ctx.fillText(YEARS[i],x.getPixelForTick(i),bottom+20);
+  });
+  ctx.restore();
+}};
+Chart.register(twoTierPlugin);
+
+const xS=()=>{const c=gc();return{ticks:{color:c.tx3,maxRotation:0},grid:{display:false}};};
+const yG=()=>{const c=gc();return{ticks:{color:c.tx3},grid:{color:c.grid}};};
+const base={responsive:true,maintainAspectRatio:false,layout:{padding:{bottom:22}}};
+
+/* ════════════════════════════════════════════════ BUILD CHARTS ══ */
+function buildCharts(){
+  charts.forEach(ch=>ch.destroy());
+  charts=[];
+  const c=gc();
+  const ann=divAnnotations(c);
+  const plugBase={legend:{display:false},annotation:{annotations:ann}};
+  const ovColor=c.accent;
+
+  if(activeTab==='geo'){
+    /* Geo stacked bar + intake overlay */
+    charts.push(new Chart(document.getElementById('cGeoBar'),{type:'bar',
+      data:{labels:LB,datasets:[
+        ...RK.map((r,i)=>({label:r,data:Object.values(GEO).map(b=>b.r[i]),backgroundColor:RC[r],stack:'s',yAxisID:'y',order:1})),
+        {label:'Annual intake',type:'line',data:INTAKE_LINE,yAxisID:'y2',
+         borderColor:ovColor,backgroundColor:ovColor,pointBackgroundColor:ovColor,
+         pointRadius:INTAKE_R,pointHoverRadius:INTAKE_HR,pointBorderColor:ovColor,
+         tension:0,fill:false,borderWidth:2.5,order:0}
+      ]},
+      options:{...base,plugins:{...plugBase,tooltip:{mode:'index',callbacks:{
+        label:ctx=>{
+          if(ctx.dataset.label==='Annual intake') return ` Annual intake: ${INTAKE_LBL[ctx.dataIndex]}`;
+          return ` ${ctx.dataset.label}: ${ctx.parsed.y}`;
+        }
+      }}},
+      scales:{x:{stacked:true,...xS()},
+        y:{stacked:true,...yG(),title:{display:true,text:'Students per batch',color:c.tx3,font:{size:11}}},
+        y2:{type:'linear',position:'right',min:0,max:650,ticks:{color:ovColor,stepSize:100},grid:{display:false},
+          title:{display:true,text:'Annual intake',color:ovColor,font:{size:11}}}}}
+    }));
+
+    /* Geo trend lines */
+    const gdash=[null,[5,4],[9,3],[3,3],[6,3,2,3]];
+    charts.push(new Chart(document.getElementById('cGeoLine'),{type:'line',
+      data:{labels:LB,datasets:RK.slice(0,5).map((r,i)=>({
+        label:r,data:Object.values(GEO).map(b=>Math.round(b.r[i]/b.t*100)),
+        borderColor:RC[r],backgroundColor:RC[r],pointBackgroundColor:RC[r],
+        pointRadius:4,pointHoverRadius:6,tension:0.3,fill:false,borderWidth:2,borderDash:gdash[i]||[]
+      }))},
+      options:{...base,plugins:{...plugBase,tooltip:{mode:'index',callbacks:{label:c=>` ${c.dataset.label}: ${c.parsed.y}%`}}},
+        scales:{y:{min:0,max:75,ticks:{color:c.tx3,callback:v=>v+'%'},grid:{color:c.grid}},x:xS()}}
+    }));
+
+    /* Legends */
+    buildLegend(document.getElementById('regLeg'),[
+      ...RK.map(r=>[r,RC[r]]),
+      ['— Annual intake (one dot/year)',ovColor,[]]
+    ]);
+    buildLegend(document.getElementById('geoLineLeg'),[
+      ['Tallinn & Harjumaa',RC['Tallinn & Harjumaa'],[]],
+      ['Eastern Estonia',RC['Eastern Estonia'],[5,4]],
+      ['Southern Estonia',RC['Southern Estonia'],[9,3]],
+      ['W. Estonia & Islands',RC['W. Estonia & Islands'],[3,3]],
+      ['International',RC['International'],[6,3,2,3]],
+    ]);
+  }
+
+  if(activeTab==='demo'){
+    /* Age bar + avg overlay */
+    charts.push(new Chart(document.getElementById('cAgeBar'),{type:'bar',
+      data:{labels:LB,datasets:[
+        ...AK.map((br,i)=>({label:br,data:Object.values(AGE).map(b=>b.b[i]),backgroundColor:AC[br],stack:'s',yAxisID:'y',order:1})),
+        {label:'No data',data:Object.values(AGE).map(b=>b.nd),backgroundColor:c.nd,stack:'s',yAxisID:'y',order:1},
+        {label:'Avg age',type:'line',data:Object.values(AGE).map(b=>b.avg),yAxisID:'y2',
+         borderColor:ovColor,backgroundColor:ovColor,pointBackgroundColor:ovColor,
+         pointRadius:5,pointHoverRadius:7,tension:0.3,fill:false,borderWidth:2.5,spanGaps:true,order:0}
+      ]},
+      options:{...base,plugins:{...plugBase,tooltip:{mode:'index',callbacks:{label:ctx=>{
+        if(ctx.dataset.label==='Avg age') return ctx.parsed.y!=null?` Avg age: ${ctx.parsed.y}`:null;
+        if(ctx.dataset.label==='No data'&&ctx.parsed.y===0) return null;
+        return ` ${ctx.dataset.label}: ${ctx.parsed.y}`;
+      }}}},
+      scales:{x:{stacked:true,...xS()},
+        y:{stacked:true,...yG(),title:{display:true,text:'Students',color:c.tx3,font:{size:11}}},
+        y2:{type:'linear',position:'right',min:22,max:34,ticks:{color:ovColor,callback:v=>v+'y'},grid:{display:false},
+          title:{display:true,text:'Avg age',color:ovColor,font:{size:11}}}}}
+    }));
+
+    /* Age trend — capped at 40% */
+    charts.push(new Chart(document.getElementById('cAgeLine'),{type:'line',
+      data:{labels:LB,datasets:AK.map((br,i)=>({
+        label:br,
+        data:Object.keys(AGE).map(n=>{const b=AGE[n];if(b.nd===b.t)return null;const v=b.b.reduce((a,c)=>a+c,0);return v>0?Math.round(b.b[i]/v*100):null;}),
+        borderColor:AC[br],backgroundColor:AC[br],pointBackgroundColor:AC[br],
+        pointRadius:4,pointHoverRadius:6,tension:0.3,fill:false,borderWidth:2,spanGaps:false,borderDash:ADASH[i]||[]
+      }))},
+      options:{...base,plugins:{...plugBase,tooltip:{mode:'index',callbacks:{label:ctx=>ctx.parsed.y===null?` ${ctx.dataset.label}: no data`:` ${ctx.dataset.label}: ${ctx.parsed.y}%`}}},
+        scales:{y:{min:0,max:40,ticks:{color:c.tx3,callback:v=>v+'%'},grid:{color:c.grid}},x:xS()}}
+    }));
+
+    /* Gender bar + female % overlay */
+    charts.push(new Chart(document.getElementById('cGenBar'),{type:'bar',
+      data:{labels:LB,datasets:[
+        ...GK.map((g,i)=>({label:g,data:Object.values(GEN).map(b=>b.g[i]),backgroundColor:GC[g],stack:'s',yAxisID:'y',order:1})),
+        {label:'Female %',type:'line',data:Object.values(GEN).map(b=>Math.round(b.g[1]/b.t*100)),
+         yAxisID:'y2',borderColor:ovColor,backgroundColor:ovColor,pointBackgroundColor:ovColor,
+         pointRadius:5,pointHoverRadius:7,tension:0.3,fill:false,borderWidth:2.5,order:0}
+      ]},
+      options:{...base,plugins:{...plugBase,tooltip:{mode:'index',callbacks:{label:ctx=>ctx.dataset.label==='Female %'?` Female share: ${ctx.parsed.y}%`:` ${ctx.dataset.label}: ${ctx.parsed.y}`}}},
+        scales:{x:{stacked:true,...xS()},
+          y:{stacked:true,...yG(),title:{display:true,text:'Students',color:c.tx3,font:{size:11}}},
+          y2:{type:'linear',position:'right',min:0,max:50,ticks:{color:ovColor,callback:v=>v+'%'},grid:{display:false},
+            title:{display:true,text:'Female %',color:ovColor,font:{size:11}}}}}
+    }));
+
+    /* Gender trend */
+    charts.push(new Chart(document.getElementById('cGenLine'),{type:'line',
+      data:{labels:LB,datasets:GK.slice(0,2).map((g,i)=>({
+        label:g,data:Object.values(GEN).map(b=>Math.round(b.g[i]/b.t*100)),
+        borderColor:GC[g],backgroundColor:GC[g],pointBackgroundColor:GC[g],
+        pointRadius:4,pointHoverRadius:6,tension:0.3,fill:false,borderWidth:2,borderDash:i===0?[]:[5,4]
+      }))},
+      options:{...base,plugins:{...plugBase,tooltip:{mode:'index',callbacks:{label:ctx=>` ${ctx.dataset.label}: ${ctx.parsed.y}%`}}},
+        scales:{y:{min:0,max:100,ticks:{color:c.tx3,callback:v=>v+'%'},grid:{color:c.grid}},x:xS()}}
+    }));
+
+    /* Legends */
+    buildLegend(document.getElementById('ageLeg'),[
+      ...AK.map(br=>[br,AC[br]]),
+      ['No data',c.nd],
+      ['— Avg age',ovColor,[]]
+    ]);
+    buildLegend(document.getElementById('ageLineLeg'),[
+      ['Under 21',AC['Under 21'],[]],['21–24',AC['21–24'],[5,4]],
+      ['25–29',AC['25–29'],[9,3]],['30–39',AC['30–39'],[3,3]],['40+',AC['40+'],ADASH[4]]
+    ]);
+    buildLegend(document.getElementById('genLeg'),[
+      ...GK.map(g=>[g,GC[g]]),['— Female %',ovColor,[]]
+    ]);
+    buildLegend(document.getElementById('genLineLeg'),[
+      ['Male',GC.Male,[]],['Female',GC.Female,[5,4]]
+    ]);
+  }
+
+  if(activeTab==='insights'){
+    /* Age by region */
+    charts.push(new Chart(document.getElementById('cInsAge'),{type:'bar',
+      data:{labels:INS_REGIONS,datasets:Object.entries(INS_AGE).map(([label,data],i)=>({
+        label,data,backgroundColor:Object.values(AC)[i],stack:'s'
+      }))},
+      options:{responsive:true,maintainAspectRatio:false,
+        plugins:{legend:{display:false},tooltip:{mode:'index',callbacks:{label:ctx=>` ${ctx.dataset.label}: ${ctx.parsed.y}%`}}},
+        scales:{x:{stacked:true,ticks:{color:c.tx3},grid:{display:false}},
+          y:{stacked:true,min:0,max:100,ticks:{color:c.tx3,callback:v=>v+'%'},grid:{color:c.grid}}}}
+    }));
+
+    /* Female % by region */
+    const baseline=18;
+    charts.push(new Chart(document.getElementById('cInsFem'),{type:'bar',
+      data:{labels:INS_REGIONS,datasets:[{
+        label:'Female %',
+        data:INS_FEM,
+        backgroundColor:INS_FEM.map(v=>v>baseline?'#1D9E75':'#185FA5'),
+        borderRadius:3
+      }]},
+      options:{responsive:true,maintainAspectRatio:false,
+        plugins:{legend:{display:false},
+          tooltip:{callbacks:{label:ctx=>` Female: ${ctx.parsed.y}% (baseline ${baseline}%)`}},
+          annotation:{annotations:{bl:{type:'line',yMin:baseline,yMax:baseline,borderColor:ovColor,borderWidth:1.5,borderDash:[5,4],
+            label:{content:'18% baseline',display:true,position:'end',color:ovColor,font:{size:10},backgroundColor:'transparent'}}}}},
+        scales:{x:{ticks:{color:c.tx3},grid:{display:false}},
+          y:{min:0,max:35,ticks:{color:c.tx3,callback:v=>v+'%'},grid:{color:c.grid}}}}
+    }));
+
+    buildLegend(document.getElementById('insLeg'),[
+      ...Object.entries(AC).map(([l,c])=>[l,c]),
+      ['— 18% baseline (female)',ovColor,[]]
+    ]);
+  }
+}
+
+/* ═══════════════════════════════════════════ BATCH BREAKDOWNS ══ */
+function makeBatchTabs(containerId,detId,renderFn,prefix){
+  const te=document.getElementById(containerId);
+  te.innerHTML='';
+  [1,2,3,4,5,6,7,8].forEach(n=>{
+    const b=document.createElement('button');
+    b.className='btab'+(n===1?' on':'');
+    b.textContent='Batch '+n;
+    b.setAttribute('data-n',n);
+    b.onclick=()=>{
+      te.querySelectorAll('.btab').forEach(x=>x.classList.remove('on'));
+      b.classList.add('on');
+      renderFn(n,detId);
+    };
+    te.appendChild(b);
+  });
+  renderFn(1,detId);
+}
+
+function renderGeoDet(n,detId){
+  const b=GEO[n];
+  const gr=b.cg?Math.round(b.g/b.t*100):null;
+  const cols=b.cg?4:2;
+  const meta=`<div class="det-cards" style="grid-template-columns:repeat(${cols},minmax(0,1fr));">
+    <div class="card"><div class="card-label">Total students</div><div class="card-value">${b.t}</div></div>
+    ${b.cg?`<div class="card"><div class="card-label">Graduated</div><div class="card-value green">${b.g}</div></div>
+    <div class="card"><div class="card-label">Non-graduated</div><div class="card-value red">${b.t-b.g}</div></div>`:''}
+    <div class="card"><div class="card-label">${b.cg?'Grad rate':'Status'}</div><div class="card-value ${b.cg?'green':''}">${b.cg?gr+'%':'In progress'}</div></div>
+  </div>`;
+  const rows=RK.map((r,i)=>{const cnt=b.r[i],pct=Math.round(cnt/b.t*100);return`<tr>
+    <td><span class="ld" style="background:${RC[r]};margin-right:7px;vertical-align:middle;display:inline-block;"></span>${r}</td>
+    <td style="text-align:right;">${cnt}</td><td style="text-align:right;font-weight:500;">${pct}%</td>
+    <td class="bar-cell" style="width:120px;padding-right:12px;"><div style="width:${Math.max(pct,1)}%;background:${RC[r]};"></div></td>
+  </tr>`;}).join('');
+  document.getElementById(detId).innerHTML=`${meta}
+    <table><thead><tr><th>Region</th><th style="text-align:right;">Students</th><th style="text-align:right;">Share</th><th></th></tr></thead>
+    <tbody>${rows}</tbody></table>
+    ${!b.cg?`<p class="note">Batch ${n} is still in progress — graduation rate not applicable yet.</p>`:''}`;
+}
+
+function renderDemoDet(n,detId){
+  const ba=AGE[n],bg=GEN[n],bm=BM[n];
+  const gr=bm.cg?Math.round(bm.grad/ba.t*100):null;
+  const valid=ba.b.reduce((a,c)=>a+c,0);
+  const hasAge=ba.nd<ba.t;
+  const cols=bm.cg?4:2;
+  const meta=`<div class="det-cards" style="grid-template-columns:repeat(${cols},minmax(0,1fr));">
+    <div class="card"><div class="card-label">Total students</div><div class="card-value">${ba.t}</div></div>
+    ${bm.cg?`<div class="card"><div class="card-label">Graduated</div><div class="card-value green">${bm.grad}</div></div>
+    <div class="card"><div class="card-label">Non-graduated</div><div class="card-value red">${ba.t-bm.grad}</div></div>`:''}
+    <div class="card"><div class="card-label">${bm.cg?'Grad rate':'Status'}</div><div class="card-value ${bm.cg?'green':''}">${bm.cg?gr+'%':'In progress'}</div></div>
+  </div>`;
+  const ageHtml=hasAge?`
+    <div class="det-cards" style="grid-template-columns:repeat(4,minmax(0,1fr));margin-bottom:10px;">
+      <div class="card"><div class="card-label">Avg age</div><div class="card-value">${ba.st.avg}</div></div>
+      <div class="card"><div class="card-label">Median</div><div class="card-value">${ba.st.med}</div></div>
+      <div class="card"><div class="card-label">Youngest</div><div class="card-value">${ba.st.min}</div></div>
+      <div class="card"><div class="card-label">Oldest</div><div class="card-value">${ba.st.max}</div></div>
+    </div>
+    <table><thead><tr><th>Age bracket</th><th style="text-align:right;">Students</th><th style="text-align:right;">Share</th><th></th></tr></thead><tbody>
+    ${AK.map((br,i)=>{const cnt=ba.b[i],pct=Math.round(cnt/valid*100);return`<tr>
+      <td><span class="ld" style="background:${AC[br]};margin-right:7px;vertical-align:middle;display:inline-block;"></span>${br}</td>
+      <td style="text-align:right;">${cnt}</td><td style="text-align:right;font-weight:500;">${pct}%</td>
+      <td class="bar-cell" style="width:120px;padding-right:12px;"><div style="width:${Math.max(pct,1)}%;background:${AC[br]};"></div></td></tr>`;}).join('')}
+    </tbody></table>
+    ${ba.nd>0?`<p class="note">${ba.nd} student${ba.nd>1?'s':''} with missing birthdate excluded.</p>`:''}`
+    :`<p class="note" style="padding:.6rem .9rem;background:var(--surface2);border-radius:6px;">Age data not available for Batch ${n} — birthdate was not collected for this cohort.</p>`;
+  const gRows=GK.map((g,i)=>{const cnt=bg.g[i],pct=Math.round(cnt/bg.t*100);return`<tr>
+    <td><span class="ld" style="background:${GC[g]};margin-right:7px;vertical-align:middle;display:inline-block;"></span>${g}</td>
+    <td style="text-align:right;">${cnt}</td><td style="text-align:right;font-weight:500;">${pct}%</td>
+    <td class="bar-cell" style="width:120px;padding-right:12px;"><div style="width:${Math.max(pct,1)}%;background:${GC[g]};"></div></td></tr>`;}).join('');
+  document.getElementById(detId).innerHTML=`${meta}
+    <div class="sub-sec">Age</div>${ageHtml}
+    <div class="sub-sec" style="margin-top:16px;">Gender</div>
+    <table><thead><tr><th>Gender</th><th style="text-align:right;">Students</th><th style="text-align:right;">Share</th><th></th></tr></thead>
+    <tbody>${gRows}</tbody></table>
+    ${!bm.cg?`<p class="note" style="margin-top:8px;">Batch ${n} is still in progress — graduation rate not applicable yet.</p>`:''}`;
+}
+
+/* ══════════════════════════════════════════════════════════ INIT ══ */
+renderMetrics('geo');
+buildCharts();
+makeBatchTabs('geoTabs','geoDet',renderGeoDet,'g');
+
+/* Pre-wire demo tabs so they render when tab is first switched */
+document.getElementById('tab-demo').addEventListener('click',()=>{
+  if(!document.getElementById('demoTabs').children.length){
+    makeBatchTabs('demoTabs','demoDet',renderDemoDet,'d');
+  }
+});
+</script>
+</body>
+</html>
