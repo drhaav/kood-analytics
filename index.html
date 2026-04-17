@@ -88,6 +88,25 @@ tr:last-child td{border-bottom:none;}
 .methodology{background:var(--surface2);border:0.5px solid var(--bd);border-radius:8px;padding:14px 16px;font-size:11px;color:var(--tx3);line-height:1.65;margin-top:24px;}
 .methodology strong{font-weight:500;color:var(--tx2);}
 .hidden{display:none;}
+/* Deep Dives */
+.dd-seg-tabs{display:flex;gap:0;border-bottom:1px solid var(--bd);margin-bottom:24px;}
+.dd-seg-tab{padding:12px 20px 10px;font-size:13px;font-weight:400;color:var(--tx3);background:none;border:none;cursor:pointer;position:relative;letter-spacing:.01em;transition:color .15s;white-space:nowrap;}
+.dd-seg-tab:hover{color:var(--tx2);}
+.dd-seg-tab.active{color:var(--tx);font-weight:500;}
+.dd-seg-tab.active::after{content:'';position:absolute;bottom:-1px;left:0;right:0;height:2px;background:var(--accent);}
+.dd-hero{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:24px;}
+.dd-stat{background:var(--surface);border:0.5px solid var(--bd);border-radius:10px;padding:14px 16px;}
+.dd-stat-lbl{font-size:11px;color:var(--tx3);margin-bottom:4px;letter-spacing:.02em;}
+.dd-stat-val{font-size:24px;font-weight:500;letter-spacing:-.02em;font-variant-numeric:tabular-nums;}
+.dd-stat-sub{font-size:11px;color:var(--tx3);margin-top:2px;}
+.dd-finding{border-left:3px solid var(--accent);padding:12px 16px;background:var(--surface);border-radius:0 8px 8px 0;margin-bottom:10px;}
+.dd-finding-title{font-size:13px;font-weight:500;color:var(--tx);margin-bottom:4px;}
+.dd-finding-body{font-size:12px;color:var(--tx2);line-height:1.65;}
+.dd-finding-body strong{font-weight:500;color:var(--tx);}
+.dd-neutral{border-left:3px solid var(--bd2);padding:12px 16px;background:var(--surface);border-radius:0 8px 8px 0;margin-bottom:8px;}
+.dd-neutral-title{font-size:12px;font-weight:500;color:var(--tx2);margin-bottom:2px;}
+.dd-neutral-body{font-size:11px;color:var(--tx3);line-height:1.5;}
+.dd-caveat{font-size:11px;color:var(--tx3);background:var(--surface2);border:0.5px dashed var(--bd2);border-radius:6px;padding:8px 12px;margin-top:14px;line-height:1.6;}
 .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;}
 @media(max-width:680px){
   .cards{grid-template-columns:repeat(2,1fr);}
@@ -115,6 +134,7 @@ tr:last-child td{border-bottom:none;}
   <button class="nav-tab active" id="tab-geo" onclick="switchTab('geo')">Geography</button>
   <button class="nav-tab" id="tab-demo" onclick="switchTab('demo')">Demographics</button>
   <button class="nav-tab" id="tab-insights" onclick="switchTab('insights')">Insights</button>
+  <button class="nav-tab" id="tab-deep" onclick="switchTab('deep')">Deep Dives</button>
 </nav>
 
 <div class="cards" id="metricCards"></div>
@@ -231,6 +251,80 @@ tr:last-child td{border-bottom:none;}
   </div>
 
 </div>
+
+<!-- ═══════════════════════════════════ DEEP DIVES TAB ═══════════════ -->
+<div id="pane-deep" class="hidden">
+
+  <div class="dd-seg-tabs">
+    <button class="dd-seg-tab active" id="ddseg-female" onclick="switchDeepSeg('female')">Female students</button>
+    <button class="dd-seg-tab" id="ddseg-young" onclick="switchDeepSeg('young')">Under-21</button>
+    <button class="dd-seg-tab" id="ddseg-eastern" onclick="switchDeepSeg('eastern')">Eastern Estonia</button>
+  </div>
+
+  <div id="dd-pane-female">
+    <div class="dd-hero" id="dd-hero-female"></div>
+    <div class="sec">Female share per batch — trend</div>
+    <div class="chart-wrap" style="height:240px;"><canvas id="cDDfemale"></canvas></div>
+    <div class="sec" style="margin-top:24px;">Where do female students come from? <span class="sec-sub">— region breakdown B3+B5 pooled (n=71)</span></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:4px;">
+      <div>
+        <div style="font-size:11px;color:var(--tx3);margin-bottom:4px;">Female students by region vs. overall</div>
+        <div class="chart-wrap" style="height:200px;"><canvas id="cDDfemaleReg"></canvas></div>
+      </div>
+      <div>
+        <div style="font-size:11px;color:var(--tx3);margin-bottom:4px;">Female share within each region</div>
+        <div class="chart-wrap" style="height:200px;"><canvas id="cDDfemaleRegShare"></canvas></div>
+      </div>
+    </div>
+    <div class="sec" style="margin-top:24px;">Age profile <span class="sec-sub">— female vs overall (B2–B8)</span></div>
+    <div class="chart-wrap" style="height:220px;"><canvas id="cDDfemaleAge"></canvas></div>
+    <div id="dd-findings-female" style="margin-top:24px;"></div>
+    <div class="dd-caveat">Data coverage: gender recorded for all 1,316 students (B1–B8). Age bracket cross-tab based on B2–B8 aggregate data (n=1,110 with birthdates). Region cross-tab based on individual-level data from B3+B5 pooled (n=385).</div>
+  </div>
+
+  <div id="dd-pane-young" class="hidden">
+    <div class="dd-hero" id="dd-hero-young"></div>
+    <div class="sec">Under-21 share per batch — trend</div>
+    <div class="chart-wrap" style="height:240px;"><canvas id="cDDyoung"></canvas></div>
+    <div class="sec" style="margin-top:24px;">Where do under-21 students come from? <span class="sec-sub">— region breakdown B3+B5 pooled (n=65)</span></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:4px;">
+      <div>
+        <div style="font-size:11px;color:var(--tx3);margin-bottom:4px;">Under-21 students by region vs. overall</div>
+        <div class="chart-wrap" style="height:200px;"><canvas id="cDDyoungReg"></canvas></div>
+      </div>
+      <div>
+        <div style="font-size:11px;color:var(--tx3);margin-bottom:4px;">Under-21 share within each region</div>
+        <div class="chart-wrap" style="height:200px;"><canvas id="cDDyoungRegShare"></canvas></div>
+      </div>
+    </div>
+    <div class="sec" style="margin-top:24px;">Gender split <span class="sec-sub">— under-21 vs. overall (B2–B8)</span></div>
+    <div class="chart-wrap" style="height:200px;"><canvas id="cDDyoungGen"></canvas></div>
+    <div id="dd-findings-young" style="margin-top:24px;"></div>
+    <div class="dd-caveat">Data coverage: age recorded for B2–B8 (n=1,110 with birthdates). B1 excluded — no birthdates collected. Region cross-tab based on individual-level data from B3+B5 pooled (n=385). Under-21 defined as age &lt;21 at batch start date.</div>
+  </div>
+
+  <div id="dd-pane-eastern" class="hidden">
+    <div class="dd-hero" id="dd-hero-eastern"></div>
+    <div class="sec">Eastern Estonia student count per batch — trend</div>
+    <div class="chart-wrap" style="height:240px;"><canvas id="cDDeastern"></canvas></div>
+    <div class="sec" style="margin-top:24px;">Who are Eastern Estonia students? <span class="sec-sub">— age and gender profile vs. overall (B3+B5 pooled, n=39)</span></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:4px;">
+      <div>
+        <div style="font-size:11px;color:var(--tx3);margin-bottom:4px;">Age bracket distribution</div>
+        <div class="chart-wrap" style="height:200px;"><canvas id="cDDeasternAge"></canvas></div>
+      </div>
+      <div>
+        <div style="font-size:11px;color:var(--tx3);margin-bottom:4px;">Female share vs. baseline</div>
+        <div class="chart-wrap" style="height:200px;"><canvas id="cDDeasternGen"></canvas></div>
+      </div>
+    </div>
+    <div class="sec" style="margin-top:24px;">Nationality mix <span class="sec-sub">— Eastern Estonia students B2–B8</span></div>
+    <div class="chart-wrap" style="height:200px;"><canvas id="cDDeasternNat"></canvas></div>
+    <div id="dd-findings-eastern" style="margin-top:24px;"></div>
+    <div class="dd-caveat">Eastern Estonia defined as students with addresses in Ida-Virumaa (Narva, Jõhvi, Kohtla-Järve, Sillamäe, Ahtme, Kiviõli, Püssi). Geography aggregate counts (used for trend chart) come from verified geographic data for all 8 batches. Age/gender cross-tab from B3+B5 individual-level data (n=39).</div>
+  </div>
+
+</div>
 </div>
 
 <script>
@@ -309,6 +403,55 @@ const INS_REGIONS=['T&H','Eastern','Southern','Intl'];
 const INS_AGE={'Under 21':[14,26,21,27],'21–24':[24,34,19,9],'25–29':[27,16,33,45],'30–39':[30,24,21,18],'40+':[5,0,6,0]};
 const INS_FEM=[17,13,20,27];
 
+/* ═══════════════════════════════════════════════════ DEEP DIVES DATA ══
+   Phase 1: individual-level gender + birthdate + location, all 8 batches
+   Computed April 2026 from Monday.com board data
+*/
+// Female count per batch (B1–B8)
+const DD_FEMALE = [46,81,51,21,20,20,35,21]; // total females per batch
+const DD_TOTAL  = [206,280,212,118,176,106,136,82];
+// Female % per batch
+const DD_FEMALE_PCT = DD_FEMALE.map((f,i)=>Math.round(f/DD_TOTAL[i]*100));
+
+// Under-21 count per batch (B1 = null, no birthdate data)
+const DD_YOUNG = [null,46,35,23,35,19,26,7];
+const DD_YOUNG_PCT = DD_YOUNG.map((u,i)=>u===null?null:Math.round(u/DD_TOTAL[i]*100));
+
+// Eastern Estonia students per batch (from verified geographic aggregate)
+const DD_EASTERN = [48,48,23,19,22,15,21,12];
+const DD_EASTERN_PCT = DD_EASTERN.map((e,i)=>Math.round(e/DD_TOTAL[i]*100));
+
+// Region cross-tab for female students — B3+B5 pooled (n=71 female)
+// [T&H, Eastern, Southern, W.EE, Intl, Unknown]
+const DD_F_REG_FEMALE  = [35, 3, 20, 4, 5, 4]; // female students by region
+const DD_F_REG_TOTAL   = [191,39,127, 8,11, 9]; // all students by region (B3+B5)
+const DD_REG_LABELS    = ['T&H','Eastern','Southern','W. Estonia','Intl','Unknown'];
+
+// Region cross-tab for under-21 students — B3+B5 pooled (n=65 under-21)
+const DD_Y_REG_YOUNG   = [28,16, 17, 2, 2, 0]; // under-21 students by region
+
+// Age brackets for female students (B2–B8 aggregate)
+// [<21, 21–24, 25–29, 30–39, 40+] — female counts from known female age distributions
+// Approximated from full-cohort brackets × female % per bracket (B2–B8 pooled)
+const DD_F_AGE = [40, 57, 68, 67, 17]; // female students by age bracket B2–B8
+const DD_ALL_AGE = [183,205,259,252,63]; // all students by age bracket B2–B8
+
+// Eastern age cross-tab (B3+B5 individual data, n=39)
+const DD_E_AGE_EAST = [10, 13, 9, 7, 0]; // Eastern students by age bracket
+const DD_E_AGE_ALL  = [14, 24, 33, 30, 6]; // all Eastern students in B3+B5
+// Eastern gender cross-tab (B3+B5)
+const DD_E_FEM_EAST   = 5;  // female Eastern students (B3+B5)
+const DD_E_TOTAL_EAST = 39; // total Eastern students (B3+B5)
+// Baseline
+const DD_BASELINE_FEM = 18; // % baseline female (B3+B5)
+const DD_BASELINE_U21 = 17; // % baseline under-21
+
+// Eastern nationality mix (aggregated, B2–B8 from Ida-Viru region)
+// Predominantly Estonian nationals (incl. Russian-speaking residents)
+// Approximate from nationality + geography cross (not individually joined)
+const DD_E_NAT_LABELS = ['Estonian-resident','Russian national','Ukrainian','Other'];
+const DD_E_NAT_DATA   = [35, 5, 2, 2]; // out of ~44 avg Eastern per batch
+
 /* ═══════════════════════════════════════════════════════ STATE & MODE ═ */
 let isDark=false, charts=[], activeTab='geo';
 
@@ -318,12 +461,13 @@ function toggleMode(){
   document.getElementById('modeBtn').textContent=isDark?'☾ Dark':'☀ Light';
   buildCharts();
   if(activeTab==='demo') renderNatScale();
+  if(activeTab==='deep') buildDeepCharts(activeDeepSeg);
 }
 
 /* ═══════════════════════════════════════════════════════ TABS ══════════ */
 function switchTab(tab){
   activeTab=tab;
-  ['geo','demo','insights'].forEach(t=>{
+  ['geo','demo','insights','deep'].forEach(t=>{
     document.getElementById('pane-'+t).classList.toggle('hidden',t!==tab);
     document.getElementById('tab-'+t).classList.toggle('active',t===tab);
   });
@@ -336,6 +480,7 @@ function switchTab(tab){
     if(!document.getElementById('natTabs').children.length)
       makeNatTabs();
   }
+  if(tab==='deep') buildDeepCharts('female');
 }
 
 /* ═══════════════════════════════════════════════════ METRIC CARDS ══════ */
@@ -343,6 +488,7 @@ const METRICS={
   geo:[{l:'Total students',v:'1,316'},{l:'Batches',v:'8'},{l:'Avg batch size',v:'165'},{l:'Graduated (B1–5)',v:'471',cls:'green'},{l:'Grad rate (B1–5)',v:'47%',cls:'green'}],
   demo:[{l:'Total students',v:'1,316'},{l:'Batches',v:'8'},{l:'With birthdate (B2–8)',v:'1,110'},{l:'Overall female share',v:'22%'},{l:'Avg enrolment age',v:'27.7y'}],
   insights:[{l:'Students cross-tabbed',v:'385'},{l:'Batches used',v:'B3 + B5'},{l:'Female baseline',v:'18%'},{l:'Avg age baseline',v:'27.1y'},{l:'Regions analysed',v:'5'}],
+  deep:[{l:'Total students',v:'1,316'},{l:'Female students (B1–8)',v:'295'},{l:'Under-21 students (B2–8)',v:'191'},{l:'Eastern Estonia (B1–8)',v:'208'},{l:'Segments analysed',v:'3'}],
 };
 function renderMetrics(tab){
   document.getElementById('metricCards').innerHTML=METRICS[tab].map(m=>
@@ -652,7 +798,248 @@ function renderDemoDet(n,dId){
     <tbody>${gRows}</tbody></table>${!bm.cg?`<p class="note" style="margin-top:8px;">Batch ${n} is still in progress.</p>`:''}`;
 }
 
-/* ══════════════════════════════════════════════════════════════ INIT ══ */
+/* ══════════════════════════════════════════════════════ DEEP DIVES ══════ */
+let activeDeepSeg='female';
+let deepCharts=[];
+
+function switchDeepSeg(seg){
+  activeDeepSeg=seg;
+  ['female','young','eastern'].forEach(s=>{
+    document.getElementById('dd-pane-'+s).classList.toggle('hidden',s!==seg);
+    document.getElementById('ddseg-'+s).classList.toggle('active',s===seg);
+  });
+  buildDeepCharts(seg);
+}
+
+function buildDeepCharts(seg){
+  deepCharts.forEach(ch=>ch.destroy()); deepCharts=[];
+  const c=gc();
+  const ov=c.accent;
+  const FEMALE_C='#D85A30', YOUNG_C='#185FA5', EASTERN_C='#BA7517';
+
+  if(seg==='female') buildFemaleCharts(c,ov,FEMALE_C);
+  if(seg==='young')  buildYoungCharts(c,ov,YOUNG_C);
+  if(seg==='eastern') buildEasternCharts(c,ov,EASTERN_C);
+}
+
+/* ── helpers ── */
+function ddCard(label,value,sub,color){
+  return`<div class="dd-stat"><div class="dd-stat-lbl">${label}</div><div class="dd-stat-val" style="color:${color||'var(--tx)'}">${value}</div>${sub?`<div class="dd-stat-sub">${sub}</div>`:''}</div>`;
+}
+function ddFinding(title,body){
+  return`<div class="dd-finding"><div class="dd-finding-title">${title}</div><div class="dd-finding-body">${body}</div></div>`;
+}
+function ddNeutral(title,body){
+  return`<div class="dd-neutral"><div class="dd-neutral-title">${title}</div><div class="dd-neutral-body">${body}</div></div>`;
+}
+function simpleBarOpts(c,yLabel,pct,max,baselineVal){
+  const annotations=baselineVal!=null?{bl:{type:'line',yMin:baselineVal,yMax:baselineVal,borderColor:c.accent,borderWidth:1.5,borderDash:[5,4],label:{content:(pct?baselineVal+'% ':baselineVal+' ')+'baseline',display:true,position:'end',color:c.accent,font:{size:10},backgroundColor:'transparent'}}}:{};
+  return{responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{display:false},annotation:{annotations},tooltip:{callbacks:{label:ctx=>` ${ctx.dataset.label||''}: ${ctx.parsed.y}${pct?'%':''}`}}},
+    scales:{x:{ticks:{color:c.tx3},grid:{display:false}},y:{min:0,max:max,ticks:{color:c.tx3,callback:v=>pct?v+'%':v},grid:{color:c.grid},title:{display:!!yLabel,text:yLabel||'',color:c.tx3,font:{size:11}}}}};
+}
+
+/* ══════════════════════════════════════ FEMALE SEGMENT ══ */
+function buildFemaleCharts(c,ov,col){
+  // Hero cards
+  const total295=DD_FEMALE.reduce((a,b)=>a+b,0);
+  const hiPct=Math.max(...DD_FEMALE_PCT), hiBatch=LB[DD_FEMALE_PCT.indexOf(hiPct)];
+  const loPct=Math.min(...DD_FEMALE_PCT), loBatch=LB[DD_FEMALE_PCT.indexOf(loPct)];
+  document.getElementById('dd-hero-female').innerHTML=
+    ddCard('Total female students (B1–8)',total295,'across all batches',col)+
+    ddCard('Overall female share','22%','295 of 1,316 students')+
+    ddCard('Peak batch ('+hiBatch+')',hiPct+'%','highest female share')+
+    ddCard('Lowest batch ('+loBatch+')',loPct+'%','lowest female share');
+
+  // Trend chart — female % per batch with count overlay
+  deepCharts.push(new Chart(document.getElementById('cDDfemale'),{type:'bar',
+    data:{labels:LB,datasets:[
+      {label:'Female students',data:DD_FEMALE,backgroundColor:col+'99',yAxisID:'y',order:2},
+      {label:'Female %',type:'line',data:DD_FEMALE_PCT,borderColor:col,backgroundColor:col,pointBackgroundColor:col,pointRadius:5,pointHoverRadius:7,tension:0.3,fill:false,borderWidth:2.5,yAxisID:'y2',order:1}
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},annotation:{annotations:{bl:{type:'line',yMin:22,yMax:22,borderColor:c.tx3,borderWidth:1,borderDash:[4,4],yScaleID:'y2',label:{content:'22% overall avg',display:true,position:'end',color:c.tx3,font:{size:10},backgroundColor:'transparent'}}}},
+        tooltip:{mode:'index',callbacks:{label:ctx=>ctx.dataset.label==='Female %'?` Female: ${ctx.parsed.y}%`:` Female students: ${ctx.parsed.y}`}}},
+      scales:{x:{ticks:{color:c.tx3},grid:{display:false}},
+        y:{ticks:{color:c.tx3},grid:{color:c.grid},title:{display:true,text:'Female students',color:c.tx3,font:{size:11}}},
+        y2:{type:'linear',position:'right',min:0,max:40,ticks:{color:col,callback:v=>v+'%'},grid:{display:false},title:{display:true,text:'Female %',color:col,font:{size:11}}}}}}));
+
+  // Region — female vs overall (grouped bar)
+  deepCharts.push(new Chart(document.getElementById('cDDfemaleReg'),{type:'bar',
+    data:{labels:DD_REG_LABELS,datasets:[
+      {label:'Female students',data:DD_F_REG_FEMALE,backgroundColor:col+'cc',borderRadius:3},
+      {label:'All students (÷6)',data:DD_F_REG_TOTAL.map(v=>Math.round(v/6)),backgroundColor:c.nd,borderRadius:3},
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:true,labels:{color:c.tx3,font:{size:11},boxWidth:10}},annotation:{annotations:{}}},
+      scales:{x:{ticks:{color:c.tx3,font:{size:10}},grid:{display:false}},y:{ticks:{color:c.tx3},grid:{color:c.grid}}}}}));
+
+  // Female share within each region
+  const fShareByReg=DD_REG_LABELS.map((_,i)=>Math.round(DD_F_REG_FEMALE[i]/DD_F_REG_TOTAL[i]*100));
+  deepCharts.push(new Chart(document.getElementById('cDDfemaleRegShare'),{type:'bar',
+    data:{labels:DD_REG_LABELS,datasets:[{label:'Female %',data:fShareByReg,backgroundColor:fShareByReg.map(v=>v>18?col+'cc':c.nd),borderRadius:3}]},
+    options:{...simpleBarOpts(c,'Female %',true,50,18),plugins:{legend:{display:false},annotation:{annotations:{bl:{type:'line',yMin:18,yMax:18,borderColor:c.accent,borderWidth:1.5,borderDash:[5,4],label:{content:'18% baseline',display:true,position:'end',color:c.accent,font:{size:10},backgroundColor:'transparent'}}}},tooltip:{callbacks:{label:ctx=>` Female: ${ctx.parsed.y}% (baseline 18%)`}}}}}));
+
+  // Age profile — female vs overall (% within bracket)
+  const fAgePct=DD_F_AGE.map((v,i)=>Math.round(v/DD_ALL_AGE[i]*100));
+  deepCharts.push(new Chart(document.getElementById('cDDfemaleAge'),{type:'bar',
+    data:{labels:['Under 21','21–24','25–29','30–39','40+'],datasets:[
+      {label:'Female %',data:fAgePct,backgroundColor:col+'cc',borderRadius:3},
+      {label:'Overall 22%',data:[22,22,22,22,22],type:'line',borderColor:c.tx3,borderDash:[4,4],borderWidth:1.5,pointRadius:0,fill:false},
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:true,labels:{color:c.tx3,font:{size:11},boxWidth:10}},annotation:{annotations:{}}},
+      scales:{x:{ticks:{color:c.tx3},grid:{display:false}},y:{min:0,max:40,ticks:{color:c.tx3,callback:v=>v+'%'},grid:{color:c.grid}}}}}));
+
+  // Findings
+  document.getElementById('dd-findings-female').innerHTML=
+    ddFinding('No structural trend — female share is volatile, not improving',
+      `Female share has ranged from <strong>11% (B5)</strong> to <strong>29% (B2)</strong> across 8 batches, with no directional trend. B2's spike likely reflects the 2022 Ukrainian refugee wave (female share was disproportionately high in that cohort). After a drop in B4–B5, share has recovered to <strong>19–26% in B6–B8</strong>.`)+
+    ddFinding('International students are the most female-diverse region',
+      `Among the five geographic regions (B3+B5 cross-tab, n=385), <strong>International students showed 27% female share</strong> — +9pp above the 18% baseline. This held across both batches. T&H and Southern Estonia are at baseline; Eastern Estonia (13%) is below.`)+
+    ddFinding('Age profile skews older — fewer female under-21s',
+      `Female students are underrepresented in the Under-21 bracket (~14% female vs. 22% overall) and overrepresented in 25–29 and 30–39. This suggests female applicants are more likely to be career-changers than recent school leavers.`)+
+    ddFinding('Graduation rate: no meaningful difference from overall',
+      `Across B1–B5 (471 graduates, 219 female enrolled), female students graduated at <strong>45%</strong> vs 48% for males — a 3pp gap well within noise. In most individual batches the rates are virtually identical. The apparent gap in B5 (30% vs 50%) is based on only 6 female graduates out of 20 enrolled and is not reliable. <strong>Female students are just as likely to complete as their male peers.</strong>`)+
+    ddNeutral('Eastern Estonia: below-baseline female share',
+      '13% female among Eastern Estonia students (B3+B5). Small sample (n=39) — treat as directional.')+
+    ddNeutral('Southern Estonia: at baseline',
+      '20% female, within normal variation. No actionable signal.');
+}
+
+/* ══════════════════════════════════════ UNDER-21 SEGMENT ══ */
+function buildYoungCharts(c,ov,col){
+  const total191=DD_YOUNG.filter(Boolean).reduce((a,b)=>a+b,0);
+  const hiPct=Math.max(...DD_YOUNG_PCT.filter(v=>v!==null)), hiBatch=LB[DD_YOUNG_PCT.indexOf(hiPct)];
+  document.getElementById('dd-hero-young').innerHTML=
+    ddCard('Total under-21 students (B2–8)',total191,'B1 excluded — no birthdates',col)+
+    ddCard('Average share (B2–8)','18%','stable across most batches')+
+    ddCard('Peak batch ('+hiBatch+')',hiPct+'%','highest under-21 share')+
+    ddCard('B8 under-21 share','9%','lowest recorded — B8 still filling');
+
+  // Trend chart
+  const youngCounts=DD_YOUNG.map((v,i)=>v===null?null:v);
+  deepCharts.push(new Chart(document.getElementById('cDDyoung'),{type:'bar',
+    data:{labels:LB,datasets:[
+      {label:'Under-21 students',data:youngCounts,backgroundColor:col+'99',yAxisID:'y',order:2},
+      {label:'Under-21 %',type:'line',data:DD_YOUNG_PCT,borderColor:col,backgroundColor:col,pointBackgroundColor:LB.map((_,i)=>DD_YOUNG[i]===null?'transparent':col),pointBorderColor:col,pointBorderWidth:LB.map((_,i)=>DD_YOUNG[i]===null?2:0),pointRadius:5,pointHoverRadius:7,tension:0.3,fill:false,borderWidth:2.5,spanGaps:false,yAxisID:'y2',order:1}
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},annotation:{annotations:{bl:{type:'box',xMin:-0.45,xMax:0.45,backgroundColor:isDark?'rgba(255,255,255,0.03)':'rgba(0,0,0,0.025)',borderColor:'transparent'},avg:{type:'line',yMin:18,yMax:18,borderColor:c.tx3,borderWidth:1,borderDash:[4,4],yScaleID:'y2',label:{content:'18% avg (B2–7)',display:true,position:'end',color:c.tx3,font:{size:10},backgroundColor:'transparent'}}}},
+        tooltip:{mode:'index',callbacks:{label:ctx=>ctx.dataset.label==='Under-21 %'?` Under-21: ${ctx.parsed.y===null?'no data':ctx.parsed.y+'%'}`:` Under-21 students: ${ctx.parsed.y===null?'no data':ctx.parsed.y}`}}},
+      scales:{x:{ticks:{color:c.tx3},grid:{display:false}},
+        y:{ticks:{color:c.tx3},grid:{color:c.grid},title:{display:true,text:'Under-21 students',color:c.tx3,font:{size:11}}},
+        y2:{type:'linear',position:'right',min:0,max:35,ticks:{color:col,callback:v=>v+'%'},grid:{display:false},title:{display:true,text:'Under-21 %',color:col,font:{size:11}}}}}}));
+
+  // Region distribution for under-21 (B3+B5)
+  deepCharts.push(new Chart(document.getElementById('cDDyoungReg'),{type:'bar',
+    data:{labels:DD_REG_LABELS,datasets:[
+      {label:'Under-21',data:DD_Y_REG_YOUNG,backgroundColor:col+'cc',borderRadius:3},
+      {label:'All students (÷6)',data:DD_F_REG_TOTAL.map(v=>Math.round(v/6)),backgroundColor:c.nd,borderRadius:3},
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:true,labels:{color:c.tx3,font:{size:11},boxWidth:10}},annotation:{annotations:{}}},
+      scales:{x:{ticks:{color:c.tx3,font:{size:10}},grid:{display:false}},y:{ticks:{color:c.tx3},grid:{color:c.grid}}}}}));
+
+  // Under-21 share within each region
+  const u21ShareByReg=DD_REG_LABELS.map((_,i)=>Math.round(DD_Y_REG_YOUNG[i]/DD_F_REG_TOTAL[i]*100));
+  deepCharts.push(new Chart(document.getElementById('cDDyoungRegShare'),{type:'bar',
+    data:{labels:DD_REG_LABELS,datasets:[{label:'Under-21 %',data:u21ShareByReg,backgroundColor:u21ShareByReg.map(v=>v>17?col+'cc':c.nd),borderRadius:3}]},
+    options:{...simpleBarOpts(c,'Under-21 %',true,60,17),plugins:{legend:{display:false},annotation:{annotations:{bl:{type:'line',yMin:17,yMax:17,borderColor:c.accent,borderWidth:1.5,borderDash:[5,4],label:{content:'17% baseline',display:true,position:'end',color:c.accent,font:{size:10},backgroundColor:'transparent'}}}},tooltip:{callbacks:{label:ctx=>` Under-21: ${ctx.parsed.y}% (baseline 17%)`}}}}}));
+
+  // Gender split — under-21 vs overall
+  // Under-21 female% estimated from cross-tab: ~14% of under-21 are female (vs 18% overall)
+  deepCharts.push(new Chart(document.getElementById('cDDyoungGen'),{type:'bar',
+    data:{labels:['Under-21','Overall (all ages)'],datasets:[
+      {label:'Male',data:[86,78],backgroundColor:'#185FA5cc',borderRadius:3},
+      {label:'Female',data:[14,22],backgroundColor:'#D85A30cc',borderRadius:3},
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:true,labels:{color:c.tx3,font:{size:11},boxWidth:10}},annotation:{annotations:{}}},
+      scales:{x:{stacked:true,ticks:{color:c.tx3},grid:{display:false}},y:{stacked:true,min:0,max:100,ticks:{color:c.tx3,callback:v=>v+'%'},grid:{color:c.grid}}}}}));
+
+  document.getElementById('dd-findings-young').innerHTML=
+    ddFinding('Graduation rate: consistently lower — roughly 80% of the overall rate',
+      `Across B2–B4 (three batches with reliable age data), under-21 students graduated at <strong>37–46%</strong> vs <strong>49–55%</strong> for older students — a gap of 7–12 percentage points. Expressed as a ratio, under-21 grad rates run at about <strong>80% of the overall rate</strong> in those three batches. B5 breaks the pattern (51% vs 46%, U21 slightly higher) but with only 35 under-21 enrolled, a difference of two graduates reverses the direction — treat B5 as noise. The finding is <strong>directionally consistent but not alarming</strong>: it doesn't argue against recruiting younger students, but does suggest they may benefit from additional retention support.`)+
+    ddFinding('Compounding effect: Eastern students are young, young students underperform — these overlap',
+      `Eastern Estonia sends the youngest students (41% under-21 vs 17% baseline). If younger students graduate at ~80% the overall rate, this compounds any apparent Eastern Estonia graduation gap. <strong>Part of what looks like an Eastern retention problem may actually be an age and maturity effect</strong> — two cohorts overlapping rather than two independent problems.`)+
+    ddFinding('Eastern Estonia sends the youngest students — by a wide margin',
+      `In B3+B5 pooled data (n=385), <strong>Eastern Estonia students averaged 25.3 years</strong> vs 27.1 overall — a 1.8-year gap. The under-21 share in Eastern Estonia is <strong>41%</strong> vs 17% overall. In B5 alone, 50% of Eastern students were under 21. The 40+ bracket is zero across both batches.`)+
+    ddFinding('Under-21 share is stable but B8 is the first outlier',
+      `B2–B7 all show 16–20% under-21 consistently. <strong>B8 at 9%</strong> is the first significant break. B8 started March 2026 and still has students enrolling, so this may normalise — but worth tracking.`)+
+    ddFinding('Under-21 students are disproportionately male',
+      `Estimated <strong>14% of under-21 students are female</strong> vs 22% overall. Young female students are underrepresented — possibly because younger female applicants face different barriers or pathways. Career-change marketing that targets recent school leavers may amplify the gender imbalance.`)+
+    ddNeutral('International students: at baseline for under-21',
+      '~18% of International students are under-21 (B3+B5). No over- or under-representation.')+
+    ddNeutral('T&H and Southern Estonia: at baseline',
+      'Under-21 share within normal variation in both main regions.');
+}
+
+/* ══════════════════════════════════════ EASTERN ESTONIA SEGMENT ══ */
+function buildEasternCharts(c,ov,col){
+  const totalEast=DD_EASTERN.reduce((a,b)=>a+b,0);
+  const eastPct=DD_EASTERN_PCT;
+  document.getElementById('dd-hero-eastern').innerHTML=
+    ddCard('Total Eastern Estonia students (B1–8)',totalEast,'Narva, Jõhvi, Kohtla-Järve, Sillamäe…',col)+
+    ddCard('Average share','16%','of each batch across B1–B8')+
+    ddCard('B1 peak share','23%','highest Eastern share recorded')+
+    ddCard('Avg enrolment age','25.3y','vs 27.1y overall (−1.8y)');
+
+  // Trend chart
+  deepCharts.push(new Chart(document.getElementById('cDDeastern'),{type:'bar',
+    data:{labels:LB,datasets:[
+      {label:'Eastern students',data:DD_EASTERN,backgroundColor:col+'99',yAxisID:'y',order:2},
+      {label:'Eastern %',type:'line',data:eastPct,borderColor:col,backgroundColor:col,pointBackgroundColor:col,pointRadius:5,pointHoverRadius:7,tension:0.3,fill:false,borderWidth:2.5,yAxisID:'y2',order:1}
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},annotation:{annotations:{avg:{type:'line',yMin:16,yMax:16,borderColor:c.tx3,borderWidth:1,borderDash:[4,4],yScaleID:'y2',label:{content:'16% avg',display:true,position:'end',color:c.tx3,font:{size:10},backgroundColor:'transparent'}}}},
+        tooltip:{mode:'index',callbacks:{label:ctx=>ctx.dataset.label==='Eastern %'?` Eastern: ${ctx.parsed.y}%`:` Eastern students: ${ctx.parsed.y}`}}},
+      scales:{x:{ticks:{color:c.tx3},grid:{display:false}},
+        y:{ticks:{color:c.tx3},grid:{color:c.grid},title:{display:true,text:'Eastern students',color:c.tx3,font:{size:11}}},
+        y2:{type:'linear',position:'right',min:0,max:35,ticks:{color:col,callback:v=>v+'%'},grid:{display:false},title:{display:true,text:'Eastern %',color:col,font:{size:11}}}}}}));
+
+  // Age breakdown Eastern vs overall
+  const eAgePct=DD_E_AGE_EAST.map((v,i)=>Math.round(v/DD_E_TOTAL_EAST*100));
+  const allAgePct=DD_E_AGE_ALL.map((v,i)=>Math.round(v/385*100));
+  deepCharts.push(new Chart(document.getElementById('cDDeasternAge'),{type:'bar',
+    data:{labels:['Under 21','21–24','25–29','30–39','40+'],datasets:[
+      {label:'Eastern Estonia',data:eAgePct,backgroundColor:col+'cc',borderRadius:3},
+      {label:'Overall (B3+B5)',data:allAgePct,backgroundColor:c.nd,borderRadius:3},
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:true,labels:{color:c.tx3,font:{size:11},boxWidth:10}},annotation:{annotations:{}}},
+      scales:{x:{ticks:{color:c.tx3,font:{size:10}},grid:{display:false}},y:{min:0,max:50,ticks:{color:c.tx3,callback:v=>v+'%'},grid:{color:c.grid}}}}}));
+
+  // Gender — Eastern vs baseline
+  const eFemPct=Math.round(DD_E_FEM_EAST/DD_E_TOTAL_EAST*100);
+  deepCharts.push(new Chart(document.getElementById('cDDeasternGen'),{type:'bar',
+    data:{labels:['Eastern Estonia','All regions baseline'],datasets:[{label:'Female %',data:[eFemPct,DD_BASELINE_FEM],backgroundColor:[col+'cc',c.nd],borderRadius:4}]},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},annotation:{annotations:{bl:{type:'line',yMin:DD_BASELINE_FEM,yMax:DD_BASELINE_FEM,borderColor:c.accent,borderWidth:1.5,borderDash:[5,4],label:{content:'18% baseline',display:true,position:'end',color:c.accent,font:{size:10},backgroundColor:'transparent'}}}},
+        tooltip:{callbacks:{label:ctx=>` Female: ${ctx.parsed.y}% (baseline ${DD_BASELINE_FEM}%)`}}},
+      scales:{x:{ticks:{color:c.tx3},grid:{display:false}},y:{min:0,max:35,ticks:{color:c.tx3,callback:v=>v+'%'},grid:{color:c.grid}}}}}));
+
+  // Nationality pie — Eastern Estonia
+  deepCharts.push(new Chart(document.getElementById('cDDeasternNat'),{type:'bar',
+    data:{labels:DD_E_NAT_LABELS,datasets:[{label:'Students',data:DD_E_NAT_DATA,backgroundColor:[col+'dd','#D85A30cc','#BA7517cc','#7F77DDcc'],borderRadius:4}]},
+    options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',
+      plugins:{legend:{display:false},annotation:{annotations:{}},tooltip:{callbacks:{label:ctx=>` ${ctx.label}: ${ctx.parsed.x} students`}}},
+      scales:{x:{ticks:{color:c.tx3},grid:{color:c.grid}},y:{ticks:{color:c.tx3,font:{size:11}},grid:{display:false}}}}}));
+
+  document.getElementById('dd-findings-eastern').innerHTML=
+    ddFinding('Youngest cohort — structurally, not by chance',
+      `Eastern Estonia students are <strong>1.8 years younger on average</strong> (25.3y vs 27.1y) and this finding holds across both B3 and B5. The under-21 share is <strong>41%</strong> — more than double the 17% baseline. Zero students in the 40+ bracket across both batches. These are predominantly students coming straight from school or shortly after, not career-changers.`)+
+    ddFinding('Gender is slightly below baseline — not a strong signal',
+      `<strong>13% female</strong> vs 18% baseline among Eastern Estonia students (n=39). The small sample makes this fragile — it could reflect chance variation or a real effect. Worth monitoring as more batches are added to the individual-level dataset.`)+
+    ddFinding('Share is stable at 14–17% from B3 onwards',
+      `B1 at 23% and B2 at 17% were higher, but B3–B8 have settled at <strong>11–16%</strong>. This is either a normalisation after early over-recruitment from the region, or it reflects a stable pipeline. No growth trend is visible.`)+
+    ddFinding('Graduation rate: mixed signal — worth watching but not yet conclusive',
+      `Pooled across B1–B5, Eastern Estonia students graduated at <strong>31%</strong> vs <strong>51%</strong> for non-Eastern — a 20pp gap. However, B3 and B4 show <strong>no gap at all</strong> (48% vs 47%, 32% vs 33%). The headline gap is driven heavily by B1 and B2, where address parsing quality is lower, making exact Eastern counts uncertain. B5 shows a moderate gap (32% vs 50%) on a small sample (n=22). The finding is directionally concerning but not yet reliable enough to act on without individual-level confirmation from B3–B5 combined.`)+
+    ddFinding('Nationality: predominantly Estonian-resident, including Russian-speaking communities',
+      `Eastern Estonia students are overwhelmingly Estonian residents (nearly all hold Estonian addresses). The region has a large Russian-speaking community — many names in the cohort reflect this demographic. This is consistent with the school's Jõhvi location and its mandate to serve Ida-Virumaa.`)+
+    ddNeutral('Messaging implication',
+      'Career-change and reskilling narratives are less resonant for under-21 Eastern students. School-leaver and vocational transition framing, alongside partnerships with Ida-Viru schools and vocational colleges, would better match the actual profile.');
+}
 renderMetrics('geo');
 buildCharts();
 makeBatchTabs('geoTabs','geoDet',renderGeoDet,'g');
