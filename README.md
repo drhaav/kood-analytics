@@ -1,19 +1,19 @@
 # kood/Jõhvi — Cohort Analysis Dashboard
 
-An interactive single-page dashboard analysing student enrolment, demographics, and graduation outcomes across all eight batches of the [kood/Jõhvi](https://kood.tech) coding school (2021–2026). Built as an internal tool but does not contain PII nor sensitive data.
+An interactive single-page dashboard analysing student enrolment, demographics, and graduation outcomes across all eight batches of the [kood/Jõhvi](https://kood.tech) coding school (2021–2026). Built for FutureCoders OÜ as an internal strategic tool.
 
-**Live:** https://drhaav.github.io/cohort-analysis 
+**Live:** [koodjohvi.github.io/cohort-analysis](https://koodjohvi.github.io/cohort-analysis) ← replace with actual URL
+
 ---
 
 ## What the dashboard shows
 
-The dashboard is organised into four tabs, each answering a distinct question:
+The dashboard is organised into three tabs, each answering a distinct question:
 
 | Tab | Question |
 |---|---|
 | **Geography** | Where do students come from, and how has the regional mix shifted across batches? |
 | **Demographics** | How have age, gender, and nationality distributions changed over time? |
-| **Insights** | Are there meaningful differences in gender and age profile by region? |
 | **Deep Dives** | Do female students, under-21 students, and Eastern Estonia students behave differently — in enrolment and in graduation? |
 
 ---
@@ -63,9 +63,9 @@ Age is calculated as **age at batch start date**, not current age. A student is 
 
 A student is counted as graduated if they appear in group "7. Graduated" within their batch board at the time of data extraction (April 2026). Students still active, on study leave, or who left without completing are not counted as graduates. Rates are only reported for B1–B5, where cohorts have had sufficient time to complete.
 
-### Cross-tab analysis (Insights tab)
+### Cross-tab analysis (Deep Dives tab)
 
-The region × age × gender cross-tab is based on **individual-level records from B3 and B5 only** (n=385 combined). These are the two batches where complete joined location, birthdate, and gender data were available at individual level. Findings from the Insights tab should be treated as directional hypotheses rather than confirmed conclusions.
+The region × age × gender cross-tab is based on **individual-level records from B3 and B5 only** (n=385 combined). These are the two batches where complete joined location, birthdate, and gender data were available at individual level. Findings should be treated as directional hypotheses rather than confirmed conclusions.
 
 ---
 
@@ -99,14 +99,14 @@ Graduation rate findings are integrated into each segment's findings where the d
 
 ## Technical notes
 
-**Stack:** Single HTML file (~80KB). No build step, no dependencies to install, no server required. Works from the filesystem or served via GitHub Pages.
+**Stack:** Single HTML file (~72KB). No build step, no dependencies to install, no server required. Works from the filesystem or served via GitHub Pages.
 
 **Libraries (CDN-loaded):**
 - [Chart.js 4.4.1](https://www.chartjs.org/) — all charts
 - [chartjs-plugin-annotation 3.0.1](https://www.chartjs.org/chartjs-plugin-annotation/latest/) — baseline reference lines
 - [DM Sans + DM Mono](https://fonts.google.com/) — typography (Google Fonts)
 
-**Features:** Dark/light mode toggle, per-batch drill-down tables, batch selector tabs, responsive layout. All chart instances are destroyed and rebuilt on tab switch and theme toggle to avoid canvas conflicts.
+**Features:** Dark/light mode toggle, per-batch drill-down tables, batch selector tabs, consistent bottom-placement legends across all charts, responsive layout. All chart instances are destroyed and rebuilt on tab switch and theme toggle to avoid canvas conflicts.
 
 **Browser support:** Any modern browser. No polyfills required.
 
