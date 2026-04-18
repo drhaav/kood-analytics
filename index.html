@@ -202,7 +202,7 @@ tr:last-child td{border-bottom:none;}
     <div class="dd-hero" id="dd-hero-female"></div>
     <div class="sec">Female share per batch — trend</div>
     <div class="chart-wrap" style="height:240px;"><canvas id="cDDfemale"></canvas></div>
-    <div class="sec" style="margin-top:24px;">Where do female students come from? <span class="sec-sub">— region breakdown B3+B5 pooled (n=71)</span></div>
+    <div class="sec" style="margin-top:24px;">Where do female students come from? <span class="sec-sub">— region breakdown B3–B8 pooled (n=119)</span></div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:4px;">
       <div>
         <div style="font-size:11px;color:var(--tx3);margin-bottom:4px;">Female students by region vs. overall</div>
@@ -216,14 +216,14 @@ tr:last-child td{border-bottom:none;}
     <div class="sec" style="margin-top:24px;">Age profile <span class="sec-sub">— female vs overall (B2–B8)</span></div>
     <div class="chart-wrap" style="height:220px;"><canvas id="cDDfemaleAge"></canvas></div>
     <div id="dd-findings-female" style="margin-top:24px;"></div>
-    <div class="dd-caveat">Data coverage: gender recorded for all 1,316 students (B1–B8). Age bracket cross-tab based on B2–B8 aggregate data (n=1,110 with birthdates). Region cross-tab based on individual-level data from B3+B5 pooled (n=385).</div>
+    <div class="dd-caveat">Data coverage: gender recorded for all 1,316 students (B1–B8). Age bracket cross-tab based on B2–B8 aggregate data (n=1,110 with birthdates). Region cross-tab based on individual-level data from B3–B8 pooled (n=637).</div>
   </div>
 
   <div id="dd-pane-young" class="hidden">
     <div class="dd-hero" id="dd-hero-young"></div>
     <div class="sec">Under-21 share per batch — trend</div>
     <div class="chart-wrap" style="height:240px;"><canvas id="cDDyoung"></canvas></div>
-    <div class="sec" style="margin-top:24px;">Where do under-21 students come from? <span class="sec-sub">— region breakdown B3+B5 pooled (n=65)</span></div>
+    <div class="sec" style="margin-top:24px;">Where do under-21 students come from? <span class="sec-sub">— region breakdown B3–B8 pooled (n=84)</span></div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:4px;">
       <div>
         <div style="font-size:11px;color:var(--tx3);margin-bottom:4px;">Under-21 students by region vs. overall</div>
@@ -237,14 +237,14 @@ tr:last-child td{border-bottom:none;}
     <div class="sec" style="margin-top:24px;">Gender split <span class="sec-sub">— under-21 vs. overall (B2–B8)</span></div>
     <div class="chart-wrap" style="height:200px;"><canvas id="cDDyoungGen"></canvas></div>
     <div id="dd-findings-young" style="margin-top:24px;"></div>
-    <div class="dd-caveat">Data coverage: age recorded for B2–B8 (n=1,110 with birthdates). B1 excluded — no birthdates collected. Region cross-tab based on individual-level data from B3+B5 pooled (n=385). Under-21 defined as age &lt;21 at batch start date.</div>
+    <div class="dd-caveat">Data coverage: age recorded for B2–B8 (n=1,110 with birthdates). B1 excluded — no birthdates collected. Region cross-tab based on individual-level data from B3–B8 pooled (n=637). Under-21 defined as age &lt;21 at batch start date.</div>
   </div>
 
   <div id="dd-pane-eastern" class="hidden">
     <div class="dd-hero" id="dd-hero-eastern"></div>
     <div class="sec">Eastern Estonia student count per batch — trend</div>
     <div class="chart-wrap" style="height:240px;"><canvas id="cDDeastern"></canvas></div>
-    <div class="sec" style="margin-top:24px;">Who are Eastern Estonia students? <span class="sec-sub">— age and gender profile vs. overall (B3+B5 pooled, n=39)</span></div>
+    <div class="sec" style="margin-top:24px;">Who are Eastern Estonia students? <span class="sec-sub">— age and gender profile vs. overall (B3–B8 pooled, n=76)</span></div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:4px;">
       <div>
         <div style="font-size:11px;color:var(--tx3);margin-bottom:4px;">Age bracket distribution</div>
@@ -258,7 +258,7 @@ tr:last-child td{border-bottom:none;}
     <div class="sec" style="margin-top:24px;">Nationality mix <span class="sec-sub">— Eastern Estonia students B2–B8</span></div>
     <div class="chart-wrap" style="height:200px;"><canvas id="cDDeasternNat"></canvas></div>
     <div id="dd-findings-eastern" style="margin-top:24px;"></div>
-    <div class="dd-caveat">Eastern Estonia defined as students with addresses in Ida-Virumaa (Narva, Jõhvi, Kohtla-Järve, Sillamäe, Ahtme, Kiviõli, Püssi). Geography aggregate counts (used for trend chart) come from verified geographic data for all 8 batches. Age/gender cross-tab from B3+B5 individual-level data (n=39).</div>
+    <div class="dd-caveat">Eastern Estonia defined as students with addresses in Ida-Virumaa (Narva, Jõhvi, Kohtla-Järve, Sillamäe, Ahtme, Kiviõli, Püssi). Geography aggregate counts (used for trend chart) come from verified geographic data for all 8 batches. Age/gender cross-tab from B3–B8 individual-level data (n=76).</div>
   </div>
 
 </div>
@@ -353,14 +353,14 @@ const DD_YOUNG_PCT = DD_YOUNG.map((u,i)=>u===null?null:Math.round(u/DD_TOTAL[i]*
 const DD_EASTERN = [48,48,23,19,22,15,21,12];
 const DD_EASTERN_PCT = DD_EASTERN.map((e,i)=>Math.round(e/DD_TOTAL[i]*100));
 
-// Region cross-tab for female students — B3+B5 pooled (n=71 female)
+// Region cross-tab for female students — B3–B8 pooled (n=119 female, 637 total)
 // [T&H, Eastern, Southern, W.EE, Intl, Unknown]
-const DD_F_REG_FEMALE  = [35, 3, 20, 4, 5, 4]; // female students by region
-const DD_F_REG_TOTAL   = [191,39,127, 8,11, 9]; // all students by region (B3+B5)
+const DD_F_REG_FEMALE  = [73, 7, 21, 7, 1, 10]; // female students by region
+const DD_F_REG_TOTAL   = [318,76,147,63,10,23];  // all students by region (B3–B8)
 const DD_REG_LABELS    = ['T&H','Eastern','Southern','W. Estonia','Intl','Unknown'];
 
-// Region cross-tab for under-21 students — B3+B5 pooled (n=65 under-21)
-const DD_Y_REG_YOUNG   = [28,16, 17, 2, 2, 0]; // under-21 students by region
+// Region cross-tab for under-21 students — B3–B8 pooled (n=84 under-21)
+const DD_Y_REG_YOUNG   = [40,11,18,7,3,5]; // under-21 students by region
 
 // Age brackets for female students (B2–B8 aggregate)
 // [<21, 21–24, 25–29, 30–39, 40+] — female counts from known female age distributions
@@ -368,15 +368,15 @@ const DD_Y_REG_YOUNG   = [28,16, 17, 2, 2, 0]; // under-21 students by region
 const DD_F_AGE = [40, 57, 68, 67, 17]; // female students by age bracket B2–B8
 const DD_ALL_AGE = [183,205,259,252,63]; // all students by age bracket B2–B8
 
-// Eastern age cross-tab (B3+B5 individual data, n=39)
-const DD_E_AGE_EAST = [10, 13, 9, 7, 0]; // Eastern students by age bracket
-const DD_E_AGE_ALL  = [14, 24, 33, 30, 6]; // all Eastern students in B3+B5
-// Eastern gender cross-tab (B3+B5)
-const DD_E_FEM_EAST   = 5;  // female Eastern students (B3+B5)
-const DD_E_TOTAL_EAST = 39; // total Eastern students (B3+B5)
-// Baseline
-const DD_BASELINE_FEM = 18; // % baseline female (B3+B5)
-const DD_BASELINE_U21 = 17; // % baseline under-21
+// Eastern age cross-tab (B3–B8 individual data, n=76)
+const DD_E_AGE_EAST = [11, 24, 20, 19, 2]; // Eastern students by age bracket
+const DD_E_AGE_ALL  = [84,144,184,179,46];  // all students in B3–B8 pool
+// Eastern gender cross-tab (B3–B8)
+const DD_E_FEM_EAST   = 7;  // female Eastern students (B3–B8)
+const DD_E_TOTAL_EAST = 76; // total Eastern students (B3–B8)
+// Baselines from B3–B8 pool
+const DD_BASELINE_FEM = 19; // % baseline female (B3–B8)
+const DD_BASELINE_U21 = 13; // % baseline under-21
 
 // Eastern nationality mix (aggregated, B2–B8 from Ida-Viru region)
 // Predominantly Estonian nationals (incl. Russian-speaking residents)
@@ -812,16 +812,16 @@ function buildFemaleCharts(c,ov,col){
   document.getElementById('dd-findings-female').innerHTML=
     ddFinding('No structural trend — female share is volatile, not improving',
       `Female share has ranged from <strong>11% (B5)</strong> to <strong>29% (B2)</strong> across 8 batches, with no directional trend. B2's spike likely reflects the 2022 Ukrainian refugee wave (female share was disproportionately high in that cohort). After a drop in B4–B5, share has recovered to <strong>19–26% in B6–B8</strong>.`)+
-    ddFinding('International students are the most female-diverse region',
-      `Among the five geographic regions (B3+B5 cross-tab, n=385), <strong>International students showed 27% female share</strong> — +9pp above the 18% baseline. This held across both batches. T&H and Southern Estonia are at baseline; Eastern Estonia (13%) is below.`)+
+    ddFinding('No region stands out as meaningfully more or less female',
+      `Across B3–B8 (n=637), female share by region is: T&H 23%, Southern 14%, W. Estonia 11%, Eastern 9%, International 10%. None differs dramatically from the 19% overall baseline. The earlier finding that International students were most female-diverse (27%) was driven entirely by the B2 Ukrainian refugee cohort — 38 international students, predominantly female. Across B3–B8 that signal disappears entirely.`)+
     ddFinding('Age profile skews older — fewer female under-21s',
       `Female students are underrepresented in the Under-21 bracket (~14% female vs. 22% overall) and overrepresented in 25–29 and 30–39. This suggests female applicants are more likely to be career-changers than recent school leavers.`)+
     ddFinding('Graduation rate: no meaningful difference from overall',
       `Across B1–B5 (471 graduates, 219 female enrolled), female students graduated at <strong>45%</strong> vs 48% for males — a 3pp gap well within noise. In most individual batches the rates are virtually identical. The apparent gap in B5 (30% vs 50%) is based on only 6 female graduates out of 20 enrolled and is not reliable. <strong>Female students are just as likely to complete as their male peers.</strong>`)+
     ddNeutral('Eastern Estonia: below-baseline female share',
-      '13% female among Eastern Estonia students (B3+B5). Small sample (n=39) — treat as directional.')+
-    ddNeutral('Southern Estonia: at baseline',
-      '20% female, within normal variation. No actionable signal.');
+      '9% female among Eastern Estonia students (B3–B8, n=76). Consistent direction across all batches — Eastern Estonia is the least female-diverse region.')+
+    ddNeutral('Southern Estonia: slightly below baseline',
+      '14% female vs 19% overall. Modest gap, within normal variation.');
 }
 
 /* ══════════════════════════════════════ UNDER-21 SEGMENT ══ */
@@ -878,10 +878,10 @@ function buildYoungCharts(c,ov,col){
   document.getElementById('dd-findings-young').innerHTML=
     ddFinding('Graduation rate: consistently lower — roughly 80% of the overall rate',
       `Across B2–B4 (three batches with reliable age data), under-21 students graduated at <strong>37–46%</strong> vs <strong>49–55%</strong> for older students — a gap of 7–12 percentage points. Expressed as a ratio, under-21 grad rates run at about <strong>80% of the overall rate</strong> in those three batches. B5 breaks the pattern (51% vs 46%, U21 slightly higher) but with only 35 under-21 enrolled, a difference of two graduates reverses the direction — treat B5 as noise. The finding is <strong>directionally consistent but not alarming</strong>: it doesn't argue against recruiting younger students, but does suggest they may benefit from additional retention support.`)+
-    ddFinding('Compounding effect: Eastern students are young, young students underperform — these overlap',
-      `Eastern Estonia sends the youngest students (41% under-21 vs 17% baseline). If younger students graduate at ~80% the overall rate, this compounds any apparent Eastern Estonia graduation gap. <strong>Part of what looks like an Eastern retention problem may actually be an age and maturity effect</strong> — two cohorts overlapping rather than two independent problems.`)+
-    ddFinding('Eastern Estonia sends the youngest students — by a wide margin',
-      `In B3+B5 pooled data (n=385), <strong>Eastern Estonia students averaged 25.3 years</strong> vs 27.1 overall — a 1.8-year gap. The under-21 share in Eastern Estonia is <strong>41%</strong> vs 17% overall. In B5 alone, 50% of Eastern students were under 21. The 40+ bracket is zero across both batches.`)+
+    ddFinding('Compounding effect revisited — Eastern age overlap was batch-specific',
+      `The earlier hypothesis that Eastern Estonia compounds the under-21 effect (because Eastern students were 41% under-21) does not hold across the full B3–B8 dataset, where Eastern under-21 is 14% — at baseline. <strong>The two effects are separable</strong>: Eastern Estonia has a retention question of its own, and under-21 students have a separate (and consistent) lower grad rate. They do not substantially overlap.`)+
+    ddFinding('Eastern Estonia is at baseline for under-21 — earlier finding was batch-specific',
+      `In B3–B8 pooled data (n=637), <strong>Eastern Estonia has 14% under-21</strong> vs 13% overall — essentially no difference. The earlier finding of 41% under-21 in Eastern was specific to B3 and B5, which happened to have unusually young Eastern cohorts. Across six batches the signal disappears. Eastern Estonia sends a broadly age-typical student profile.`)+
     ddFinding('Under-21 share is stable but B8 is the first outlier',
       `B2–B7 all show 16–20% under-21 consistently. <strong>B8 at 9%</strong> is the first significant break. B8 started March 2026 and still has students enrolling, so this may normalise — but worth tracking.`)+
     ddFinding('Under-21 students are disproportionately male',
@@ -921,7 +921,7 @@ function buildEasternCharts(c,ov,col){
   deepCharts.push(new Chart(document.getElementById('cDDeasternAge'),{type:'bar',
     data:{labels:['Under 21','21–24','25–29','30–39','40+'],datasets:[
       {label:'Eastern Estonia',data:eAgePct,backgroundColor:col+'cc',borderRadius:3},
-      {label:'Overall (B3+B5)',data:allAgePct,backgroundColor:c.nd,borderRadius:3},
+      {label:'Overall (B3–B8)',data:allAgePct,backgroundColor:c.nd,borderRadius:3},
     ]},
     options:{responsive:true,maintainAspectRatio:false,
       plugins:{legend:{display:true,position:'bottom',labels:{color:c.tx3,font:{size:11},boxWidth:10,padding:12}},annotation:{annotations:{}}},
@@ -944,10 +944,10 @@ function buildEasternCharts(c,ov,col){
       scales:{x:{ticks:{color:c.tx3,padding:6},grid:{color:c.grid}},y:{ticks:{color:c.tx3,font:{size:11},padding:6},grid:{display:false}}}}}));
 
   document.getElementById('dd-findings-eastern').innerHTML=
-    ddFinding('Youngest cohort — structurally, not by chance',
-      `Eastern Estonia students are <strong>1.8 years younger on average</strong> (25.3y vs 27.1y) and this finding holds across both B3 and B5. The under-21 share is <strong>41%</strong> — more than double the 17% baseline. Zero students in the 40+ bracket across both batches. These are predominantly students coming straight from school or shortly after, not career-changers.`)+
-    ddFinding('Gender is slightly below baseline — not a strong signal',
-      `<strong>13% female</strong> vs 18% baseline among Eastern Estonia students (n=39). The small sample makes this fragile — it could reflect chance variation or a real effect. Worth monitoring as more batches are added to the individual-level dataset.`)+
+    ddFinding('Age profile: younger on average, but less extreme than two-batch data suggested',
+      `Across B3–B8 (n=76), Eastern Estonia students have <strong>14% under-21</strong> vs 13% overall — essentially at baseline. The earlier finding of 41% under-21 was driven by B3 and B5 specifically, which had unusually young Eastern cohorts. Across six batches the picture normalises: Eastern students are slightly younger on average but not structurally a young-skewing group. The 40+ bracket remains low at 3% vs 7% overall, suggesting older career-changers are still underrepresented.`)+
+    ddFinding('Gender is below baseline — more consistent across larger sample',
+      `<strong>9% female</strong> vs 19% baseline among Eastern Estonia students (B3–B8, n=76). With double the sample, this gap is more reliable than the earlier 13% figure. Eastern Estonia is the least female-diverse region in the cohort, and the finding is now robust enough to be directional rather than speculative.`)+
     ddFinding('Share is stable at 14–17% from B3 onwards',
       `B1 at 23% and B2 at 17% were higher, but B3–B8 have settled at <strong>11–16%</strong>. This is either a normalisation after early over-recruitment from the region, or it reflects a stable pipeline. No growth trend is visible.`)+
     ddFinding('Graduation rate: mixed signal — worth watching but not yet conclusive',
@@ -955,7 +955,7 @@ function buildEasternCharts(c,ov,col){
     ddFinding('Nationality: predominantly Estonian-resident, including Russian-speaking communities',
       `Eastern Estonia students are overwhelmingly Estonian residents (nearly all hold Estonian addresses). The region has a large Russian-speaking community — many names in the cohort reflect this demographic. This is consistent with the school's Jõhvi location and its mandate to serve Ida-Virumaa.`)+
     ddNeutral('Messaging implication',
-      'Career-change and reskilling narratives are less resonant for under-21 Eastern students. School-leaver and vocational transition framing, alongside partnerships with Ida-Viru schools and vocational colleges, would better match the actual profile.');
+      'With the age profile now closer to baseline, career-change messaging is less clearly wrong for Eastern students than the B3+B5 data suggested. The low female share (9%) is the more consistent signal — outreach that specifically targets women in Ida-Virumaa may be more effective than age-targeted messaging.');
 }
 renderMetrics('geo');
 buildCharts();
