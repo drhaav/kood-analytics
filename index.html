@@ -73,18 +73,6 @@ tr:last-child td{border-bottom:none;}
 .scale-bar{height:13px;border-radius:6px;overflow:hidden;display:flex;border:0.5px solid var(--bd);}
 .scale-bar.caveat-bar{border-style:dashed;opacity:0.7;}
 .scale-seg{height:100%;}
-.insight-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;}
-.insight-card{border-left:3px solid;border-radius:0 8px 8px 0;padding:14px 16px;background:var(--surface);}
-.ic-amber{border-color:#BA7517;} .ic-teal{border-color:#1D9E75;}
-.ic-tag{display:inline-block;font-size:10px;font-weight:500;padding:2px 8px;border-radius:3px;margin-bottom:7px;letter-spacing:.04em;text-transform:uppercase;}
-.ic-tag-amber{background:#FAEEDA;color:#854F0B;} .ic-tag-teal{background:#E1F5EE;color:#0F6E56;}
-.dark .ic-tag-amber{background:#412402;color:#FAC775;} .dark .ic-tag-teal{background:#04342C;color:#9FE1CB;}
-.ic-h{font-size:13px;font-weight:500;margin-bottom:5px;line-height:1.4;color:var(--tx);}
-.ic-b{font-size:12px;color:var(--tx2);line-height:1.6;}
-.ic-b strong{font-weight:500;color:var(--tx);}
-.null-row{display:flex;justify-content:space-between;align-items:center;padding:9px 12px;background:var(--surface);border:0.5px solid var(--bd);border-radius:6px;margin-bottom:6px;gap:12px;}
-.nr-l{font-size:12px;font-weight:500;color:var(--tx);}
-.nr-r{font-size:11px;color:var(--tx3);text-align:right;}
 .methodology{background:var(--surface2);border:0.5px solid var(--bd);border-radius:8px;padding:14px 16px;font-size:11px;color:var(--tx3);line-height:1.65;margin-top:24px;}
 .methodology strong{font-weight:500;color:var(--tx2);}
 .hidden{display:none;}
@@ -110,7 +98,6 @@ tr:last-child td{border-bottom:none;}
 .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;}
 @media(max-width:680px){
   .cards{grid-template-columns:repeat(2,1fr);}
-  .insight-grid{grid-template-columns:1fr;}
   header{flex-direction:column;gap:12px;align-items:flex-start;}
   .nav-tab{padding:14px 16px 12px;font-size:12px;}
 }
@@ -133,7 +120,6 @@ tr:last-child td{border-bottom:none;}
 <nav>
   <button class="nav-tab active" id="tab-geo" onclick="switchTab('geo')">Geography</button>
   <button class="nav-tab" id="tab-demo" onclick="switchTab('demo')">Demographics</button>
-  <button class="nav-tab" id="tab-insights" onclick="switchTab('insights')">Insights</button>
   <button class="nav-tab" id="tab-deep" onclick="switchTab('deep')">Deep Dives</button>
 </nav>
 
@@ -141,9 +127,9 @@ tr:last-child td{border-bottom:none;}
 
 <!-- ════════════════════════════════════ GEOGRAPHY TAB ════════════════ -->
 <div id="pane-geo">
-  <div class="leg" id="regLeg"></div>
   <div class="sec">Students enrolled per batch by region <span class="sec-sub">— annual intake overlay (right axis)</span></div>
   <div class="chart-wrap" style="height:280px;"><canvas id="cGeoBar" role="img" aria-label="Stacked bar chart of enrollment per batch by region with annual intake overlay"></canvas></div>
+  <div class="leg" id="regLeg" style="margin-top:10px;"></div>
   <div class="sec" style="margin-top:24px;">Regional mix % — trends across all batches</div>
   <div class="chart-wrap" style="height:260px;"><canvas id="cGeoLine" role="img" aria-label="Line chart of regional mix percentage across batches"></canvas></div>
   <div class="leg" id="geoLineLeg" style="margin-top:8px;"></div>
@@ -155,19 +141,24 @@ tr:last-child td{border-bottom:none;}
 <!-- ════════════════════════════════ DEMOGRAPHICS TAB ════════════════ -->
 <div id="pane-demo" class="hidden">
 
-  <div class="leg" id="ageLeg"></div>
   <div class="sec">Students enrolled per batch by age bracket <span class="sec-sub">— avg age overlay (right axis)</span></div>
   <div class="chart-wrap" style="height:280px;"><canvas id="cAgeBar" role="img" aria-label="Stacked bar chart of enrollment by age bracket with average age overlay"></canvas></div>
+  <div class="leg" id="ageLeg" style="margin-top:10px;"></div>
   <div class="sec" style="margin-top:24px;">Age bracket mix % — trends across all batches</div>
   <div class="chart-wrap" style="height:250px;"><canvas id="cAgeLine" role="img" aria-label="Line chart of age bracket percentage across batches"></canvas></div>
   <div class="leg" id="ageLineLeg" style="margin-top:8px;"></div>
 
-  <div class="leg" id="genLeg" style="margin-top:24px;margin-bottom:6px;"></div>
   <div class="sec">Students enrolled per batch by gender <span class="sec-sub">— female share overlay (right axis)</span></div>
   <div class="chart-wrap" style="height:260px;"><canvas id="cGenBar" role="img" aria-label="Stacked bar chart of enrollment by gender with female share overlay"></canvas></div>
+  <div class="leg" id="genLeg" style="margin-top:10px;margin-bottom:0px;"></div>
   <div class="sec" style="margin-top:24px;">Gender mix % — trends across all batches</div>
   <div class="chart-wrap" style="height:220px;"><canvas id="cGenLine" role="img" aria-label="Line chart of gender percentage across batches"></canvas></div>
   <div class="leg" id="genLineLeg" style="margin-top:8px;"></div>
+
+  <!-- ── AGE & GENDER BATCH BREAKDOWN ── -->
+  <div class="sec" style="margin-top:32px;border-top:0.5px solid var(--bd);padding-top:28px;">Age &amp; gender batch-level breakdown</div>
+  <div class="btabs" id="demoTabs"></div>
+  <div id="demoDet"></div>
 
   <!-- ── NATIONALITY SECTION ── -->
   <div class="sec" style="margin-top:36px;border-top:0.5px solid var(--bd);padding-top:28px;">Nationality</div>
@@ -188,67 +179,13 @@ tr:last-child td{border-bottom:none;}
   </div>
 
   <div class="sec" style="margin-top:28px;">Non-Estonian nationality mix % <span class="sec-sub">— distinct nationality count (right axis, dotted)</span></div>
-  <div class="leg" id="natLeg" style="margin-bottom:8px;"></div>
   <div class="chart-wrap" style="height:290px;"><canvas id="cNatLine" role="img" aria-label="Line chart of non-Estonian nationality percentages across batches B2 to B8, with distinct nationality count as a dotted right-axis line"></canvas></div>
+  <div class="leg" id="natLeg" style="margin-top:10px;"></div>
   <div class="caveat" id="natCaveat" style="margin-top:10px;"></div>
 
   <div class="sec" style="margin-top:24px;">Nationality breakdown per batch</div>
   <div class="btabs" id="natTabs"></div>
   <div id="natDet"></div>
-
-  <div class="sec" style="margin-top:32px;border-top:0.5px solid var(--bd);padding-top:28px;">Age &amp; gender batch-level breakdown</div>
-  <div class="btabs" id="demoTabs"></div>
-  <div id="demoDet"></div>
-
-</div>
-
-<!-- ═════════════════════════════════ INSIGHTS TAB ═══════════════════ -->
-<div id="pane-insights" class="hidden">
-
-  <div class="sec">Methodology</div>
-  <div class="methodology">
-    <strong>Cross-reference of geography × age × gender</strong> based on individual-level records from <strong>Batch 3</strong> (Sep 2023, n=212) and <strong>Batch 5</strong> (Sep 2024, n=173) — the two batches with complete joined location, birthdate, and gender data (n=385 total). Each student's address was classified into the five geographic regions used throughout this dashboard. Findings should be treated as directional hypotheses for marketing experimentation.
-  </div>
-
-  <div class="sec" style="margin-top:24px;">Pooled baseline (B3 + B5, n=385)</div>
-  <div class="cards" style="grid-template-columns:repeat(4,minmax(0,1fr));">
-    <div class="card"><div class="card-label">Students analysed</div><div class="card-value">385</div></div>
-    <div class="card"><div class="card-label">Female share (baseline)</div><div class="card-value">18%</div></div>
-    <div class="card"><div class="card-label">Avg enrolment age</div><div class="card-value">27.1y</div></div>
-    <div class="card"><div class="card-label">Under-21 baseline</div><div class="card-value">17%</div></div>
-  </div>
-
-  <div class="sec" style="margin-top:24px;">Significant findings</div>
-  <div class="insight-grid">
-    <div class="insight-card ic-amber">
-      <span class="ic-tag ic-tag-amber">Eastern Estonia · n=39</span>
-      <div class="ic-h">Consistently the youngest cohort, by a meaningful margin</div>
-      <div class="ic-b">Avg age <strong>25.3y vs 27.1y</strong> overall (−1.8y). In B5, <strong>50% of Eastern students were under 21</strong>. The 40+ bracket is zero across both batches — Eastern Estonia sends exclusively younger students, likely coming straight from school rather than career-changing.<br><br><strong>Implication:</strong> Career-change and reskilling messaging is likely less resonant here. School and vocational institution partnerships in Ida-Viru could reinforce the pipeline.</div>
-    </div>
-    <div class="insight-card ic-teal">
-      <span class="ic-tag ic-tag-teal">International · n=11</span>
-      <div class="ic-h">Highest female share of any region — 27% vs 18% overall</div>
-      <div class="ic-b">The pattern holds across both batches. International students are <strong>+9pp more female</strong> than the overall average. They also cluster in the 25–29 bracket (45%), suggesting mid-career movers rather than recent graduates.<br><br><strong>Implication:</strong> International outreach channels may be a more efficient route to gender diversity than domestic marketing.</div>
-    </div>
-  </div>
-
-  <div class="sec" style="margin-top:8px;">No significant deviation — regions at baseline</div>
-  <div class="null-row"><span class="nr-l">Tallinn &amp; Harjumaa <span style="font-weight:400;color:var(--tx3);">(n=191)</span></span><span class="nr-r">Female 17% (−1pp) · Avg age 27.8 (+0.7y) · Age mix proportional — no actionable signal</span></div>
-  <div class="null-row"><span class="nr-l">Southern Estonia <span style="font-weight:400;color:var(--tx3);">(n=127)</span></span><span class="nr-r">Female 20% (+2pp) · Avg age 26.6 (−0.5y) · Slightly younger and more female, within noise margin</span></div>
-  <div class="null-row"><span class="nr-l">W. Estonia &amp; Islands <span style="font-weight:400;color:var(--tx3);">(n=8)</span></span><span class="nr-r">Sample too small for reliable conclusions</span></div>
-
-  <div class="sec" style="margin-top:24px;">Cross-tab charts (pooled B3+B5)</div>
-  <div class="leg" style="margin-bottom:8px;" id="insLeg"></div>
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
-    <div>
-      <div style="font-size:11px;color:var(--tx3);margin-bottom:4px;">Age brackets by region (%)</div>
-      <div class="chart-wrap" style="height:200px;"><canvas id="cInsAge" role="img" aria-label="Stacked bar chart of age bracket percentage by region"></canvas></div>
-    </div>
-    <div>
-      <div style="font-size:11px;color:var(--tx3);margin-bottom:4px;">Female share vs 18% baseline</div>
-      <div class="chart-wrap" style="height:200px;"><canvas id="cInsFem" role="img" aria-label="Bar chart of female percentage by region with 18 percent baseline"></canvas></div>
-    </div>
-  </div>
 
 </div>
 
@@ -398,11 +335,6 @@ const BM={
   6:{grad:0,cg:false},7:{grad:0,cg:false},8:{grad:0,cg:false}
 };
 
-/* Insights */
-const INS_REGIONS=['T&H','Eastern','Southern','Intl'];
-const INS_AGE={'Under 21':[14,26,21,27],'21–24':[24,34,19,9],'25–29':[27,16,33,45],'30–39':[30,24,21,18],'40+':[5,0,6,0]};
-const INS_FEM=[17,13,20,27];
-
 /* ═══════════════════════════════════════════════════ DEEP DIVES DATA ══
    Phase 1: individual-level gender + birthdate + location, all 8 batches
    Computed April 2026 from Monday.com board data
@@ -467,7 +399,7 @@ function toggleMode(){
 /* ═══════════════════════════════════════════════════════ TABS ══════════ */
 function switchTab(tab){
   activeTab=tab;
-  ['geo','demo','insights','deep'].forEach(t=>{
+  ['geo','demo','deep'].forEach(t=>{
     document.getElementById('pane-'+t).classList.toggle('hidden',t!==tab);
     document.getElementById('tab-'+t).classList.toggle('active',t===tab);
   });
@@ -487,7 +419,6 @@ function switchTab(tab){
 const METRICS={
   geo:[{l:'Total students',v:'1,316'},{l:'Batches',v:'8'},{l:'Avg batch size',v:'165'},{l:'Graduated (B1–5)',v:'471',cls:'green'},{l:'Grad rate (B1–5)',v:'47%',cls:'green'}],
   demo:[{l:'Total students',v:'1,316'},{l:'Batches',v:'8'},{l:'With birthdate (B2–8)',v:'1,110'},{l:'Overall female share',v:'22%'},{l:'Avg enrolment age',v:'27.7y'}],
-  insights:[{l:'Students cross-tabbed',v:'385'},{l:'Batches used',v:'B3 + B5'},{l:'Female baseline',v:'18%'},{l:'Avg age baseline',v:'27.1y'},{l:'Regions analysed',v:'5'}],
   deep:[{l:'Total students',v:'1,316'},{l:'Female students (B1–8)',v:'295'},{l:'Under-21 students (B2–8)',v:'191'},{l:'Eastern Estonia (B1–8)',v:'208'},{l:'Segments analysed',v:'3'}],
 };
 function renderMetrics(tab){
@@ -540,16 +471,19 @@ function divAnnotations(c){
   return r;
 }
 const twoTierPlugin={id:'twoTier',afterDraw(chart){
+  // Only draw year labels on charts that use LB (B1–B8) as x-axis labels
+  const labels=chart.data.labels;
+  if(!labels||labels.length!==LB.length||labels[0]!==LB[0]) return;
   const{ctx,scales:{x},chartArea:{bottom}}=chart; const c=gc();
   ctx.save(); ctx.font='500 10px "DM Sans",system-ui,sans-serif';
   ctx.textAlign='center'; ctx.textBaseline='top';
-  x.ticks.forEach((t,i)=>{ctx.fillStyle=c.yrC;ctx.fillText(YEARS[i],x.getPixelForTick(i),bottom+20);});
+  x.ticks.forEach((t,i)=>{ctx.fillStyle=c.yrC;ctx.fillText(YEARS[i],x.getPixelForTick(i),bottom+26);});
   ctx.restore();
 }};
 Chart.register(twoTierPlugin);
-const xS=()=>{const c=gc();return{ticks:{color:c.tx3,maxRotation:0},grid:{display:false}};};
+const xS=()=>{const c=gc();return{ticks:{color:c.tx3,maxRotation:0,padding:4},grid:{display:false}};};
 const yG=()=>{const c=gc();return{ticks:{color:c.tx3},grid:{color:c.grid}};};
-const base={responsive:true,maintainAspectRatio:false,layout:{padding:{bottom:22}}};
+const base={responsive:true,maintainAspectRatio:false,layout:{padding:{bottom:30}}};
 
 /* ══════════════════════════════════════════════════ BUILD ALL CHARTS ══ */
 function buildCharts(){
@@ -687,24 +621,6 @@ function buildCharts(){
     ]);
   }
 
-  /* ── Insights ── */
-  if(activeTab==='insights'){
-    charts.push(new Chart(document.getElementById('cInsAge'),{type:'bar',data:{labels:INS_REGIONS,
-      datasets:Object.entries(INS_AGE).map(([label,data],i)=>({label,data,backgroundColor:Object.values(AC)[i],stack:'s'}))},
-      options:{responsive:true,maintainAspectRatio:false,
-        plugins:{legend:{display:false},tooltip:{mode:'index',callbacks:{label:ctx=>` ${ctx.dataset.label}: ${ctx.parsed.y}%`}}},
-        scales:{x:{stacked:true,ticks:{color:c.tx3},grid:{display:false}},y:{stacked:true,min:0,max:100,ticks:{color:c.tx3,callback:v=>v+'%'},grid:{color:c.grid}}}}}));
-    const bl=18;
-    charts.push(new Chart(document.getElementById('cInsFem'),{type:'bar',data:{labels:INS_REGIONS,
-      datasets:[{label:'Female %',data:INS_FEM,backgroundColor:INS_FEM.map(v=>v>bl?'#1D9E75':'#185FA5'),borderRadius:3}]},
-      options:{responsive:true,maintainAspectRatio:false,
-        plugins:{legend:{display:false},
-          tooltip:{callbacks:{label:ctx=>` Female: ${ctx.parsed.y}% (baseline ${bl}%)`}},
-          annotation:{annotations:{bl:{type:'line',yMin:bl,yMax:bl,borderColor:c.accent,borderWidth:1.5,borderDash:[5,4],
-            label:{content:'18% baseline',display:true,position:'end',color:c.accent,font:{size:10},backgroundColor:'transparent'}}}}},
-        scales:{x:{ticks:{color:c.tx3},grid:{display:false}},y:{min:0,max:35,ticks:{color:c.tx3,callback:v=>v+'%'},grid:{color:c.grid}}}}}));
-    buildLegend(document.getElementById('insLeg'),[...Object.entries(AC).map(([l,co])=>[l,co]),['— 18% baseline (female)',c.accent,[]]]);
-  }
 }
 
 /* ══════════════════════════════════════════════ BATCH BREAKDOWN TABS ═══ */
@@ -724,7 +640,8 @@ function makeNatTabs(){
   LB_NAT.forEach((bl,i)=>{
     const b=document.createElement('button');
     b.className='btab'+(i===0?' on':'');
-    b.textContent=bl+(NAT[bl].caveat?' ⚠':'');
+    const num=bl.replace('B','');
+    b.textContent='Batch '+num+(NAT[bl].caveat?' ⚠':'');
     b.onclick=()=>{te.querySelectorAll('.btab').forEach(x=>x.classList.remove('on'));b.classList.add('on');renderNatDet(bl);};
     te.appendChild(b);
   });
@@ -836,7 +753,7 @@ function simpleBarOpts(c,yLabel,pct,max,baselineVal){
   const annotations=baselineVal!=null?{bl:{type:'line',yMin:baselineVal,yMax:baselineVal,borderColor:c.accent,borderWidth:1.5,borderDash:[5,4],label:{content:(pct?baselineVal+'% ':baselineVal+' ')+'baseline',display:true,position:'end',color:c.accent,font:{size:10},backgroundColor:'transparent'}}}:{};
   return{responsive:true,maintainAspectRatio:false,
     plugins:{legend:{display:false},annotation:{annotations},tooltip:{callbacks:{label:ctx=>` ${ctx.dataset.label||''}: ${ctx.parsed.y}${pct?'%':''}`}}},
-    scales:{x:{ticks:{color:c.tx3},grid:{display:false}},y:{min:0,max:max,ticks:{color:c.tx3,callback:v=>pct?v+'%':v},grid:{color:c.grid},title:{display:!!yLabel,text:yLabel||'',color:c.tx3,font:{size:11}}}}};
+    scales:{x:{ticks:{color:c.tx3,padding:6},grid:{display:false}},y:{min:0,max:max,ticks:{color:c.tx3,callback:v=>pct?v+'%':v},grid:{color:c.grid},title:{display:!!yLabel,text:yLabel||'',color:c.tx3,font:{size:11}}}}};
 }
 
 /* ══════════════════════════════════════ FEMALE SEGMENT ══ */
@@ -857,10 +774,10 @@ function buildFemaleCharts(c,ov,col){
       {label:'Female students',data:DD_FEMALE,backgroundColor:col+'99',yAxisID:'y',order:2},
       {label:'Female %',type:'line',data:DD_FEMALE_PCT,borderColor:col,backgroundColor:col,pointBackgroundColor:col,pointRadius:5,pointHoverRadius:7,tension:0.3,fill:false,borderWidth:2.5,yAxisID:'y2',order:1}
     ]},
-    options:{responsive:true,maintainAspectRatio:false,
+    options:{responsive:true,maintainAspectRatio:false,layout:{padding:{bottom:30}},
       plugins:{legend:{display:false},annotation:{annotations:{bl:{type:'line',yMin:22,yMax:22,borderColor:c.tx3,borderWidth:1,borderDash:[4,4],yScaleID:'y2',label:{content:'22% overall avg',display:true,position:'end',color:c.tx3,font:{size:10},backgroundColor:'transparent'}}}},
         tooltip:{mode:'index',callbacks:{label:ctx=>ctx.dataset.label==='Female %'?` Female: ${ctx.parsed.y}%`:` Female students: ${ctx.parsed.y}`}}},
-      scales:{x:{ticks:{color:c.tx3},grid:{display:false}},
+      scales:{x:{ticks:{color:c.tx3,padding:4},grid:{display:false}},
         y:{ticks:{color:c.tx3},grid:{color:c.grid},title:{display:true,text:'Female students',color:c.tx3,font:{size:11}}},
         y2:{type:'linear',position:'right',min:0,max:40,ticks:{color:col,callback:v=>v+'%'},grid:{display:false},title:{display:true,text:'Female %',color:col,font:{size:11}}}}}}));
 
@@ -871,8 +788,8 @@ function buildFemaleCharts(c,ov,col){
       {label:'All students (÷6)',data:DD_F_REG_TOTAL.map(v=>Math.round(v/6)),backgroundColor:c.nd,borderRadius:3},
     ]},
     options:{responsive:true,maintainAspectRatio:false,
-      plugins:{legend:{display:true,labels:{color:c.tx3,font:{size:11},boxWidth:10}},annotation:{annotations:{}}},
-      scales:{x:{ticks:{color:c.tx3,font:{size:10}},grid:{display:false}},y:{ticks:{color:c.tx3},grid:{color:c.grid}}}}}));
+      plugins:{legend:{display:true,position:'bottom',labels:{color:c.tx3,font:{size:11},boxWidth:10,padding:12}},annotation:{annotations:{}}},
+      scales:{x:{ticks:{color:c.tx3,font:{size:10},padding:6},grid:{display:false}},y:{ticks:{color:c.tx3},grid:{color:c.grid}}}}}));
 
   // Female share within each region
   const fShareByReg=DD_REG_LABELS.map((_,i)=>Math.round(DD_F_REG_FEMALE[i]/DD_F_REG_TOTAL[i]*100));
@@ -888,8 +805,8 @@ function buildFemaleCharts(c,ov,col){
       {label:'Overall 22%',data:[22,22,22,22,22],type:'line',borderColor:c.tx3,borderDash:[4,4],borderWidth:1.5,pointRadius:0,fill:false},
     ]},
     options:{responsive:true,maintainAspectRatio:false,
-      plugins:{legend:{display:true,labels:{color:c.tx3,font:{size:11},boxWidth:10}},annotation:{annotations:{}}},
-      scales:{x:{ticks:{color:c.tx3},grid:{display:false}},y:{min:0,max:40,ticks:{color:c.tx3,callback:v=>v+'%'},grid:{color:c.grid}}}}}));
+      plugins:{legend:{display:true,position:'bottom',labels:{color:c.tx3,font:{size:11},boxWidth:10,padding:12}},annotation:{annotations:{}}},
+      scales:{x:{ticks:{color:c.tx3,padding:6},grid:{display:false}},y:{min:0,max:40,ticks:{color:c.tx3,callback:v=>v+'%'},grid:{color:c.grid}}}}}));
 
   // Findings
   document.getElementById('dd-findings-female').innerHTML=
@@ -924,10 +841,10 @@ function buildYoungCharts(c,ov,col){
       {label:'Under-21 students',data:youngCounts,backgroundColor:col+'99',yAxisID:'y',order:2},
       {label:'Under-21 %',type:'line',data:DD_YOUNG_PCT,borderColor:col,backgroundColor:col,pointBackgroundColor:LB.map((_,i)=>DD_YOUNG[i]===null?'transparent':col),pointBorderColor:col,pointBorderWidth:LB.map((_,i)=>DD_YOUNG[i]===null?2:0),pointRadius:5,pointHoverRadius:7,tension:0.3,fill:false,borderWidth:2.5,spanGaps:false,yAxisID:'y2',order:1}
     ]},
-    options:{responsive:true,maintainAspectRatio:false,
+    options:{responsive:true,maintainAspectRatio:false,layout:{padding:{bottom:30}},
       plugins:{legend:{display:false},annotation:{annotations:{bl:{type:'box',xMin:-0.45,xMax:0.45,backgroundColor:isDark?'rgba(255,255,255,0.03)':'rgba(0,0,0,0.025)',borderColor:'transparent'},avg:{type:'line',yMin:18,yMax:18,borderColor:c.tx3,borderWidth:1,borderDash:[4,4],yScaleID:'y2',label:{content:'18% avg (B2–7)',display:true,position:'end',color:c.tx3,font:{size:10},backgroundColor:'transparent'}}}},
         tooltip:{mode:'index',callbacks:{label:ctx=>ctx.dataset.label==='Under-21 %'?` Under-21: ${ctx.parsed.y===null?'no data':ctx.parsed.y+'%'}`:` Under-21 students: ${ctx.parsed.y===null?'no data':ctx.parsed.y}`}}},
-      scales:{x:{ticks:{color:c.tx3},grid:{display:false}},
+      scales:{x:{ticks:{color:c.tx3,padding:4},grid:{display:false}},
         y:{ticks:{color:c.tx3},grid:{color:c.grid},title:{display:true,text:'Under-21 students',color:c.tx3,font:{size:11}}},
         y2:{type:'linear',position:'right',min:0,max:35,ticks:{color:col,callback:v=>v+'%'},grid:{display:false},title:{display:true,text:'Under-21 %',color:col,font:{size:11}}}}}}));
 
@@ -938,8 +855,8 @@ function buildYoungCharts(c,ov,col){
       {label:'All students (÷6)',data:DD_F_REG_TOTAL.map(v=>Math.round(v/6)),backgroundColor:c.nd,borderRadius:3},
     ]},
     options:{responsive:true,maintainAspectRatio:false,
-      plugins:{legend:{display:true,labels:{color:c.tx3,font:{size:11},boxWidth:10}},annotation:{annotations:{}}},
-      scales:{x:{ticks:{color:c.tx3,font:{size:10}},grid:{display:false}},y:{ticks:{color:c.tx3},grid:{color:c.grid}}}}}));
+      plugins:{legend:{display:true,position:'bottom',labels:{color:c.tx3,font:{size:11},boxWidth:10,padding:12}},annotation:{annotations:{}}},
+      scales:{x:{ticks:{color:c.tx3,font:{size:10},padding:6},grid:{display:false}},y:{ticks:{color:c.tx3},grid:{color:c.grid}}}}}));
 
   // Under-21 share within each region
   const u21ShareByReg=DD_REG_LABELS.map((_,i)=>Math.round(DD_Y_REG_YOUNG[i]/DD_F_REG_TOTAL[i]*100));
@@ -955,8 +872,8 @@ function buildYoungCharts(c,ov,col){
       {label:'Female',data:[14,22],backgroundColor:'#D85A30cc',borderRadius:3},
     ]},
     options:{responsive:true,maintainAspectRatio:false,
-      plugins:{legend:{display:true,labels:{color:c.tx3,font:{size:11},boxWidth:10}},annotation:{annotations:{}}},
-      scales:{x:{stacked:true,ticks:{color:c.tx3},grid:{display:false}},y:{stacked:true,min:0,max:100,ticks:{color:c.tx3,callback:v=>v+'%'},grid:{color:c.grid}}}}}));
+      plugins:{legend:{display:true,position:'bottom',labels:{color:c.tx3,font:{size:11},boxWidth:10,padding:12}},annotation:{annotations:{}}},
+      scales:{x:{stacked:true,ticks:{color:c.tx3,padding:6},grid:{display:false}},y:{stacked:true,min:0,max:100,ticks:{color:c.tx3,callback:v=>v+'%'},grid:{color:c.grid}}}}}));
 
   document.getElementById('dd-findings-young').innerHTML=
     ddFinding('Graduation rate: consistently lower — roughly 80% of the overall rate',
@@ -991,10 +908,10 @@ function buildEasternCharts(c,ov,col){
       {label:'Eastern students',data:DD_EASTERN,backgroundColor:col+'99',yAxisID:'y',order:2},
       {label:'Eastern %',type:'line',data:eastPct,borderColor:col,backgroundColor:col,pointBackgroundColor:col,pointRadius:5,pointHoverRadius:7,tension:0.3,fill:false,borderWidth:2.5,yAxisID:'y2',order:1}
     ]},
-    options:{responsive:true,maintainAspectRatio:false,
+    options:{responsive:true,maintainAspectRatio:false,layout:{padding:{bottom:30}},
       plugins:{legend:{display:false},annotation:{annotations:{avg:{type:'line',yMin:16,yMax:16,borderColor:c.tx3,borderWidth:1,borderDash:[4,4],yScaleID:'y2',label:{content:'16% avg',display:true,position:'end',color:c.tx3,font:{size:10},backgroundColor:'transparent'}}}},
         tooltip:{mode:'index',callbacks:{label:ctx=>ctx.dataset.label==='Eastern %'?` Eastern: ${ctx.parsed.y}%`:` Eastern students: ${ctx.parsed.y}`}}},
-      scales:{x:{ticks:{color:c.tx3},grid:{display:false}},
+      scales:{x:{ticks:{color:c.tx3,padding:4},grid:{display:false}},
         y:{ticks:{color:c.tx3},grid:{color:c.grid},title:{display:true,text:'Eastern students',color:c.tx3,font:{size:11}}},
         y2:{type:'linear',position:'right',min:0,max:35,ticks:{color:col,callback:v=>v+'%'},grid:{display:false},title:{display:true,text:'Eastern %',color:col,font:{size:11}}}}}}));
 
@@ -1007,8 +924,8 @@ function buildEasternCharts(c,ov,col){
       {label:'Overall (B3+B5)',data:allAgePct,backgroundColor:c.nd,borderRadius:3},
     ]},
     options:{responsive:true,maintainAspectRatio:false,
-      plugins:{legend:{display:true,labels:{color:c.tx3,font:{size:11},boxWidth:10}},annotation:{annotations:{}}},
-      scales:{x:{ticks:{color:c.tx3,font:{size:10}},grid:{display:false}},y:{min:0,max:50,ticks:{color:c.tx3,callback:v=>v+'%'},grid:{color:c.grid}}}}}));
+      plugins:{legend:{display:true,position:'bottom',labels:{color:c.tx3,font:{size:11},boxWidth:10,padding:12}},annotation:{annotations:{}}},
+      scales:{x:{ticks:{color:c.tx3,font:{size:10},padding:6},grid:{display:false}},y:{min:0,max:50,ticks:{color:c.tx3,callback:v=>v+'%'},grid:{color:c.grid}}}}}));
 
   // Gender — Eastern vs baseline
   const eFemPct=Math.round(DD_E_FEM_EAST/DD_E_TOTAL_EAST*100);
@@ -1017,14 +934,14 @@ function buildEasternCharts(c,ov,col){
     options:{responsive:true,maintainAspectRatio:false,
       plugins:{legend:{display:false},annotation:{annotations:{bl:{type:'line',yMin:DD_BASELINE_FEM,yMax:DD_BASELINE_FEM,borderColor:c.accent,borderWidth:1.5,borderDash:[5,4],label:{content:'18% baseline',display:true,position:'end',color:c.accent,font:{size:10},backgroundColor:'transparent'}}}},
         tooltip:{callbacks:{label:ctx=>` Female: ${ctx.parsed.y}% (baseline ${DD_BASELINE_FEM}%)`}}},
-      scales:{x:{ticks:{color:c.tx3},grid:{display:false}},y:{min:0,max:35,ticks:{color:c.tx3,callback:v=>v+'%'},grid:{color:c.grid}}}}}));
+      scales:{x:{ticks:{color:c.tx3,padding:6},grid:{display:false}},y:{min:0,max:35,ticks:{color:c.tx3,callback:v=>v+'%'},grid:{color:c.grid}}}}}));
 
   // Nationality pie — Eastern Estonia
   deepCharts.push(new Chart(document.getElementById('cDDeasternNat'),{type:'bar',
     data:{labels:DD_E_NAT_LABELS,datasets:[{label:'Students',data:DD_E_NAT_DATA,backgroundColor:[col+'dd','#D85A30cc','#BA7517cc','#7F77DDcc'],borderRadius:4}]},
     options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',
       plugins:{legend:{display:false},annotation:{annotations:{}},tooltip:{callbacks:{label:ctx=>` ${ctx.label}: ${ctx.parsed.x} students`}}},
-      scales:{x:{ticks:{color:c.tx3},grid:{color:c.grid}},y:{ticks:{color:c.tx3,font:{size:11}},grid:{display:false}}}}}));
+      scales:{x:{ticks:{color:c.tx3,padding:6},grid:{color:c.grid}},y:{ticks:{color:c.tx3,font:{size:11},padding:6},grid:{display:false}}}}}));
 
   document.getElementById('dd-findings-eastern').innerHTML=
     ddFinding('Youngest cohort — structurally, not by chance',
