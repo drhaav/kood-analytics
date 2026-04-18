@@ -2,7 +2,7 @@
 
 An interactive single-page dashboard analysing student enrolment, demographics, and graduation outcomes across all eight batches of the [kood/Jõhvi](https://kood.tech) coding school (2021–2026). Built for FutureCoders OÜ as an internal strategic tool.
 
-**Live:** [koodjohvi.github.io/cohort-analysis](https://koodjohvi.github.io/cohort-analysis) ← replace with actual URL
+**Live:** [drhaav.github.io/kood-analytics](https://drhaav.github.io/kood-analytics/)
 
 ---
 
@@ -65,7 +65,7 @@ A student is counted as graduated if they appear in group "7. Graduated" within 
 
 ### Cross-tab analysis (Deep Dives tab)
 
-The region × age × gender cross-tab is based on **individual-level records from B3 and B5 only** (n=385 combined). These are the two batches where complete joined location, birthdate, and gender data were available at individual level. Findings should be treated as directional hypotheses rather than confirmed conclusions.
+The region × age × gender cross-tab is based on **individual-level records from B3–B8** (n=637 combined). All six batches have complete joined location, birthdate, and gender data at individual level. B2 is excluded from cross-tab analysis due to lower location data precision (short city names rather than full addresses). B1 is excluded as no birthdates were collected. Findings should be treated as directional hypotheses rather than confirmed conclusions.
 
 ---
 
@@ -75,11 +75,11 @@ The region × age × gender cross-tab is based on **individual-level records fro
 
 **Demographics** — The overall female share is 22%, but volatile across batches (11–29%). There is no structural trend of improvement or decline. Average enrolment age is 27–29 across all batches. The under-21 bracket is stable at 16–20% of each batch.
 
-**Female students** — Graduate at 45% vs 48% for males across B1–B5 — no meaningful difference. Female students are underrepresented in the under-21 bracket and overrepresented in the 25–34 range, suggesting they skew toward career-changers rather than recent school leavers. International students have the highest female share of any region (27% vs 18% baseline).
+**Female students** — Graduate at 45% vs 48% for males across B1–B5 — no meaningful difference. Female students are underrepresented in the under-21 bracket and overrepresented in the 25–34 range, suggesting they skew toward career-changers rather than recent school leavers. No region stands out as markedly more or less female-diverse across B3–B8; an earlier finding that International students had the highest female share (27%) was specific to the B2 Ukrainian refugee cohort and does not hold across subsequent batches.
 
 **Under-21 students** — Graduate at roughly **80% of the overall rate** across B2–B4 (37–46% vs 49–55% for older students). The gap is consistent in direction across three batches; B5 reverses it but on a small sample. This does not argue against recruiting younger students, but suggests they may benefit from targeted retention support.
 
-**Eastern Estonia students** — Structurally the youngest cohort: average age 25.3y vs 27.1y overall, with 41% under-21 (vs 17% baseline) and zero students in the 40+ bracket across B3 and B5. The pooled graduation gap (31% vs 51% for non-Eastern) is directionally concerning but driven largely by B1–B2 where address classification is less reliable. B3 and B4 individually show no graduation gap. The compounding of youth and Eastern origin makes it difficult to separate a regional effect from an age effect — a meaningful share of the apparent Eastern graduation gap may be an under-21 effect in disguise.
+**Eastern Estonia students** — Age profile is close to the overall baseline across B3–B8 (n=76): 14% under-21 vs 13% overall, and an age distribution broadly proportional to the full cohort. An earlier finding of 41% under-21 was specific to B3 and B5 and does not hold across six batches. The female share (9% vs 19% baseline) is the more robust and persistent signal. The pooled graduation gap (31% vs 51% for non-Eastern) is directionally concerning but driven largely by B1–B2 where address classification is less reliable; B3 and B4 individually show no graduation gap.
 
 ---
 
@@ -89,7 +89,7 @@ The Deep Dives tab examines three segments in detail — Female students, Under-
 
 - A hero KPI row (totals, peak/low, notable averages)
 - A trend chart showing count and share per batch (B1–B8)
-- Cross-tab charts (region breakdown, age profile, gender split) based on B3+B5 pooled individual data
+- Cross-tab charts (region breakdown, age profile, gender split) based on B3–B8 pooled individual data (n=637)
 - Written findings cards distinguishing confirmed signals from directional observations
 - Explicit data coverage caveats per segment
 
