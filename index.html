@@ -265,126 +265,226 @@ tr:last-child td{border-bottom:none;}
 </div>
 
 <script>
-/* ════════════════════════════════════════════════════════════ DATA ════ */
-const LB=['B1','B2','B3','B4','B5','B6','B7','B8'];
-const LB_NAT=['B2','B3','B4','B5','B6','B7','B8'];
-const YEARS=['2021','2022','2023','Jan 2024','Sep 2024','Mar 2025','Sep 2025','Mar 2026'];
+/* ══════════════════════════════════════════════════════ BRAND CONFIG ══
+   All chart colours and typography in one place.
+   Update here when CVI changes — nowhere else in the JS needs touching.
+   ═══════════════════════════════════════════════════════════════════════ */
 
-/* Geography */
-const RC={'Tallinn & Harjumaa':'#185FA5','Eastern Estonia':'#BA7517','Southern Estonia':'#3B6D11','W. Estonia & Islands':'#7F77DD','International':'#73726c','Unknown':'#B4B2A9'};
-const RK=Object.keys(RC);
-const GEO={
-  1:{t:206,g:99,cg:true,r:[107,48,34,8,7,2]},2:{t:280,g:150,cg:true,r:[118,48,59,9,38,8]},
-  3:{t:212,g:100,cg:true,r:[86,23,55,7,16,25]},4:{t:118,g:39,cg:true,r:[58,19,26,5,7,3]},
-  5:{t:176,g:83,cg:true,r:[81,22,46,14,8,5]},6:{t:106,g:0,cg:false,r:[74,15,10,3,3,1]},
-  7:{t:136,g:0,cg:false,r:[72,21,24,6,6,7]},8:{t:82,g:0,cg:false,r:[40,12,19,5,3,3]},
+/* Typography */
+const FONT_SANS = '"DM Sans",system-ui,sans-serif';
+const FONT_MONO = '"DM Mono",monospace';
+
+/* Region palette — order matches RK / GEO.r[] arrays */
+const RC = {
+  'Tallinn & Harjumaa' : '#185FA5',
+  'Eastern Estonia'    : '#BA7517',
+  'Southern Estonia'   : '#3B6D11',
+  'W. Estonia & Islands': '#7F77DD',
+  'International'      : '#73726c',
+  'Unknown'            : '#B4B2A9',
 };
-const INTAKE_LINE=[206,280,212,294,294,242,242,82];
-const INTAKE_R=[5,5,5,5,0,5,0,5],INTAKE_HR=[7,7,7,7,0,7,0,7];
-const INTAKE_LBL=['206 (2021)','280 (2022)','212 (2023)','294 (2024)','294 (2024)','242 (2025)','242 (2025)','82 (2026 so far)'];
 
-/* Age */
-const AC={'Under 21':'#185FA5','21–24':'#3B6D11','25–29':'#BA7517','30–39':'#7F77DD','40+':'#D85A30'};
-const AK=Object.keys(AC);
-const AGE={
-  1:{t:206,nd:206,b:[0,0,0,0,0],st:null,avg:null},
-  2:{t:280,nd:7,b:[46,72,64,75,16],st:{avg:27.4,med:26,min:17,max:63},avg:27.4},
-  3:{t:212,nd:2,b:[35,51,59,53,12],st:{avg:27.4,med:26,min:17,max:62},avg:27.4},
-  4:{t:118,nd:1,b:[23,26,30,30,8],st:{avg:27.7,med:27,min:18,max:50},avg:27.7},
-  5:{t:176,nd:1,b:[35,37,50,46,7],st:{avg:26.8,med:26,min:17,max:42},avg:26.8},
-  6:{t:106,nd:0,b:[19,21,24,31,11],st:{avg:28.6,med:27,min:18,max:50},avg:28.6},
-  7:{t:136,nd:0,b:[26,31,36,33,10],st:{avg:27.3,med:26,min:17,max:49},avg:27.3},
-  8:{t:82,nd:1,b:[7,18,28,19,9],st:{avg:28.9,med:27,min:18,max:54},avg:28.9},
+/* Age bracket palette — order matches AK / AGE.b[] arrays */
+const AC = {
+  'Under 21' : '#185FA5',
+  '21–24'    : '#3B6D11',
+  '25–29'    : '#BA7517',
+  '30–39'    : '#7F77DD',
+  '40+'      : '#D85A30',
 };
-const ADASH=[null,[5,4],[9,3],[3,3],[6,3,2,3]];
 
-/* Gender */
-const GEN={
-  1:{t:206,g:[160,46,0]},2:{t:280,g:[199,81,0]},3:{t:212,g:[159,51,2]},
-  4:{t:118,g:[95,21,2]},5:{t:176,g:[155,20,1]},6:{t:106,g:[86,20,0]},
-  7:{t:136,g:[101,35,0]},8:{t:82,g:[61,20,1]},
+/* Gender palette */
+const GC = { Male:'#185FA5', Female:'#D85A30', Other:'#888780' };
+
+/* Nationality group palette */
+const NAT_GC = {
+  'Estonia'      : '#185FA5',
+  'Russia'       : '#D85A30',
+  'Ukraine'      : '#BA7517',
+  'EU (other)'   : '#3B6D11',
+  'Rest of world': '#7F77DD',
+  'Unknown'      : '#B4B2A9',
 };
-const GC={Male:'#185FA5',Female:'#D85A30',Other:'#888780'};
-const GK=Object.keys(GC);
 
-/* Nationality
-   Groups order: [Estonia, Russia, Ukraine, EU(other), Rest of world, Unknown]
-   Counts from actual board data. B2: free-text entry — caveat flagged.
-   total = sum of recorded entries (may differ from batch size due to missing/duplicate records)
+/* Nationality trend-line palette (non-Estonian groups only) */
+const NAT_LC = {
+  'Russia'       : '#D85A30',
+  'Ukraine'      : '#BA7517',
+  'EU (other)'   : '#3B6D11',
+  'Rest of world': '#7F77DD',
+};
+
+/* Deep Dives segment accent colours */
+const FEMALE_C  = '#D85A30';
+const YOUNG_C   = '#185FA5';
+const EASTERN_C = '#BA7517';
+
+/* Semantic UI colours (used in scale bars and inline dataset fills) */
+const C_ESTONIAN = '#185FA5'; // Estonian nationals bar fill
+
+/* ══════════════════════════════════════════════════════════════ DATA ══
+/* ══════════════════════════════════════════════════════════════ DATA ══
+   All batch data lives here. Chart logic starts after the CHART LOGIC
+   marker further below. No chart code belongs in this section.
+
+   HOW TO ADD A NEW BATCH
+   ──────────────────────
+   1. Append to LB:       'B9'
+   2. Append to YEARS:    'Sep 2026'  (batch start month + year)
+   3. Append to LB_NAT:  'B9'        (skip if no nationality data)
+   4. Add to GEO:         9:{t:NNN, g:GGG, cg:false, r:[TH,E,S,W,I,U]}
+                          t=enrolled  g=graduated (0 if in progress)
+                          cg=false until cohort is complete
+                          r=[T&H, Eastern, Southern, W.Estonia, Intl, Unknown]
+   5. Add to AGE:         9:{t:NNN, nd:NN, b:[u21,2124,2529,3039,40p],
+                             st:{avg:NN.N,med:NN,min:NN,max:NN}, avg:NN.N}
+                          nd=students with no birthdate  b=age bracket counts
+                          Set nd=t and b=[0,0,0,0,0] if no birthdate data.
+   6. Add to GEN:         9:{t:NNN, g:[male,female,other]}
+   7. Add to NAT:         B9:{d:[EE,RU,UA,EU,ROW,UNK], t:NNN, dist:NN, caveat:false}
+                          d=counts in group order [Estonia,Russia,Ukraine,EU,World,Unk]
+   8. Add to BM:          9:{grad:0, cg:false}   (update grad+cg when cohort completes)
+   9. Add to INTAKE_LINE: append annual intake figure (shared across two batches per year)
+  10. Add to INTAKE_LBL: append display label e.g. '300 (2026)'
+  11. Add to INTAKE_R/HR: append 5,7 if new year, or 0,0 if same year as previous batch
+  12. Append to Deep Dives arrays:
+      DD_TOTAL:   enrolled count
+      DD_FEMALE:  female count
+      DD_YOUNG:   under-21 count (null if no birthdate data)
+      DD_EASTERN: Eastern Estonia count (from GEO.r[1])
+  13. Append to NAT_DISTINCT: distinct nationality count for this batch
+  ═══════════════════════════════════════════════════════════════════════ */
+
+/* ── Batch labels and years ─────────────────────────────────────────── */
+const LB      = ['B1','B2','B3','B4','B5','B6','B7','B8'];
+const LB_NAT  = ['B2','B3','B4','B5','B6','B7','B8']; // B1 had no nationality data
+const YEARS   = ['2021','2022','2023','Jan 2024','Sep 2024','Mar 2025','Sep 2025','Mar 2026'];
+
+/* ── Geography ──────────────────────────────────────────────────────────
+   r: [T&H, Eastern, Southern, W.Estonia, International, Unknown]
+   t: total enrolled   g: graduated   cg: cohort complete (graduation final)
 */
-const NAT_GK=['Estonia','Russia','Ukraine','EU (other)','Rest of world','Unknown'];
-const NAT_GC={'Estonia':'#185FA5','Russia':'#D85A30','Ukraine':'#BA7517','EU (other)':'#3B6D11','Rest of world':'#7F77DD','Unknown':'#B4B2A9'};
-const NAT={
-  B2:{d:[181,8,17,9,12,5],   t:232,dist:17,caveat:true},
-  B3:{d:[174,13,13,4,10,1],  t:215,dist:17,caveat:false},
-  B4:{d:[98,6,6,3,5,0],      t:118,dist:10,caveat:false},
-  B5:{d:[155,6,6,1,16,0],    t:184,dist:17,caveat:false},
-  B6:{d:[90,4,2,4,8,0],      t:108,dist:13,caveat:false},
-  B7:{d:[104,5,5,5,15,2],    t:136,dist:17,caveat:false},
-  B8:{d:[69,1,2,3,7,0],      t:82, dist:12,caveat:false},
+const RK = Object.keys(RC);
+const GEO = {
+  1:{t:206,g:99, cg:true, r:[107,48,34, 8, 7, 2]},
+  2:{t:280,g:150,cg:true, r:[118,48,59, 9,38, 8]},
+  3:{t:212,g:100,cg:true, r:[ 86,23,55, 7,16,25]},
+  4:{t:118,g:39, cg:true, r:[ 58,19,26, 5, 7, 3]},
+  5:{t:176,g:85, cg:true, r:[ 81,22,46,14, 8, 5]},
+  6:{t:106,g:0,  cg:false,r:[ 74,15,10, 3, 3, 1]},
+  7:{t:136,g:0,  cg:false,r:[ 72,21,24, 6, 6, 7]},
+  8:{t:82, g:0,  cg:false,r:[ 40,12,19, 5, 3, 3]},
 };
-const NAT_LINE_KEYS=['Russia','Ukraine','EU (other)','Rest of world'];
-const NAT_LC={'Russia':'#D85A30','Ukraine':'#BA7517','EU (other)':'#3B6D11','Rest of world':'#7F77DD'};
-const NAT_LD={'Russia':[],'Ukraine':[5,4],'EU (other)':[9,3],'Rest of world':[3,3]};
-const NAT_DISTINCT=[17,17,10,17,13,17,12]; // B2–B8
+// Annual intake line: one figure per calendar year, repeated for two-batch years
+const INTAKE_LINE = [206,280,212,294,294,242,242,82];
+const INTAKE_R    = [5,5,5,5,0,5,0,5];   // point radius — 0 hides duplicate-year dot
+const INTAKE_HR   = [7,7,7,7,0,7,0,7];   // hover radius
+const INTAKE_LBL  = ['206 (2021)','280 (2022)','212 (2023)','294 (2024)','294 (2024)','242 (2025)','242 (2025)','82 (2026 so far)'];
 
-/* Batch metadata */
-const BM={
-  1:{grad:99,cg:true},2:{grad:150,cg:true},3:{grad:100,cg:true},
-  4:{grad:39,cg:true},5:{grad:83,cg:true},
-  6:{grad:0,cg:false},7:{grad:0,cg:false},8:{grad:0,cg:false}
-};
-
-/* ═══════════════════════════════════════════════════ DEEP DIVES DATA ══
-   Phase 1: individual-level gender + birthdate + location, all 8 batches
-   Computed April 2026 from Monday.com board data
+/* ── Age ────────────────────────────────────────────────────────────────
+   b: [Under 21, 21–24, 25–29, 30–39, 40+]   nd: no-birthdate count
+   st: {avg, med, min, max}   avg: also stored at top level for chart overlay
+   B1: no birthdate data collected → nd=t, b all zeros, st/avg null
 */
-// Female count per batch (B1–B8)
-const DD_FEMALE = [46,81,51,21,20,20,35,21]; // total females per batch
-const DD_TOTAL  = [206,280,212,118,176,106,136,82];
-// Female % per batch
-const DD_FEMALE_PCT = DD_FEMALE.map((f,i)=>Math.round(f/DD_TOTAL[i]*100));
+const AK = Object.keys(AC);
+const AGE = {
+  1:{t:206,nd:206,b:[0,0,0,0,0],  st:null,                        avg:null},
+  2:{t:280,nd:7,  b:[46,72,64,75,16],st:{avg:27.4,med:26,min:17,max:63},avg:27.4},
+  3:{t:212,nd:2,  b:[35,51,59,53,12],st:{avg:27.4,med:26,min:17,max:62},avg:27.4},
+  4:{t:118,nd:1,  b:[23,26,30,30, 8],st:{avg:27.7,med:27,min:18,max:50},avg:27.7},
+  5:{t:176,nd:1,  b:[35,37,50,46, 7],st:{avg:26.8,med:26,min:17,max:42},avg:26.8},
+  6:{t:106,nd:0,  b:[19,21,24,31,11],st:{avg:28.6,med:27,min:18,max:50},avg:28.6},
+  7:{t:136,nd:0,  b:[26,31,36,33,10],st:{avg:27.3,med:26,min:17,max:49},avg:27.3},
+  8:{t:82, nd:1,  b:[ 7,18,28,19, 9],st:{avg:28.9,med:27,min:18,max:54},avg:28.9},
+};
+const ADASH=[null,[5,4],[9,3],[3,3],[6,3,2,3]]; // line dash patterns per age bracket
 
-// Under-21 count per batch (B1 = null, no birthdate data)
-const DD_YOUNG = [null,46,35,23,35,19,26,7];
-const DD_YOUNG_PCT = DD_YOUNG.map((u,i)=>u===null?null:Math.round(u/DD_TOTAL[i]*100));
+/* ── Gender ─────────────────────────────────────────────────────────────
+   g: [Male, Female, Other]
+*/
+const GK = Object.keys(GC);
+const GEN = {
+  1:{t:206,g:[160,46,0]}, 2:{t:280,g:[199,81,0]}, 3:{t:212,g:[159,51,2]},
+  4:{t:118,g:[ 95,21,2]}, 5:{t:176,g:[155,20,1]}, 6:{t:106,g:[ 86,20,0]},
+  7:{t:136,g:[101,35,0]}, 8:{t: 82,g:[ 61,20,1]},
+};
 
-// Eastern Estonia students per batch (from verified geographic aggregate)
-const DD_EASTERN = [48,48,23,19,22,15,21,12];
+/* ── Nationality ────────────────────────────────────────────────────────
+   d: [Estonia, Russia, Ukraine, EU (other), Rest of world, Unknown]
+   t: total recorded entries (may differ from enrolled due to missing records)
+   dist: distinct nationalities recorded   caveat: true = lower data quality
+   B1: no nationality data collected — excluded from LB_NAT
+   B2: free-text entry, ~17% non-standard → caveat:true
+*/
+const NAT_GK = ['Estonia','Russia','Ukraine','EU (other)','Rest of world','Unknown'];
+const NAT = {
+  B2:{d:[181, 8,17, 9,12,5], t:232,dist:17,caveat:true },
+  B3:{d:[174,13,13, 4,10,1], t:215,dist:17,caveat:false},
+  B4:{d:[ 98, 6, 6, 3, 5,0], t:118,dist:10,caveat:false},
+  B5:{d:[155, 6, 6, 1,16,0], t:184,dist:17,caveat:false},
+  B6:{d:[ 90, 4, 2, 4, 8,0], t:108,dist:13,caveat:false},
+  B7:{d:[104, 5, 5, 5,15,2], t:136,dist:17,caveat:false},
+  B8:{d:[ 69, 1, 2, 3, 7,0], t: 82,dist:12,caveat:false},
+};
+const NAT_LINE_KEYS = ['Russia','Ukraine','EU (other)','Rest of world'];
+const NAT_LD = {'Russia':[],'Ukraine':[5,4],'EU (other)':[9,3],'Rest of world':[3,3]};
+const NAT_DISTINCT = [17,17,10,17,13,17,12]; // distinct nationality count B2–B8
+
+/* ── Batch metadata ─────────────────────────────────────────────────────
+   grad: graduated count   cg: cohort complete
+*/
+const BM = {
+  1:{grad:99, cg:true}, 2:{grad:150,cg:true}, 3:{grad:100,cg:true},
+  4:{grad:39, cg:true}, 5:{grad:85, cg:true},
+  6:{grad:0,cg:false},  7:{grad:0,cg:false},  8:{grad:0,cg:false},
+};
+
+/* ── Deep Dives — per-batch segment counts ──────────────────────────────
+   All arrays indexed B1–B8. null = data not available for that batch.
+   Computed from individual-level Monday.com data, April 2026.
+*/
+const DD_TOTAL   = [206,280,212,118,176,106,136, 82]; // enrolled per batch
+const DD_FEMALE  = [ 46, 81, 51, 21, 20, 20, 35, 21]; // female students per batch
+const DD_YOUNG   = [null,46, 35, 23, 35, 19, 26,  7]; // under-21 (null=no birthdate)
+const DD_EASTERN = [ 48, 48, 23, 19, 22, 15, 21, 12]; // Eastern Estonia students
+
+// Derived percentages — do not edit directly, computed from above
+const DD_FEMALE_PCT  = DD_FEMALE.map((f,i)=>Math.round(f/DD_TOTAL[i]*100));
+const DD_YOUNG_PCT   = DD_YOUNG.map((u,i)=>u===null?null:Math.round(u/DD_TOTAL[i]*100));
 const DD_EASTERN_PCT = DD_EASTERN.map((e,i)=>Math.round(e/DD_TOTAL[i]*100));
 
-// Region cross-tab for female students — B3–B8 pooled (n=119 female, 637 total)
-// [T&H, Eastern, Southern, W.EE, Intl, Unknown]
-const DD_F_REG_FEMALE  = [73, 7, 21, 7, 1, 10]; // female students by region
-const DD_F_REG_TOTAL   = [318,76,147,63,10,23];  // all students by region (B3–B8)
-const DD_REG_LABELS    = ['T&H','Eastern','Southern','W. Estonia','Intl','Unknown'];
+/* ── Deep Dives — cross-tab data (B3–B8 individual pool, n=637) ─────────
+   Region order: [T&H, Eastern, Southern, W.Estonia, International, Unknown]
+   Age bracket order: [Under 21, 21–24, 25–29, 30–39, 40+]
+   Recompute by running recompute_crosstabs.js when adding B9+ to the pool.
+*/
+const DD_REG_LABELS   = ['T&H','Eastern','Southern','W. Estonia','Intl','Unknown'];
+const DD_F_REG_FEMALE = [ 73,  7, 21,  7,  1, 10]; // female count by region
+const DD_F_REG_TOTAL  = [318, 76,147, 63, 10, 23]; // all students by region
+const DD_Y_REG_YOUNG  = [ 40, 11, 18,  7,  3,  5]; // under-21 count by region
 
-// Region cross-tab for under-21 students — B3–B8 pooled (n=84 under-21)
-const DD_Y_REG_YOUNG   = [40,11,18,7,3,5]; // under-21 students by region
+// Female age profile (B2–B8 aggregate, approximated)
+const DD_F_AGE   = [ 40, 57, 68, 67, 17]; // female students by age bracket
+const DD_ALL_AGE = [183,205,259,252, 63]; // all students by age bracket
 
-// Age brackets for female students (B2–B8 aggregate)
-// [<21, 21–24, 25–29, 30–39, 40+] — female counts from known female age distributions
-// Approximated from full-cohort brackets × female % per bracket (B2–B8 pooled)
-const DD_F_AGE = [40, 57, 68, 67, 17]; // female students by age bracket B2–B8
-const DD_ALL_AGE = [183,205,259,252,63]; // all students by age bracket B2–B8
-
-// Eastern age cross-tab (B3–B8 individual data, n=76)
-const DD_E_AGE_EAST = [11, 24, 20, 19, 2]; // Eastern students by age bracket
-const DD_E_AGE_ALL  = [84,144,184,179,46];  // all students in B3–B8 pool
-// Eastern gender cross-tab (B3–B8)
-const DD_E_FEM_EAST   = 7;  // female Eastern students (B3–B8)
-const DD_E_TOTAL_EAST = 76; // total Eastern students (B3–B8)
-// Baselines from B3–B8 pool
-const DD_BASELINE_FEM = 19; // % baseline female (B3–B8)
-const DD_BASELINE_U21 = 13; // % baseline under-21
-
-// Eastern nationality mix (aggregated, B2–B8 from Ida-Viru region)
-// Predominantly Estonian nationals (incl. Russian-speaking residents)
-// Approximate from nationality + geography cross (not individually joined)
+// Eastern Estonia cross-tab (B3–B8 individual data, n=76)
+const DD_E_AGE_EAST   = [11, 24, 20, 19,  2]; // Eastern students by age bracket
+const DD_E_AGE_ALL    = [84,144,184,179, 46]; // all B3–B8 students by age bracket
+const DD_E_FEM_EAST   = 7;  // female Eastern students
+const DD_E_TOTAL_EAST = 76; // total Eastern students
 const DD_E_NAT_LABELS = ['Estonian-resident','Russian national','Ukrainian','Other'];
-const DD_E_NAT_DATA   = [35, 5, 2, 2]; // out of ~44 avg Eastern per batch
+const DD_E_NAT_DATA   = [35, 5, 2, 2]; // approximate nationality mix, Eastern cohort
 
-/* ═══════════════════════════════════════════════════════ STATE & MODE ═ */
+// Baselines derived from B3–B8 pool
+const DD_BASELINE_FEM = 19; // % female across full B3–B8 pool
+const DD_BASELINE_U21 = 13; // % under-21 across full B3–B8 pool
+
+/* ══════════════════════════════════════════════════════ CHART LOGIC ══
+   Everything below this line is rendering and interaction logic.
+   Batch data lives entirely above this line.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* ── State ──────────────────────────────────────────────────────────── */
 let isDark=false, charts=[], activeTab='geo';
 
 function toggleMode(){
@@ -417,7 +517,7 @@ function switchTab(tab){
 
 /* ═══════════════════════════════════════════════════ METRIC CARDS ══════ */
 const METRICS={
-  geo:[{l:'Total students',v:'1,316'},{l:'Batches',v:'8'},{l:'Avg batch size',v:'165'},{l:'Graduated (B1–5)',v:'471',cls:'green'},{l:'Grad rate (B1–5)',v:'47%',cls:'green'}],
+  geo:[{l:'Total students',v:'1,316'},{l:'Batches',v:'8'},{l:'Avg batch size',v:'165'},{l:'Graduated (B1–5)',v:'473',cls:'green'},{l:'Grad rate (B1–5)',v:'48%',cls:'green'}],
   demo:[{l:'Total students',v:'1,316'},{l:'Batches',v:'8'},{l:'With birthdate (B2–8)',v:'1,110'},{l:'Overall female share',v:'22%'},{l:'Avg enrolment age',v:'27.7y'}],
   deep:[{l:'Total students',v:'1,316'},{l:'Female students (B1–8)',v:'295'},{l:'Under-21 students (B2–8)',v:'191'},{l:'Eastern Estonia (B1–8)',v:'208'},{l:'Segments analysed',v:'3'}],
 };
@@ -450,7 +550,7 @@ function renderNatScale(){
     return`<div class="scale-row">
       <span style="font-size:11px;font-weight:500;color:var(--tx3);font-family:var(--mono);">${b}</span>
       <div class="scale-bar${isCaveat?' caveat-bar':''}">
-        <div class="scale-seg" style="width:${eePct}%;background:#185FA5;" title="Estonia: ${ee} (${eePct}%)"></div>
+        <div class="scale-seg" style="width:${eePct}%;background:${C_ESTONIAN};" title="Estonia: ${ee} (${eePct}%)"></div>
         <div class="scale-seg" style="width:${nonPct}%;background:var(--surface3);" title="Non-Estonian: ${t-ee} (${nonPct}%)"></div>
       </div>
       <span style="font-size:11px;color:var(--tx2);">${eePct}% Estonian${isCaveat?'<span style="font-size:10px;color:var(--tx3);margin-left:5px;" title="B2: free-text entry, lower coverage">⚠</span>':''}</span>
@@ -732,7 +832,6 @@ function buildDeepCharts(seg){
   deepCharts.forEach(ch=>ch.destroy()); deepCharts=[];
   const c=gc();
   const ov=c.accent;
-  const FEMALE_C='#D85A30', YOUNG_C='#185FA5', EASTERN_C='#BA7517';
 
   if(seg==='female') buildFemaleCharts(c,ov,FEMALE_C);
   if(seg==='young')  buildYoungCharts(c,ov,YOUNG_C);
@@ -817,7 +916,7 @@ function buildFemaleCharts(c,ov,col){
     ddFinding('Age profile skews older — fewer female under-21s',
       `Female students are underrepresented in the Under-21 bracket (~14% female vs. 22% overall) and overrepresented in 25–29 and 30–39. This suggests female applicants are more likely to be career-changers than recent school leavers.`)+
     ddFinding('Graduation rate: no meaningful difference from overall',
-      `Across B1–B5 (471 graduates, 219 female enrolled), female students graduated at <strong>45%</strong> vs 48% for males — a 3pp gap well within noise. In most individual batches the rates are virtually identical. The apparent gap in B5 (30% vs 50%) is based on only 6 female graduates out of 20 enrolled and is not reliable. <strong>Female students are just as likely to complete as their male peers.</strong>`)+
+      `Across B1–B5 (473 graduates, 219 female enrolled), female students graduated at <strong>45%</strong> vs 48% for males — a 3pp gap well within noise. In most individual batches the rates are virtually identical. The apparent gap in B5 (30% vs 50%) is based on only 6 female graduates out of 20 enrolled and is not reliable. <strong>Female students are just as likely to complete as their male peers.</strong>`)+
     ddNeutral('Eastern Estonia: below-baseline female share',
       '9% female among Eastern Estonia students (B3–B8, n=76). Consistent direction across all batches — Eastern Estonia is the least female-diverse region.')+
     ddNeutral('Southern Estonia: slightly below baseline',
@@ -868,8 +967,8 @@ function buildYoungCharts(c,ov,col){
   // Under-21 female% estimated from cross-tab: ~14% of under-21 are female (vs 18% overall)
   deepCharts.push(new Chart(document.getElementById('cDDyoungGen'),{type:'bar',
     data:{labels:['Under-21','Overall (all ages)'],datasets:[
-      {label:'Male',data:[86,78],backgroundColor:'#185FA5cc',borderRadius:3},
-      {label:'Female',data:[14,22],backgroundColor:'#D85A30cc',borderRadius:3},
+      {label:'Male',data:[86,78],backgroundColor:GC.Male+'cc',borderRadius:3},
+      {label:'Female',data:[14,22],backgroundColor:GC.Female+'cc',borderRadius:3},
     ]},
     options:{responsive:true,maintainAspectRatio:false,
       plugins:{legend:{display:true,position:'bottom',labels:{color:c.tx3,font:{size:11},boxWidth:10,padding:12}},annotation:{annotations:{}}},
@@ -938,7 +1037,7 @@ function buildEasternCharts(c,ov,col){
 
   // Nationality pie — Eastern Estonia
   deepCharts.push(new Chart(document.getElementById('cDDeasternNat'),{type:'bar',
-    data:{labels:DD_E_NAT_LABELS,datasets:[{label:'Students',data:DD_E_NAT_DATA,backgroundColor:[col+'dd','#D85A30cc','#BA7517cc','#7F77DDcc'],borderRadius:4}]},
+    data:{labels:DD_E_NAT_LABELS,datasets:[{label:'Students',data:DD_E_NAT_DATA,backgroundColor:[col+'dd',GC.Female+'cc',AC['25–29']+'cc',RC['W. Estonia & Islands']+'cc'],borderRadius:4}]},
     options:{responsive:true,maintainAspectRatio:false,indexAxis:'y',
       plugins:{legend:{display:false},annotation:{annotations:{}},tooltip:{callbacks:{label:ctx=>` ${ctx.label}: ${ctx.parsed.x} students`}}},
       scales:{x:{ticks:{color:c.tx3,padding:6},grid:{color:c.grid}},y:{ticks:{color:c.tx3,font:{size:11},padding:6},grid:{display:false}}}}}));
