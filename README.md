@@ -30,7 +30,7 @@ All student records are sourced from **Monday.com**, where each batch has a dedi
 | B2 | 2022 | 280 | 150 | Nationality free-text entry (~17% non-standard); location as short city name |
 | B3 | Sep 2023 | 212 | 100 | Full individual-level data |
 | B4 | Jan 2024 | 118 | 39 | Full individual-level data |
-| B5 | Sep 2024 | 176 | 85 | Full individual-level data |
+| B5 | Sep 2024 | 176 | 87 | Full individual-level data |
 | B6 | Mar 2025 | 106 | — | In progress |
 | B7 | Sep 2025 | 136 | — | In progress |
 | B8 | Mar 2026 | 82 | — | In progress (partial intake) |
@@ -75,7 +75,7 @@ The region × age × gender cross-tab is based on **individual-level records fro
 
 **Demographics** — The overall female share is 22%, but volatile across batches (11–29%). There is no structural trend of improvement or decline. Average enrolment age is 27–29 across all batches. The under-21 bracket is stable at 16–20% of each batch.
 
-**Female students** — Graduate at 45% vs 48% for males across B1–B5 (473 total graduates) — no meaningful difference. Female students are underrepresented in the under-21 bracket and overrepresented in the 25–34 range, suggesting they skew toward career-changers rather than recent school leavers. No region stands out as markedly more or less female-diverse across B3–B8; an earlier finding that International students had the highest female share (27%) was specific to the B2 Ukrainian refugee cohort and does not hold across subsequent batches.
+**Female students** — Graduate at 45% vs 48% for males across B1–B5 (475 total graduates) — no meaningful difference. Female students are underrepresented in the under-21 bracket and overrepresented in the 25–34 range, suggesting they skew toward career-changers rather than recent school leavers. No region stands out as markedly more or less female-diverse across B3–B8; an earlier finding that International students had the highest female share (27%) was specific to the B2 Ukrainian refugee cohort and does not hold across subsequent batches.
 
 **Under-21 students** — Graduate at roughly **80% of the overall rate** across B2–B4 (37–46% vs 49–55% for older students). The gap is consistent in direction across three batches; B5 reverses it but on a small sample. This does not argue against recruiting younger students, but suggests they may benefit from targeted retention support.
 

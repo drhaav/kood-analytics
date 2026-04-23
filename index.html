@@ -370,7 +370,7 @@ const GEO = {
   2:{t:280,g:150,cg:true, r:[118,48,59, 9,38, 8]},
   3:{t:212,g:100,cg:true, r:[ 86,23,55, 7,16,25]},
   4:{t:118,g:39, cg:true, r:[ 58,19,26, 5, 7, 3]},
-  5:{t:176,g:85, cg:true, r:[ 81,22,46,14, 8, 5]},
+  5:{t:176,g:87, cg:true, r:[ 81,22,46,14, 8, 5]},
   6:{t:106,g:0,  cg:false,r:[ 74,15,10, 3, 3, 1]},
   7:{t:136,g:0,  cg:false,r:[ 72,21,24, 6, 6, 7]},
   8:{t:82, g:0,  cg:false,r:[ 40,12,19, 5, 3, 3]},
@@ -435,7 +435,7 @@ const NAT_DISTINCT = [17,17,10,17,13,17,12]; // distinct nationality count B2–
 */
 const BM = {
   1:{grad:99, cg:true}, 2:{grad:150,cg:true}, 3:{grad:100,cg:true},
-  4:{grad:39, cg:true}, 5:{grad:85, cg:true},
+  4:{grad:39, cg:true}, 5:{grad:87, cg:true},
   6:{grad:0,cg:false},  7:{grad:0,cg:false},  8:{grad:0,cg:false},
 };
 
@@ -517,7 +517,7 @@ function switchTab(tab){
 
 /* ═══════════════════════════════════════════════════ METRIC CARDS ══════ */
 const METRICS={
-  geo:[{l:'Total students',v:'1,316'},{l:'Batches',v:'8'},{l:'Avg batch size',v:'165'},{l:'Graduated (B1–5)',v:'473',cls:'green'},{l:'Grad rate (B1–5)',v:'48%',cls:'green'}],
+  geo:[{l:'Total students',v:'1,316'},{l:'Batches',v:'8'},{l:'Avg batch size',v:'165'},{l:'Graduated (B1–5)',v:'475',cls:'green'},{l:'Grad rate (B1–5)',v:'48%',cls:'green'}],
   demo:[{l:'Total students',v:'1,316'},{l:'Batches',v:'8'},{l:'With birthdate (B2–8)',v:'1,110'},{l:'Overall female share',v:'22%'},{l:'Avg enrolment age',v:'27.7y'}],
   deep:[{l:'Total students',v:'1,316'},{l:'Female students (B1–8)',v:'295'},{l:'Under-21 students (B2–8)',v:'191'},{l:'Eastern Estonia (B1–8)',v:'208'},{l:'Segments analysed',v:'3'}],
 };
@@ -916,7 +916,7 @@ function buildFemaleCharts(c,ov,col){
     ddFinding('Age profile skews older — fewer female under-21s',
       `Female students are underrepresented in the Under-21 bracket (~14% female vs. 22% overall) and overrepresented in 25–29 and 30–39. This suggests female applicants are more likely to be career-changers than recent school leavers.`)+
     ddFinding('Graduation rate: no meaningful difference from overall',
-      `Across B1–B5 (473 graduates, 219 female enrolled), female students graduated at <strong>45%</strong> vs 48% for males — a 3pp gap well within noise. In most individual batches the rates are virtually identical. The apparent gap in B5 (30% vs 50%) is based on only 6 female graduates out of 20 enrolled and is not reliable. <strong>Female students are just as likely to complete as their male peers.</strong>`)+
+      `Across B1–B5 (475 graduates, 219 female enrolled), female students graduated at <strong>45%</strong> vs 48% for males — a 3pp gap well within noise. In most individual batches the rates are virtually identical. The apparent gap in B5 (30% vs 50%) is based on only 6 female graduates out of 20 enrolled and is not reliable. <strong>Female students are just as likely to complete as their male peers.</strong>`)+
     ddNeutral('Eastern Estonia: below-baseline female share',
       '9% female among Eastern Estonia students (B3–B8, n=76). Consistent direction across all batches — Eastern Estonia is the least female-diverse region.')+
     ddNeutral('Southern Estonia: slightly below baseline',
