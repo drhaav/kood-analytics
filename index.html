@@ -216,7 +216,7 @@ tr:last-child td{border-bottom:none;}
     <div class="sec" style="margin-top:24px;">Age profile <span class="sec-sub">— female vs overall (B2–B8)</span></div>
     <div class="chart-wrap" style="height:220px;"><canvas id="cDDfemaleAge"></canvas></div>
     <div id="dd-findings-female" style="margin-top:24px;"></div>
-    <div class="dd-caveat">Data coverage: gender recorded for all 1,316 students (B1–B8). Age bracket cross-tab based on B2–B8 aggregate data (n=1,110 with birthdates). Region cross-tab based on individual-level data from B3–B8 pooled (n=637).</div>
+    <div class="dd-caveat">Data coverage: gender recorded for all 1,346 students (B1–B8). Age bracket cross-tab based on B2–B8 aggregate data (n=1,127 with birthdates; 13 missing). Region cross-tab charts use the pre-B8-update individual pool (n=637, original 82 B8 students); the B8 trend charts above reflect the full 112-student cohort and are not yet reconciled with the cross-tab breakdown below.</div>
   </div>
 
   <div id="dd-pane-young" class="hidden">
@@ -237,7 +237,7 @@ tr:last-child td{border-bottom:none;}
     <div class="sec" style="margin-top:24px;">Gender split <span class="sec-sub">— under-21 vs. overall (B2–B8)</span></div>
     <div class="chart-wrap" style="height:200px;"><canvas id="cDDyoungGen"></canvas></div>
     <div id="dd-findings-young" style="margin-top:24px;"></div>
-    <div class="dd-caveat">Data coverage: age recorded for B2–B8 (n=1,110 with birthdates). B1 excluded — no birthdates collected. Region cross-tab based on individual-level data from B3–B8 pooled (n=637). Under-21 defined as age &lt;21 at batch start date.</div>
+    <div class="dd-caveat">Data coverage: age recorded for B2–B8 (n=1,127 with birthdates; 13 missing including 2 in B8). B1 excluded — no birthdates collected. Region cross-tab charts use the pre-B8-update individual pool (n=637); B8 trend charts reflect the full 112-student cohort. Under-21 defined as age &lt;21 at batch start date.</div>
   </div>
 
   <div id="dd-pane-eastern" class="hidden">
@@ -258,7 +258,7 @@ tr:last-child td{border-bottom:none;}
     <div class="sec" style="margin-top:24px;">Nationality mix <span class="sec-sub">— Eastern Estonia students B2–B8</span></div>
     <div class="chart-wrap" style="height:200px;"><canvas id="cDDeasternNat"></canvas></div>
     <div id="dd-findings-eastern" style="margin-top:24px;"></div>
-    <div class="dd-caveat">Eastern Estonia defined as students with addresses in Ida-Virumaa (Narva, Jõhvi, Kohtla-Järve, Sillamäe, Ahtme, Kiviõli, Püssi). Geography aggregate counts (used for trend chart) come from verified geographic data for all 8 batches. Age/gender cross-tab from B3–B8 individual-level data (n=76).</div>
+    <div class="dd-caveat">Eastern Estonia defined as students with addresses in Ida-Virumaa (Narva, Jõhvi, Kohtla-Järve, Sillamäe, Ahtme, Kiviõli, Püssi). Trend chart reflects updated data: B8 shows 7 Eastern students (203 total across B1–B8). Age/gender cross-tab uses the pre-B8-update individual pool (n=76 Eastern students, of which 12 were from B8's original 82-student cohort); not yet recomputed for the full 112-student B8.</div>
   </div>
 
 </div>
@@ -370,16 +370,16 @@ const GEO = {
   2:{t:280,g:150,cg:true, r:[118,48,59, 9,38, 8]},
   3:{t:212,g:100,cg:true, r:[ 86,23,55, 7,16,25]},
   4:{t:118,g:39, cg:true, r:[ 58,19,26, 5, 7, 3]},
-  5:{t:176,g:87, cg:true, r:[ 81,22,46,14, 8, 5]},
+  5:{t:176,g:92, cg:true, r:[ 81,22,46,14, 8, 5]},
   6:{t:106,g:0,  cg:false,r:[ 74,15,10, 3, 3, 1]},
   7:{t:136,g:0,  cg:false,r:[ 72,21,24, 6, 6, 7]},
-  8:{t:82, g:0,  cg:false,r:[ 40,12,19, 5, 3, 3]},
+  8:{t:112,g:0,  cg:false,r:[ 61, 7,28,14, 2, 0]},
 };
 // Annual intake line: one figure per calendar year, repeated for two-batch years
-const INTAKE_LINE = [206,280,212,294,294,242,242,82];
+const INTAKE_LINE = [206,280,212,294,294,242,242,112];
 const INTAKE_R    = [5,5,5,5,0,5,0,5];   // point radius — 0 hides duplicate-year dot
 const INTAKE_HR   = [7,7,7,7,0,7,0,7];   // hover radius
-const INTAKE_LBL  = ['206 (2021)','280 (2022)','212 (2023)','294 (2024)','294 (2024)','242 (2025)','242 (2025)','82 (2026 so far)'];
+const INTAKE_LBL  = ['206 (2021)','280 (2022)','212 (2023)','294 (2024)','294 (2024)','242 (2025)','242 (2025)','112 (2026 so far)'];
 
 /* ── Age ────────────────────────────────────────────────────────────────
    b: [Under 21, 21–24, 25–29, 30–39, 40+]   nd: no-birthdate count
@@ -395,7 +395,7 @@ const AGE = {
   5:{t:176,nd:1,  b:[35,37,50,46, 7],st:{avg:26.8,med:26,min:17,max:42},avg:26.8},
   6:{t:106,nd:0,  b:[19,21,24,31,11],st:{avg:28.6,med:27,min:18,max:50},avg:28.6},
   7:{t:136,nd:0,  b:[26,31,36,33,10],st:{avg:27.3,med:26,min:17,max:49},avg:27.3},
-  8:{t:82, nd:1,  b:[ 7,18,28,19, 9],st:{avg:28.9,med:27,min:18,max:54},avg:28.9},
+  8:{t:112,nd:2,  b:[ 8,21,29,32,20],st:{avg:31.0,med:29,min:18,max:57},avg:31.0},
 };
 const ADASH=[null,[5,4],[9,3],[3,3],[6,3,2,3]]; // line dash patterns per age bracket
 
@@ -406,7 +406,7 @@ const GK = Object.keys(GC);
 const GEN = {
   1:{t:206,g:[160,46,0]}, 2:{t:280,g:[199,81,0]}, 3:{t:212,g:[159,51,2]},
   4:{t:118,g:[ 95,21,2]}, 5:{t:176,g:[155,20,1]}, 6:{t:106,g:[ 86,20,0]},
-  7:{t:136,g:[101,35,0]}, 8:{t: 82,g:[ 61,20,1]},
+  7:{t:136,g:[101,35,0]}, 8:{t:112,g:[ 79,32,1]},
 };
 
 /* ── Nationality ────────────────────────────────────────────────────────
@@ -424,18 +424,18 @@ const NAT = {
   B5:{d:[155, 6, 6, 1,16,0], t:184,dist:17,caveat:false},
   B6:{d:[ 90, 4, 2, 4, 8,0], t:108,dist:13,caveat:false},
   B7:{d:[104, 5, 5, 5,15,2], t:136,dist:17,caveat:false},
-  B8:{d:[ 69, 1, 2, 3, 7,0], t: 82,dist:12,caveat:false},
+  B8:{d:[ 98, 1, 2, 3, 8,0], t:112,dist:13,caveat:false},
 };
 const NAT_LINE_KEYS = ['Russia','Ukraine','EU (other)','Rest of world'];
 const NAT_LD = {'Russia':[],'Ukraine':[5,4],'EU (other)':[9,3],'Rest of world':[3,3]};
-const NAT_DISTINCT = [17,17,10,17,13,17,12]; // distinct nationality count B2–B8
+const NAT_DISTINCT = [17,17,10,17,13,17,13]; // distinct nationality count B2–B8
 
 /* ── Batch metadata ─────────────────────────────────────────────────────
    grad: graduated count   cg: cohort complete
 */
 const BM = {
   1:{grad:99, cg:true}, 2:{grad:150,cg:true}, 3:{grad:100,cg:true},
-  4:{grad:39, cg:true}, 5:{grad:87, cg:true},
+  4:{grad:39, cg:true}, 5:{grad:92, cg:true},
   6:{grad:0,cg:false},  7:{grad:0,cg:false},  8:{grad:0,cg:false},
 };
 
@@ -443,10 +443,10 @@ const BM = {
    All arrays indexed B1–B8. null = data not available for that batch.
    Computed from individual-level Monday.com data, April 2026.
 */
-const DD_TOTAL   = [206,280,212,118,176,106,136, 82]; // enrolled per batch
-const DD_FEMALE  = [ 46, 81, 51, 21, 20, 20, 35, 21]; // female students per batch
-const DD_YOUNG   = [null,46, 35, 23, 35, 19, 26,  7]; // under-21 (null=no birthdate)
-const DD_EASTERN = [ 48, 48, 23, 19, 22, 15, 21, 12]; // Eastern Estonia students
+const DD_TOTAL   = [206,280,212,118,176,106,136,112]; // enrolled per batch
+const DD_FEMALE  = [ 46, 81, 51, 21, 20, 20, 35, 32]; // female students per batch
+const DD_YOUNG   = [null,46, 35, 23, 35, 19, 26,  8]; // under-21 (null=no birthdate)
+const DD_EASTERN = [ 48, 48, 23, 19, 22, 15, 21,  7]; // Eastern Estonia students
 
 // Derived percentages — do not edit directly, computed from above
 const DD_FEMALE_PCT  = DD_FEMALE.map((f,i)=>Math.round(f/DD_TOTAL[i]*100));
@@ -517,9 +517,9 @@ function switchTab(tab){
 
 /* ═══════════════════════════════════════════════════ METRIC CARDS ══════ */
 const METRICS={
-  geo:[{l:'Total students',v:'1,316'},{l:'Batches',v:'8'},{l:'Avg batch size',v:'165'},{l:'Graduated (B1–5)',v:'475',cls:'green'},{l:'Grad rate (B1–5)',v:'48%',cls:'green'}],
-  demo:[{l:'Total students',v:'1,316'},{l:'Batches',v:'8'},{l:'With birthdate (B2–8)',v:'1,110'},{l:'Overall female share',v:'22%'},{l:'Avg enrolment age',v:'27.7y'}],
-  deep:[{l:'Total students',v:'1,316'},{l:'Female students (B1–8)',v:'295'},{l:'Under-21 students (B2–8)',v:'191'},{l:'Eastern Estonia (B1–8)',v:'208'},{l:'Segments analysed',v:'3'}],
+  geo:[{l:'Total students',v:'1,346'},{l:'Batches',v:'8'},{l:'Avg batch size',v:'168'},{l:'Graduated (B1–5)',v:'480',cls:'green'},{l:'Grad rate (B1–5)',v:'48%',cls:'green'}],
+  demo:[{l:'Total students',v:'1,346'},{l:'Batches',v:'8'},{l:'With birthdate (B2–8)',v:'1,140'},{l:'Overall female share',v:'23%'},{l:'Avg enrolment age',v:'27.8y'}],
+  deep:[{l:'Total students',v:'1,346'},{l:'Female students (B1–8)',v:'306'},{l:'Under-21 students (B2–8)',v:'192'},{l:'Eastern Estonia (B1–8)',v:'203'},{l:'Segments analysed',v:'3'}],
 };
 function renderMetrics(tab){
   document.getElementById('metricCards').innerHTML=METRICS[tab].map(m=>
@@ -863,7 +863,7 @@ function buildFemaleCharts(c,ov,col){
   const loPct=Math.min(...DD_FEMALE_PCT), loBatch=LB[DD_FEMALE_PCT.indexOf(loPct)];
   document.getElementById('dd-hero-female').innerHTML=
     ddCard('Total female students (B1–8)',total295,'across all batches',col)+
-    ddCard('Overall female share','22%','295 of 1,316 students')+
+    ddCard('Overall female share','23%','306 of 1,346 students')+
     ddCard('Peak batch ('+hiBatch+')',hiPct+'%','highest female share')+
     ddCard('Lowest batch ('+loBatch+')',loPct+'%','lowest female share');
 
