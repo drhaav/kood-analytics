@@ -20,7 +20,7 @@ The dashboard is organised into three tabs, each answering a distinct question:
 
 ## Data source
 
-All student records are sourced from **Monday.com**, where each batch has a dedicated board. Data covers Batches 1–8 (September 2021 – March 2026), totalling **1,346 students**. Graduation status is determined by group membership within each board (group "7. Graduated"). No external data sources are used.
+All student records are sourced from **Monday.com**, where each batch has a dedicated board. Data covers Batches 1–8 (September 2021 – March 2026), totalling **1,316 students**. Graduation status is determined by group membership within each board (groups "7. Graduated" and "Graduated & ISA Payment done"). No external data sources are used.
 
 **Data quality notes by batch:**
 
@@ -29,11 +29,11 @@ All student records are sourced from **Monday.com**, where each batch has a dedi
 | B1 | Sep 2021 | 206 | 99 | No birthdate data collected |
 | B2 | 2022 | 280 | 150 | Nationality free-text entry (~17% non-standard); location as short city name |
 | B3 | Sep 2023 | 212 | 100 | Full individual-level data |
-| B4 | Jan 2024 | 118 | 39 | Full individual-level data |
-| B5 | Sep 2024 | 176 | 92 | Full individual-level data |
+| B4 | Jan 2024 | 118 | 40 | Full individual-level data |
+| B5 | Sep 2024 | 176 | 94 | Full individual-level data |
 | B6 | Mar 2025 | 106 | — | In progress |
 | B7 | Sep 2025 | 136 | — | In progress |
-| B8 | Mar 2026 | 112 | — | In progress; includes 28 HARNO Nooremarendaja track graduates |
+| B8 | Mar 2026 | 82 | — | In progress (partial intake) |
 
 Graduation rate applies to B1–B5 only. B6–B8 are active cohorts.
 
@@ -61,11 +61,11 @@ Age is calculated as **age at batch start date**, not current age. A student is 
 
 ### Graduation rate
 
-A student is counted as graduated if they appear in group "7. Graduated" within their batch board at the time of data extraction (April 2026). Students still active, on study leave, or who left without completing are not counted as graduates. Rates are only reported for B1–B5, where cohorts have had sufficient time to complete.
+A student is counted as graduated if they appear in group "7. Graduated" **or** the post-graduation group "Graduated & ISA Payment done" within their batch board at the time of data extraction (June 2026). The second group holds students who graduated and have since completed their ISA repayment; they are graduates and are counted as such. Students still active, on study leave, or who left without completing are not counted as graduates. Rates are only reported for B1–B5, where cohorts have had sufficient time to complete.
 
 ### Cross-tab analysis (Deep Dives tab)
 
-The region × age × gender cross-tab is based on **individual-level records from B3–B8** (n=637 combined, computed against the original 82-student B8 cohort). B2 is excluded due to lower location data precision (short city names rather than full addresses). B1 is excluded as no birthdates were collected. Note: following the June 2026 B8 data update (82→112 students), trend charts reflect the full 112-student cohort while cross-tab charts retain the pre-update B3–B8 pool — a known delta pending a full cross-tab recompute. Findings should be treated as directional hypotheses rather than confirmed conclusions.
+The region × age × gender cross-tab is based on **individual-level records from B3–B8** (n=637 combined). All six batches have complete joined location, birthdate, and gender data at individual level. B2 is excluded from cross-tab analysis due to lower location data precision (short city names rather than full addresses). B1 is excluded as no birthdates were collected. Findings should be treated as directional hypotheses rather than confirmed conclusions.
 
 ---
 
@@ -73,9 +73,9 @@ The region × age × gender cross-tab is based on **individual-level records fro
 
 **Geography** — Tallinn & Harjumaa consistently accounts for 45–55% of each batch. Eastern Estonia contributes a stable 11–17% from B3 onwards (higher in B1–B2). Southern Estonia has grown as a share. International students peaked at 14% in B2 (reflecting the 2022 Ukrainian refugee cohort) and stabilised at 3–6%.
 
-**Demographics** — The overall female share is 23%, but volatile across batches (11–29%). There is no structural trend of improvement or decline. Average enrolment age is 27–31 across all batches (B8 skews older at 31.0y average, reflecting the HARNO track intake). The under-21 bracket is stable at 16–20% of each batch.
+**Demographics** — The overall female share is 22%, but volatile across batches (11–29%). There is no structural trend of improvement or decline. Average enrolment age is 27–29 across all batches. The under-21 bracket is stable at 16–20% of each batch.
 
-**Female students** — Graduate at 45% vs 48% for males across B1–B5 (480 total graduates) — no meaningful difference. Female students are underrepresented in the under-21 bracket and overrepresented in the 25–34 range, suggesting they skew toward career-changers rather than recent school leavers. No region stands out as markedly more or less female-diverse across B3–B8; an earlier finding that International students had the highest female share (27%) was specific to the B2 Ukrainian refugee cohort and does not hold across subsequent batches.
+**Female students** — Graduate at 45% vs 48% for males across B1–B5 (483 total graduates) — no meaningful difference. Female students are underrepresented in the under-21 bracket and overrepresented in the 25–34 range, suggesting they skew toward career-changers rather than recent school leavers. No region stands out as markedly more or less female-diverse across B3–B8; an earlier finding that International students had the highest female share (27%) was specific to the B2 Ukrainian refugee cohort and does not hold across subsequent batches.
 
 **Under-21 students** — Graduate at roughly **80% of the overall rate** across B2–B4 (37–46% vs 49–55% for older students). The gap is consistent in direction across three batches; B5 reverses it but on a small sample. This does not argue against recruiting younger students, but suggests they may benefit from targeted retention support.
 
