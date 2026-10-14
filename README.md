@@ -20,7 +20,7 @@ The dashboard is organised into three tabs, each answering a distinct question:
 
 ## Data source
 
-All student records are sourced from **Monday.com**, where each batch has a dedicated board. Data covers Batches 1–8 (September 2021 – March 2026), totalling **1,316 students**. Graduation status is determined by group membership within each board (groups "7. Graduated", "7.1 Graduated" and "Graduated & ISA Payment done"). No external data sources are used.
+All student records are sourced from **Monday.com**, where each batch has a dedicated board. Data covers Batches 1–8 (September 2021 – March 2026), totalling **1,344 students**. Students who transferred between batches are counted in the batch board they are currently on. Graduation status is determined by group membership within each board (groups "7. Graduated", "7.1 Graduated" and "Graduated & ISA Payment done"). No external data sources are used.
 
 **Data quality notes by batch:**
 
@@ -30,10 +30,10 @@ All student records are sourced from **Monday.com**, where each batch has a dedi
 | B2 | 2022 | 280 | 150 | Nationality free-text entry (~17% non-standard); location as short city name |
 | B3 | Sep 2023 | 212 | 100 | Full individual-level data |
 | B4 | Jan 2024 | 118 | 40 | Full individual-level data |
-| B5 | Sep 2024 | 176 | 98 | Full individual-level data |
-| B6 | Mar 2025 | 106 | 23 so far | Finishing — nominal end 14.09.2026; students on extensions still graduating |
+| B5 | Sep 2024 | 175 | 98 | Full individual-level data |
+| B6 | Mar 2025 | 103 | 23 so far | Finishing — nominal end 14.09.2026; students on extensions still graduating |
 | B7 | Sep 2025 | 136 | 17 so far | In progress — nominal end 13.12.2026 (15-month track); 12-month track already graduating, more graduates expected until early 2027 |
-| B8 | Mar 2026 | 82 | — | In progress (partial intake) |
+| B8 | Mar 2026 | 114 | — | In progress |
 
 Graduation rate applies to B1–B5 only. B6–B8 are not yet complete; their graduate counts are shown as "graduated so far" and excluded from headline totals.
 
