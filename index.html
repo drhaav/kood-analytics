@@ -178,6 +178,7 @@ tr:last-child td{border-bottom:none;}
   <div style="display:flex;gap:16px;font-size:11px;color:var(--tx2);margin-top:6px;margin-bottom:0;">
     <span class="leg-line"><span class="ld" style="background:#185FA5;"></span><span>Estonian nationals</span></span>
     <span class="leg-line"><span class="ld" style="background:var(--surface3);border:0.5px solid var(--bd);"></span><span>Non-Estonian</span></span>
+    <span class="leg-line"><span class="ld" style="background:#B4B2A9;"></span><span>Unknown</span></span>
     <span class="leg-line"><span style="width:18px;border-top:1.5px dashed var(--tx3);display:inline-block;vertical-align:middle;"></span><span>Lower data quality (B2)</span></span>
   </div>
 
@@ -575,14 +576,16 @@ function buildLegend(el,entries){
 function renderNatScale(){
   const wrap=document.getElementById('natScaleWrap');
   wrap.innerHTML=LB_NAT.map(b=>{
-    const nat=NAT[b], ee=nat.d[0], t=nat.t;
-    const eePct=Math.round(ee/t*100), nonPct=100-eePct;
+    const nat=NAT[b], ee=nat.d[0], unk=nat.d[5], t=nat.t, non=t-ee-unk; // blanks are Unknown, not non-Estonian
+    const w=n=>n/t*100, pct=n=>Math.round(w(n)); // unrounded widths; each label rounded from its own count
+    const eePct=pct(ee);
     const isCaveat=nat.caveat;
     return`<div class="scale-row">
       <span style="font-size:11px;font-weight:500;color:var(--tx3);font-family:var(--mono);">${b}</span>
       <div class="scale-bar${isCaveat?' caveat-bar':''}">
-        <div class="scale-seg" style="width:${eePct}%;background:${C_ESTONIAN};" title="Estonia: ${ee} (${eePct}%)"></div>
-        <div class="scale-seg" style="width:${nonPct}%;background:var(--surface3);" title="Non-Estonian: ${t-ee} (${nonPct}%)"></div>
+        <div class="scale-seg" style="width:${w(ee)}%;background:${C_ESTONIAN};" title="Estonia: ${ee} (${eePct}%)"></div>
+        <div class="scale-seg" style="width:${w(non)}%;background:var(--surface3);" title="Non-Estonian: ${non} (${pct(non)}%)"></div>
+        ${unk?`<div class="scale-seg" style="width:${w(unk)}%;background:${RC['Unknown']};" title="Unknown: ${unk} (${pct(unk)}%)"></div>`:''}
       </div>
       <span style="font-size:11px;color:var(--tx2);">${eePct}% Estonian${isCaveat?'<span style="font-size:10px;color:var(--tx3);margin-left:5px;" title="B2: free-text entry, lower coverage">⚠</span>':''}</span>
     </div>`;
@@ -1039,9 +1042,10 @@ function buildYoungCharts(c,ov,col){
 function buildEasternCharts(c,ov,col){
   const totalEast=DD_EASTERN.reduce((a,b)=>a+b,0);
   const eastPct=DD_EASTERN_PCT;
+  const eastAvg=Math.round(eastPct.reduce((a,b)=>a+b,0)/eastPct.length);
   document.getElementById('dd-hero-eastern').innerHTML=
     ddCard('Total Eastern Estonia students (B1–'+LB.length+')',totalEast,'Narva, Jõhvi, Kohtla-Järve, Sillamäe…',col)+
-    ddCard('Average share',Math.round(eastPct.reduce((a,b)=>a+b,0)/eastPct.length)+'%','of each batch across B1–B'+LB.length)+
+    ddCard('Average share',eastAvg+'%','of each batch across B1–B'+LB.length)+
     ddCard('B1 peak share','23%','highest Eastern share recorded')+
     ddCard('Avg enrolment age','25.3y','vs 27.1y overall (−1.8y)');
 
@@ -1052,7 +1056,7 @@ function buildEasternCharts(c,ov,col){
       {label:'Eastern %',type:'line',data:eastPct,borderColor:col,backgroundColor:col,pointBackgroundColor:col,pointRadius:5,pointHoverRadius:7,tension:0.3,fill:false,borderWidth:2.5,yAxisID:'y2',order:1}
     ]},
     options:{responsive:true,maintainAspectRatio:false,layout:{padding:{bottom:30}},
-      plugins:{legend:{display:false},annotation:{annotations:{avg:{type:'line',yMin:16,yMax:16,borderColor:c.tx3,borderWidth:1,borderDash:[4,4],yScaleID:'y2',label:{content:'16% avg',display:true,position:'end',color:c.tx3,font:{size:10},backgroundColor:'transparent'}}}},
+      plugins:{legend:{display:false},annotation:{annotations:{avg:{type:'line',yMin:eastAvg,yMax:eastAvg,borderColor:c.tx3,borderWidth:1,borderDash:[4,4],yScaleID:'y2',label:{content:eastAvg+'% avg',display:true,position:'end',color:c.tx3,font:{size:10},backgroundColor:'transparent'}}}},
         tooltip:{mode:'index',callbacks:{label:ctx=>ctx.dataset.label==='Eastern %'?` Eastern: ${ctx.parsed.y}%`:` Eastern students: ${ctx.parsed.y}`}}},
       scales:{x:{ticks:{color:c.tx3,padding:4},grid:{display:false}},
         y:{ticks:{color:c.tx3},grid:{color:c.grid},title:{display:true,text:'Eastern students',color:c.tx3,font:{size:11}}},
