@@ -20,7 +20,7 @@ The dashboard is organised into three tabs, each answering a distinct question:
 
 ## Data source
 
-All student records are sourced from **Monday.com**, where each batch has a dedicated board. Data covers Batches 1–8 (September 2021 – March 2026), totalling **1,316 students**. Graduation status is determined by group membership within each board (groups "7. Graduated" and "Graduated & ISA Payment done"). No external data sources are used.
+All student records are sourced from **Monday.com**, where each batch has a dedicated board. Data covers Batches 1–8 (September 2021 – March 2026), totalling **1,316 students**. Graduation status is determined by group membership within each board (groups "7. Graduated", "7.1 Graduated" and "Graduated & ISA Payment done"). No external data sources are used.
 
 **Data quality notes by batch:**
 
@@ -31,11 +31,19 @@ All student records are sourced from **Monday.com**, where each batch has a dedi
 | B3 | Sep 2023 | 212 | 100 | Full individual-level data |
 | B4 | Jan 2024 | 118 | 40 | Full individual-level data |
 | B5 | Sep 2024 | 176 | 98 | Full individual-level data |
-| B6 | Mar 2025 | 106 | — | In progress |
-| B7 | Sep 2025 | 136 | — | In progress |
+| B6 | Mar 2025 | 106 | 23 so far | Finishing — nominal end 14.09.2026; students on extensions still graduating |
+| B7 | Sep 2025 | 136 | 17 so far | In progress — nominal end 13.12.2026 (15-month track); 12-month track already graduating, more graduates expected until early 2027 |
 | B8 | Mar 2026 | 82 | — | In progress (partial intake) |
 
-Graduation rate applies to B1–B5 only. B6–B8 are active cohorts.
+Graduation rate applies to B1–B5 only. B6–B8 are not yet complete; their graduate counts are shown as "graduated so far" and excluded from headline totals.
+
+**Batch status values** (`BM[n].st` in `index.html`):
+
+| Status | Meaning |
+|---|---|
+| Complete | Graduation is final; the batch counts towards graduation-rate figures (`cg:true`) |
+| Finishing | Past the nominal last day of studies, but students on extensions or exceptions are still graduating |
+| In progress | Before the nominal last day of studies; some students (e.g. shorter-track) may already have graduated |
 
 ---
 
@@ -61,7 +69,7 @@ Age is calculated as **age at batch start date**, not current age. A student is 
 
 ### Graduation rate
 
-A student is counted as graduated if they appear in group "7. Graduated" **or** the post-graduation group "Graduated & ISA Payment done" within their batch board at the time of data extraction (October 2026). The second group holds students who graduated and have since completed their ISA repayment; they are graduates and are counted as such. Students still active, on study leave, or who left without completing are not counted as graduates. Rates are only reported for B1–B5, where cohorts have had sufficient time to complete.
+A student is counted as graduated if they appear in group "7. Graduated" (from B7 onwards also "7.1 Graduated (Full-Stack Proficiency)") **or** the post-graduation group "Graduated & ISA Payment done" within their batch board at the time of data extraction (October 2026). The second group holds students who graduated and have since completed their ISA repayment; they are graduates and are counted as such. Students still active, on study leave, or who left without completing are not counted as graduates. Rates are only reported for B1–B5, where cohorts have had sufficient time to complete. B6 and B7 show graduates so far in the batch drill-downs, labelled as not final.
 
 ### Cross-tab analysis (Deep Dives tab)
 

@@ -339,7 +339,7 @@ const C_ESTONIAN = '#185FA5'; // Estonian nationals bar fill
    2. Append to YEARS:    'Sep 2026'  (batch start month + year)
    3. Append to LB_NAT:  'B9'        (skip if no nationality data)
    4. Add to GEO:         9:{t:NNN, g:GGG, cg:false, r:[TH,E,S,W,I,U]}
-                          t=enrolled  g=graduated (0 if in progress)
+                          t=enrolled  g=graduated so far (keep in sync with BM.grad)
                           cg=false until cohort is complete
                           r=[T&H, Eastern, Southern, W.Estonia, Intl, Unknown]
    5. Add to AGE:         9:{t:NNN, nd:NN, b:[u21,2124,2529,3039,40p],
@@ -349,7 +349,9 @@ const C_ESTONIAN = '#185FA5'; // Estonian nationals bar fill
    6. Add to GEN:         9:{t:NNN, g:[male,female,other]}
    7. Add to NAT:         B9:{d:[EE,RU,UA,EU,ROW,UNK], t:NNN, dist:NN, caveat:false}
                           d=counts in group order [Estonia,Russia,Ukraine,EU,World,Unk]
-   8. Add to BM:          9:{grad:0, cg:false}   (update grad+cg when cohort completes)
+   8. Add to BM:          9:{grad:0, cg:false, st:'active', end:'DD.MM.YYYY', note:''}
+                          st: 'active' → 'finishing' after nominal end date → 'complete'
+                          (set cg:true together with st:'complete')
    9. Add to INTAKE_LINE: append annual intake figure (shared across two batches per year)
   10. Add to INTAKE_LBL: append display label e.g. '300 (2026)'
   11. Add to INTAKE_R/HR: append 5,7 if new year, or 0,0 if same year as previous batch
@@ -368,7 +370,7 @@ const YEARS   = ['2021','2022','2023','Jan 2024','Sep 2024','Mar 2025','Sep 2025
 
 /* ── Geography ──────────────────────────────────────────────────────────
    r: [T&H, Eastern, Southern, W.Estonia, International, Unknown]
-   t: total enrolled   g: graduated   cg: cohort complete (graduation final)
+   t: total enrolled   g: graduated so far   cg: cohort complete (graduation final)
 */
 const RK = Object.keys(RC);
 const GEO = {
@@ -377,8 +379,8 @@ const GEO = {
   3:{t:212,g:100,cg:true, r:[ 86,23,55, 7,16,25]},
   4:{t:118,g:40, cg:true, r:[ 58,19,26, 5, 7, 3]},
   5:{t:176,g:98, cg:true, r:[ 81,22,46,14, 8, 5]},
-  6:{t:106,g:0,  cg:false,r:[ 74,15,10, 3, 3, 1]},
-  7:{t:136,g:0,  cg:false,r:[ 72,21,24, 6, 6, 7]},
+  6:{t:106,g:23, cg:false,r:[ 74,15,10, 3, 3, 1]},
+  7:{t:136,g:17, cg:false,r:[ 72,21,24, 6, 6, 7]},
   8:{t:112,g:0,  cg:false,r:[ 61, 7,28,14, 2, 0]},
 };
 // Annual intake line: one figure per calendar year, repeated for two-batch years
@@ -437,13 +439,22 @@ const NAT_LD = {'Russia':[],'Ukraine':[5,4],'EU (other)':[9,3],'Rest of world':[
 const NAT_DISTINCT = [17,17,10,17,13,17,13]; // distinct nationality count B2–B8
 
 /* ── Batch metadata ─────────────────────────────────────────────────────
-   grad: graduated count   cg: cohort complete
+   grad: graduated so far   cg: cohort complete (graduation rate final)
+   st:   batch status — 'complete' | 'finishing' | 'active'
+         finishing = past nominal end date, students on extensions still graduating
+   end:  nominal last day of studies   note: batch-specific status note (optional)
 */
 const BM = {
-  1:{grad:99, cg:true}, 2:{grad:150,cg:true}, 3:{grad:100,cg:true},
-  4:{grad:40, cg:true}, 5:{grad:98, cg:true},
-  6:{grad:0,cg:false},  7:{grad:0,cg:false},  8:{grad:0,cg:false},
+  1:{grad:99, cg:true, st:'complete'}, 2:{grad:150,cg:true, st:'complete'},
+  3:{grad:100,cg:true, st:'complete'}, 4:{grad:40, cg:true, st:'complete'},
+  5:{grad:98, cg:true, st:'complete'},
+  6:{grad:23, cg:false,st:'finishing',end:'14.09.2026',
+     note:'Students on extensions and exceptions are still completing, so further graduates are expected.'},
+  7:{grad:17, cg:false,st:'active',   end:'13.12.2026',
+     note:'Nominal end date applies to the 15-month track; students on the 12-month track have already started graduating. More graduates are expected until early 2027.'},
+  8:{grad:0,  cg:false,st:'active'},
 };
+const BM_STATUS = {complete:'Complete', finishing:'Finishing', active:'In progress'};
 
 /* ── Deep Dives — per-batch segment counts ──────────────────────────────
    All arrays indexed B1–B8. null = data not available for that batch.
@@ -774,31 +785,41 @@ function renderNatDet(bl){
     <tbody>${rows}</tbody></table>${cavHtml}`;
 }
 
+/* Batch status cards + note for detail panels (t: enrolled, g: graduated so far) */
+function batchStatus(n,t,g){
+  const bm=BM[n], done=bm.cg, pct=Math.round(g/t*100);
+  const cards=[`<div class="card"><div class="card-label">Total students</div><div class="card-value">${t}</div></div>`];
+  if(done) cards.push(
+    `<div class="card"><div class="card-label">Graduated</div><div class="card-value green">${g}</div></div>`,
+    `<div class="card"><div class="card-label">Non-graduated</div><div class="card-value red">${t-g}</div></div>`,
+    `<div class="card"><div class="card-label">Grad rate</div><div class="card-value green">${pct}%</div></div>`);
+  else{
+    if(g>0) cards.push(`<div class="card"><div class="card-label">Graduated so far</div><div class="card-value green">${g}</div></div>`);
+    cards.push(`<div class="card"><div class="card-label">Status</div><div class="card-value">${BM_STATUS[bm.st]}</div></div>`);
+  }
+  const meta=`<div class="det-cards" style="grid-template-columns:repeat(${cards.length},minmax(0,1fr));">${cards.join('')}</div>`;
+  let note='';
+  if(!done){
+    const endTxt=bm.end?(bm.st==='finishing'?`passed its nominal end date (${bm.end})`:`is in progress — nominal end date ${bm.end}`):'is still in progress';
+    const soFar=g>0?` ${g} graduated so far (${pct}% of enrolled).`:'';
+    note=`<p class="note">Batch ${n} ${endTxt}.${soFar}${bm.note?' '+bm.note:''} ${g>0?'Graduation rate is not final and is excluded from B1–B5 totals.':'Graduation rate not applicable yet.'}</p>`;
+  }
+  return {meta,note};
+}
+
 function renderGeoDet(n,dId){
-  const b=GEO[n], gr=b.cg?Math.round(b.g/b.t*100):null, cols=b.cg?4:2;
-  const meta=`<div class="det-cards" style="grid-template-columns:repeat(${cols},minmax(0,1fr));">
-    <div class="card"><div class="card-label">Total students</div><div class="card-value">${b.t}</div></div>
-    ${b.cg?`<div class="card"><div class="card-label">Graduated</div><div class="card-value green">${b.g}</div></div>
-    <div class="card"><div class="card-label">Non-graduated</div><div class="card-value red">${b.t-b.g}</div></div>`:''}
-    <div class="card"><div class="card-label">${b.cg?'Grad rate':'Status'}</div><div class="card-value ${b.cg?'green':''}">${b.cg?gr+'%':'In progress'}</div></div>
-  </div>`;
+  const b=GEO[n], {meta,note}=batchStatus(n,b.t,b.g);
   const rows=RK.map((r,i)=>{const cnt=b.r[i],pct=Math.round(cnt/b.t*100);return`<tr>
     <td><span class="ld" style="background:${RC[r]};margin-right:7px;vertical-align:middle;display:inline-block;"></span>${r}</td>
     <td style="text-align:right;">${cnt}</td><td style="text-align:right;font-weight:500;">${pct}%</td>
     <td class="bar-cell" style="width:120px;padding-right:12px;"><div style="width:${Math.max(pct,1)}%;background:${RC[r]};"></div></td></tr>`;}).join('');
   document.getElementById(dId).innerHTML=`${meta}<table><thead><tr><th>Region</th><th style="text-align:right;">Students</th><th style="text-align:right;">Share</th><th></th></tr></thead>
-    <tbody>${rows}</tbody></table>${!b.cg?`<p class="note">Batch ${n} is still in progress — graduation rate not applicable yet.</p>`:''}`;
+    <tbody>${rows}</tbody></table>${note}`;
 }
 
 function renderDemoDet(n,dId){
-  const ba=AGE[n],bg=GEN[n],bm=BM[n],gr=bm.cg?Math.round(bm.grad/ba.t*100):null,cols=bm.cg?4:2;
+  const ba=AGE[n],bg=GEN[n],{meta,note}=batchStatus(n,ba.t,BM[n].grad);
   const valid=ba.b.reduce((a,x)=>a+x,0), hasAge=ba.nd<ba.t;
-  const meta=`<div class="det-cards" style="grid-template-columns:repeat(${cols},minmax(0,1fr));">
-    <div class="card"><div class="card-label">Total students</div><div class="card-value">${ba.t}</div></div>
-    ${bm.cg?`<div class="card"><div class="card-label">Graduated</div><div class="card-value green">${bm.grad}</div></div>
-    <div class="card"><div class="card-label">Non-graduated</div><div class="card-value red">${ba.t-bm.grad}</div></div>`:''}
-    <div class="card"><div class="card-label">${bm.cg?'Grad rate':'Status'}</div><div class="card-value ${bm.cg?'green':''}">${bm.cg?gr+'%':'In progress'}</div></div>
-  </div>`;
   const ageHtml=hasAge?`<div class="det-cards" style="grid-template-columns:repeat(4,minmax(0,1fr));margin-bottom:10px;">
     <div class="card"><div class="card-label">Avg age</div><div class="card-value">${ba.st.avg}</div></div>
     <div class="card"><div class="card-label">Median</div><div class="card-value">${ba.st.med}</div></div>
@@ -818,7 +839,7 @@ function renderDemoDet(n,dId){
   document.getElementById(dId).innerHTML=`${meta}<div class="sub-sec">Age</div>${ageHtml}
     <div class="sub-sec" style="margin-top:16px;">Gender</div>
     <table><thead><tr><th>Gender</th><th style="text-align:right;">Students</th><th style="text-align:right;">Share</th><th></th></tr></thead>
-    <tbody>${gRows}</tbody></table>${!bm.cg?`<p class="note" style="margin-top:8px;">Batch ${n} is still in progress.</p>`:''}`;
+    <tbody>${gRows}</tbody></table>${note}`;
 }
 
 /* ══════════════════════════════════════════════════════ DEEP DIVES ══════ */
