@@ -577,14 +577,15 @@ function renderNatScale(){
   const wrap=document.getElementById('natScaleWrap');
   wrap.innerHTML=LB_NAT.map(b=>{
     const nat=NAT[b], ee=nat.d[0], unk=nat.d[5], t=nat.t, non=t-ee-unk; // blanks are Unknown, not non-Estonian
-    const eePct=Math.round(ee/t*100), unkPct=Math.round(unk/t*100), nonPct=100-eePct-unkPct;
+    const w=n=>n/t*100, pct=n=>Math.round(w(n)); // unrounded widths; each label rounded from its own count
+    const eePct=pct(ee);
     const isCaveat=nat.caveat;
     return`<div class="scale-row">
       <span style="font-size:11px;font-weight:500;color:var(--tx3);font-family:var(--mono);">${b}</span>
       <div class="scale-bar${isCaveat?' caveat-bar':''}">
-        <div class="scale-seg" style="width:${eePct}%;background:${C_ESTONIAN};" title="Estonia: ${ee} (${eePct}%)"></div>
-        <div class="scale-seg" style="width:${nonPct}%;background:var(--surface3);" title="Non-Estonian: ${non} (${nonPct}%)"></div>
-        ${unk?`<div class="scale-seg" style="width:${unkPct}%;background:${RC['Unknown']};" title="Unknown: ${unk} (${unkPct}%)"></div>`:''}
+        <div class="scale-seg" style="width:${w(ee)}%;background:${C_ESTONIAN};" title="Estonia: ${ee} (${eePct}%)"></div>
+        <div class="scale-seg" style="width:${w(non)}%;background:var(--surface3);" title="Non-Estonian: ${non} (${pct(non)}%)"></div>
+        ${unk?`<div class="scale-seg" style="width:${w(unk)}%;background:${RC['Unknown']};" title="Unknown: ${unk} (${pct(unk)}%)"></div>`:''}
       </div>
       <span style="font-size:11px;color:var(--tx2);">${eePct}% Estonian${isCaveat?'<span style="font-size:10px;color:var(--tx3);margin-left:5px;" title="B2: free-text entry, lower coverage">⚠</span>':''}</span>
     </div>`;
