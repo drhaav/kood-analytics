@@ -62,7 +62,7 @@ Student addresses are classified into five regions using keyword matching agains
 | W. Estonia & Islands | Pärnu, Haapsalu, Rapla, Saaremaa, Hiiumaa, Rakvere, Järvamaa (Paide, Türi) |
 | International | Addresses outside Estonia (Ukraine, Latvia, Germany, Finland, etc.) |
 
-Classification is deterministic and applied consistently across all batches. B1 uses short city names (lower precision); B2 uses partial address strings; B3–B8 use full structured addresses (higher precision). B9 addresses end in a county name ("Harjumaa", "Ida-Virumaa", …), so B9 is classified by that county suffix using the same region mapping (Lääne-Virumaa and Järvamaa → W. Estonia & Islands); addresses ending in a non-Estonian region are International. One manual override: an address with a Harjumaa street name but "Conakry, Conakry Region" as city/region is treated as a data-entry error and counted as Tallinn & Harjumaa. The "Unknown" category captures records with missing or unparseable addresses.
+Classification is deterministic and applied consistently across all batches. B1 uses short city names (lower precision); B2 uses partial address strings; B3–B8 use full structured addresses (higher precision). B9 addresses end in a county name ("Harjumaa", "Ida-Virumaa", …), so B9 is classified by that county suffix using the same region mapping (Lääne-Virumaa and Järvamaa → W. Estonia & Islands); addresses ending in a non-Estonian region are International. One address with inconsistent city/region fields was manually assigned to Tallinn & Harjumaa. The "Unknown" category captures records with missing or unparseable addresses.
 
 ### Age calculation
 
