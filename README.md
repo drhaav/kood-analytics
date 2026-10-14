@@ -1,6 +1,6 @@
 # kood/Jõhvi — Cohort Analysis Dashboard
 
-An interactive single-page dashboard analysing student enrolment, demographics, and graduation outcomes across all eight batches of the [kood/Jõhvi](https://kood.tech) coding school (2021–2026). Built for FutureCoders OÜ as an internal strategic tool.
+An interactive single-page dashboard analysing student enrolment, demographics, and graduation outcomes across all nine batches of the [kood/Jõhvi](https://kood.tech) coding school (2021–2026). Built for FutureCoders OÜ as an internal strategic tool.
 
 **Live:** [drhaav.github.io/kood-analytics](https://drhaav.github.io/kood-analytics/)
 
@@ -20,7 +20,7 @@ The dashboard is organised into three tabs, each answering a distinct question:
 
 ## Data source
 
-All student records are sourced from **Monday.com**, where each batch has a dedicated board. Data covers Batches 1–8 (September 2021 – March 2026), totalling **1,344 students**. Students who transferred between batches are counted in the batch board they are currently on. Graduation status is determined by group membership within each board (groups "7. Graduated", "7.1 Graduated" and "Graduated & ISA Payment done"). No external data sources are used.
+All student records are sourced from **Monday.com**, where each batch has a dedicated board. Data covers Batches 1–9 (September 2021 – September 2026), totalling **1,434 students**. Students who transferred between batches are counted in the batch board they are currently on. Graduation status is determined by group membership within each board (groups "7. Graduated", "7.1 Graduated" and "Graduated & ISA Payment done"). No external data sources are used.
 
 **Data quality notes by batch:**
 
@@ -34,8 +34,9 @@ All student records are sourced from **Monday.com**, where each batch has a dedi
 | B6 | Mar 2025 | 103 | 23 so far | Finishing — nominal end 14.09.2026; students on extensions still graduating |
 | B7 | Sep 2025 | 136 | 17 so far | In progress — nominal end 13.12.2026 (15-month track); 12-month track already graduating, more graduates expected until early 2027 |
 | B8 | Mar 2026 | 114 | — | In progress |
+| B9 | Sep 2026 | 90 | — | In progress — started 30.09.2026; two tracks (see below). 1 further student pending approval, not yet counted. Nationality blank for 8 of 90 |
 
-Graduation rate applies to B1–B5 only. B6–B8 are not yet complete; their graduate counts are shown as "graduated so far" and excluded from headline totals.
+Graduation rate applies to B1–B5 only. B6–B9 are not yet complete; their graduate counts are shown as "graduated so far" and excluded from headline totals.
 
 **Batch status values** (`BM[n].st` in `index.html`):
 
@@ -61,7 +62,7 @@ Student addresses are classified into five regions using keyword matching agains
 | W. Estonia & Islands | Pärnu, Haapsalu, Rapla, Saaremaa, Hiiumaa, Rakvere, Järvamaa (Paide, Türi) |
 | International | Addresses outside Estonia (Ukraine, Latvia, Germany, Finland, etc.) |
 
-Classification is deterministic and applied consistently across all batches. B1 uses short city names (lower precision); B2 uses partial address strings; B3–B8 use full structured addresses (higher precision). The "Unknown" category captures records with missing or unparseable addresses.
+Classification is deterministic and applied consistently across all batches. B1 uses short city names (lower precision); B2 uses partial address strings; B3–B8 use full structured addresses (higher precision). B9 addresses end in a county name ("Harjumaa", "Ida-Virumaa", …), so B9 is classified by that county suffix using the same region mapping (Lääne-Virumaa and Järvamaa → W. Estonia & Islands); addresses ending in a non-Estonian region are International. One manual override: an address with a Harjumaa street name but "Conakry, Conakry Region" as city/region is treated as a data-entry error and counted as Tallinn & Harjumaa. The "Unknown" category captures records with missing or unparseable addresses.
 
 ### Age calculation
 
@@ -70,6 +71,16 @@ Age is calculated as **age at batch start date**, not current age. A student is 
 ### Graduation rate
 
 A student is counted as graduated if they appear in group "7. Graduated" (from B7 onwards also "7.1 Graduated (Full-Stack Proficiency)") **or** the post-graduation group "Graduated & ISA Payment done" within their batch board at the time of data extraction (October 2026). The second group holds students who graduated and have since completed their ISA repayment; they are graduates and are counted as such. Students still active, on study leave, or who left without completing are not counted as graduates. Rates are only reported for B1–B5, where cohorts have had sufficient time to complete. B6 and B7 show graduates so far in the batch drill-downs, labelled as not final.
+
+**Two-track batches (B9 onwards).** B9 runs two tracks: *AI-ready Product Engineer* (15 months, nominal end 31.12.2027) and *Coding fundamentals and back-end development* (6 months, nominal end 31.03.2027). A student may finish the short track and continue on the long one, but doesn't have to. Group membership alone can't capture this, because a student who continues moves back into an active group. Graduates are therefore counted **once per student, by the highest track completed**, using the board's per-track status columns:
+
+| Bucket | Rule |
+|---|---|
+| Full-track graduate | In "6. Graduated (AI-ready Product Engineer)" or "Graduated & ISA Payment done", or "Product Engineering" = Done |
+| Short-track graduate | "Coding fund+ back-end" = Done (or in "6.1 Graduated"), **and not** a full-track graduate |
+| Graduated (any track) | Full + short-track-only — no double counting |
+
+This relies on "Coding fund+ back-end" staying Done when a student continues to the long track. Rates use all enrolled students as the denominator. Any headline figure that combines tracks is labelled "any track", because B1–B5 headline rates are full-programme completions. B7/B8 (which have "7.1 Graduated (Full-Stack Proficiency)") currently add both groups; moving them to the same rule is a separate change.
 
 ### Cross-tab analysis (Deep Dives tab)
 
@@ -81,7 +92,7 @@ The region × age × gender cross-tab is based on **individual-level records fro
 
 **Geography** — Tallinn & Harjumaa consistently accounts for 45–55% of each batch. Eastern Estonia contributes a stable 11–17% from B3 onwards (higher in B1–B2). Southern Estonia has grown as a share. International students peaked at 14% in B2 (reflecting the 2022 Ukrainian refugee cohort) and stabilised at 3–6%.
 
-**Demographics** — The overall female share is 22%, but volatile across batches (11–29%). There is no structural trend of improvement or decline. Average enrolment age is 27–29 across all batches. The under-21 bracket is stable at 16–20% of each batch.
+**Demographics** — The overall female share is 23%, but volatile across batches (11–29%). There is no structural trend of improvement or decline. Average enrolment age is 27–29 across all batches. The under-21 bracket was stable at 16–20% of each batch through B7; B8 (8%) and B9 (11%) are the two lowest batches recorded.
 
 **Female students** — Graduate at 46% vs 50% for males across B1–B5 (487 total graduates) — no meaningful difference. Female students are underrepresented in the under-21 bracket and overrepresented in the 25–34 range, suggesting they skew toward career-changers rather than recent school leavers. No region stands out as markedly more or less female-diverse across B3–B8; an earlier finding that International students had the highest female share (27%) was specific to the B2 Ukrainian refugee cohort and does not hold across subsequent batches.
 
@@ -96,7 +107,7 @@ The region × age × gender cross-tab is based on **individual-level records fro
 The Deep Dives tab examines three segments in detail — Female students, Under-21, and Eastern Estonia — each with:
 
 - A hero KPI row (totals, peak/low, notable averages)
-- A trend chart showing count and share per batch (B1–B8)
+- A trend chart showing count and share per batch (B1–B9)
 - Cross-tab charts (region breakdown, age profile, gender split) based on B3–B8 pooled individual data (n=637)
 - Written findings cards distinguishing confirmed signals from directional observations
 - Explicit data coverage caveats per segment
