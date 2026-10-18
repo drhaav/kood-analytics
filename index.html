@@ -54,7 +54,8 @@ nav{display:flex;gap:0;border-bottom:1px solid var(--bd);margin-bottom:28px;}
 .card-value.green{color:#2d8a4e;} .card-value.red{color:#b03030;}
 .sec{font-size:10px;font-weight:500;color:var(--tx3);text-transform:uppercase;letter-spacing:.1em;margin:28px 0 8px;display:flex;align-items:baseline;gap:8px;}
 .sec-sub{font-weight:400;text-transform:none;letter-spacing:0;font-size:11px;color:var(--tx3);}
-.leg{display:flex;flex-wrap:wrap;gap:14px;font-size:12px;color:var(--tx2);margin-bottom:6px;}
+.leg{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:11px;color:var(--tx3);margin:2px 0 0;}
+.leg + .sec,.leg + .caveat + .sec{margin-top:52px !important;}
 .ld{width:9px;height:9px;border-radius:2px;display:inline-block;flex-shrink:0;}
 .leg-line{display:flex;align-items:center;gap:6px;}
 .chart-wrap{position:relative;width:100%;}
@@ -137,10 +138,10 @@ tr:last-child td{border-bottom:none;}
 <div id="pane-geo">
   <div class="sec" data-anchor="enrolment">Students enrolled per batch by region <span class="sec-sub">— annual intake overlay (right axis)</span></div>
   <div class="chart-wrap" style="height:280px;"><canvas id="cGeoBar" role="img" aria-label="Stacked bar chart of enrollment per batch by region with annual intake overlay"></canvas></div>
-  <div class="leg" id="regLeg" style="margin-top:10px;"></div>
+  <div class="leg" id="regLeg"></div>
   <div class="sec" data-anchor="regional-mix" style="margin-top:24px;">Regional mix % — trends across all batches</div>
   <div class="chart-wrap" style="height:260px;"><canvas id="cGeoLine" role="img" aria-label="Line chart of regional mix percentage across batches"></canvas></div>
-  <div class="leg" id="geoLineLeg" style="margin-top:8px;"></div>
+  <div class="leg" id="geoLineLeg"></div>
   <div class="sec" data-anchor="breakdown" style="margin-top:24px;">Batch-level breakdown</div>
   <div class="btabs" id="geoTabs"></div>
   <div id="geoDet"></div>
@@ -151,17 +152,17 @@ tr:last-child td{border-bottom:none;}
 
   <div class="sec" data-anchor="age">Students enrolled per batch by age bracket <span class="sec-sub">— avg age overlay (right axis)</span></div>
   <div class="chart-wrap" style="height:280px;"><canvas id="cAgeBar" role="img" aria-label="Stacked bar chart of enrollment by age bracket with average age overlay"></canvas></div>
-  <div class="leg" id="ageLeg" style="margin-top:10px;"></div>
+  <div class="leg" id="ageLeg"></div>
   <div class="sec" data-anchor="age-mix" style="margin-top:24px;">Age bracket mix % — trends across all batches</div>
   <div class="chart-wrap" style="height:250px;"><canvas id="cAgeLine" role="img" aria-label="Line chart of age bracket percentage across batches"></canvas></div>
-  <div class="leg" id="ageLineLeg" style="margin-top:8px;"></div>
+  <div class="leg" id="ageLineLeg"></div>
 
   <div class="sec" data-anchor="gender">Students enrolled per batch by gender <span class="sec-sub">— female share overlay (right axis)</span></div>
   <div class="chart-wrap" style="height:260px;"><canvas id="cGenBar" role="img" aria-label="Stacked bar chart of enrollment by gender with female share overlay"></canvas></div>
-  <div class="leg" id="genLeg" style="margin-top:10px;margin-bottom:0px;"></div>
+  <div class="leg" id="genLeg"></div>
   <div class="sec" data-anchor="gender-mix" style="margin-top:24px;">Gender mix % — trends across all batches</div>
   <div class="chart-wrap" style="height:220px;"><canvas id="cGenLine" role="img" aria-label="Line chart of gender percentage across batches"></canvas></div>
-  <div class="leg" id="genLineLeg" style="margin-top:8px;"></div>
+  <div class="leg" id="genLineLeg"></div>
 
   <!-- ── AGE & GENDER BATCH BREAKDOWN ── -->
   <div class="sec" data-anchor="breakdown" style="margin-top:32px;border-top:0.5px solid var(--bd);padding-top:28px;">Age &amp; gender batch-level breakdown</div>
@@ -189,7 +190,7 @@ tr:last-child td{border-bottom:none;}
 
   <div class="sec" data-anchor="nationality-mix" style="margin-top:28px;">Non-Estonian nationality mix % <span class="sec-sub">— distinct nationality count (right axis, dotted)</span></div>
   <div class="chart-wrap" style="height:290px;"><canvas id="cNatLine" role="img" aria-label="Line chart of non-Estonian nationality percentages across batches B2 to B9, with distinct nationality count as a dotted right-axis line"></canvas></div>
-  <div class="leg" id="natLeg" style="margin-top:10px;"></div>
+  <div class="leg" id="natLeg"></div>
   <div class="caveat" id="natCaveat" style="margin-top:10px;"></div>
 
   <div class="sec" data-anchor="nationality-breakdown" style="margin-top:24px;">Nationality breakdown per batch</div>
@@ -623,7 +624,7 @@ const twoTierPlugin={id:'twoTier',afterDraw(chart){
 Chart.register(twoTierPlugin);
 const xS=()=>{const c=gc();return{ticks:{color:c.tx3,maxRotation:0,padding:4},grid:{display:false}};};
 const yG=()=>{const c=gc();return{ticks:{color:c.tx3},grid:{color:c.grid}};};
-const base={responsive:true,maintainAspectRatio:false,layout:{padding:{bottom:30,right:24}}};
+const base={responsive:true,maintainAspectRatio:false,layout:{padding:{bottom:16,right:24}}};
 
 /* ══════════════════════════════════════════════════ BUILD ALL CHARTS ══ */
 function buildCharts(){
@@ -648,7 +649,7 @@ function buildCharts(){
       borderColor:RC[r],backgroundColor:RC[r],pointBackgroundColor:RC[r],
       pointRadius:4,pointHoverRadius:6,tension:0.3,fill:false,borderWidth:2,borderDash:gd[i]||[]
     }))},options:{...base,plugins:{...plugBase,tooltip:{mode:'index',callbacks:{label:ctx=>` ${ctx.dataset.label}: ${ctx.parsed.y}%`}}},
-      scales:{y:{min:0,max:75,ticks:{color:c.tx3,callback:v=>v+'%'},grid:{color:c.grid}},x:xS()}}}));
+      scales:{y:{min:0,max:80,ticks:{color:c.tx3,stepSize:10,callback:v=>v+'%'},grid:{color:c.grid}},x:xS()}}}));
     buildLegend(document.getElementById('regLeg'),[...RK.map(r=>[r,RC[r]]),['— Annual intake (one dot/year)',ov,[]]]);
     buildLegend(document.getElementById('geoLineLeg'),[
       ['Tallinn & Harjumaa',RC['Tallinn & Harjumaa'],[]],['Eastern Estonia',RC['Eastern Estonia'],[5,4]],
