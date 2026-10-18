@@ -685,7 +685,7 @@ function buildCharts(){
         ticks:{color:c.tx3,maxRotation:0,autoSkip:false,padding:4,callback:function(v){
           const n=LB.findIndex((_,k)=>GEO_X[k+1]===v)+1,g=YEAR_GROUPS.find(g=>g.b.includes(n));
           return g&&g.b.length>1&&this.chart.width>=600?`B${n} · ${batchMonth(n)}`:`B${n}`;}}},
-        y:{stacked:true,min:0,max:300,...yG(),title:{display:true,text:'Students',color:c.tx3,font:{size:11}}}}}}));
+        y:{stacked:true,min:0,max:Math.max(300,Math.ceil(Math.max(...YEAR_GROUPS.map(g=>g.t))/50)*50),...yG(),title:{display:true,text:'Students',color:c.tx3,font:{size:11}}}}}}));
     const gd=[null,[5,4],[9,3],[3,3],[6,3,2,3]];
     charts.push(new Chart(document.getElementById('cGeoLine'),{type:'line',data:{labels:LB,datasets:RK.slice(0,5).map((r,i)=>({
       label:r,data:Object.values(GEO).map(b=>Math.round(b.r[i]/b.t*100)),
