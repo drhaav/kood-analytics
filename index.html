@@ -78,6 +78,11 @@ tr:last-child td{border-bottom:none;}
 .methodology{background:var(--surface2);border:0.5px solid var(--bd);border-radius:8px;padding:14px 16px;font-size:11px;color:var(--tx3);line-height:1.65;margin-top:24px;}
 .methodology strong{font-weight:500;color:var(--tx2);}
 .hidden{display:none;}
+.sec[data-anchor]{scroll-margin-top:16px;}
+.sec-link{opacity:0;color:var(--tx3);text-decoration:none;font-weight:400;letter-spacing:0;transition:opacity .15s,color .15s;}
+.sec:hover .sec-link,.sec-link:focus{opacity:1;}
+.sec-link:hover{color:var(--accent);}
+.sec-link.copied::after{content:' link copied';text-transform:none;font-size:11px;}
 /* Deep Dives */
 .dd-seg-tabs{display:flex;gap:0;border-bottom:1px solid var(--bd);margin-bottom:24px;}
 .dd-seg-tab{padding:12px 20px 10px;font-size:13px;font-weight:400;color:var(--tx3);background:none;border:none;cursor:pointer;position:relative;letter-spacing:.01em;transition:color .15s;white-space:nowrap;}
@@ -130,13 +135,13 @@ tr:last-child td{border-bottom:none;}
 
 <!-- ════════════════════════════════════ GEOGRAPHY TAB ════════════════ -->
 <div id="pane-geo">
-  <div class="sec">Students enrolled per batch by region <span class="sec-sub">— annual intake overlay (right axis)</span></div>
+  <div class="sec" data-anchor="enrolment">Students enrolled per batch by region <span class="sec-sub">— annual intake overlay (right axis)</span></div>
   <div class="chart-wrap" style="height:280px;"><canvas id="cGeoBar" role="img" aria-label="Stacked bar chart of enrollment per batch by region with annual intake overlay"></canvas></div>
   <div class="leg" id="regLeg" style="margin-top:10px;"></div>
-  <div class="sec" style="margin-top:24px;">Regional mix % — trends across all batches</div>
+  <div class="sec" data-anchor="regional-mix" style="margin-top:24px;">Regional mix % — trends across all batches</div>
   <div class="chart-wrap" style="height:260px;"><canvas id="cGeoLine" role="img" aria-label="Line chart of regional mix percentage across batches"></canvas></div>
   <div class="leg" id="geoLineLeg" style="margin-top:8px;"></div>
-  <div class="sec" style="margin-top:24px;">Batch-level breakdown</div>
+  <div class="sec" data-anchor="breakdown" style="margin-top:24px;">Batch-level breakdown</div>
   <div class="btabs" id="geoTabs"></div>
   <div id="geoDet"></div>
 </div>
@@ -144,27 +149,27 @@ tr:last-child td{border-bottom:none;}
 <!-- ════════════════════════════════ DEMOGRAPHICS TAB ════════════════ -->
 <div id="pane-demo" class="hidden">
 
-  <div class="sec">Students enrolled per batch by age bracket <span class="sec-sub">— avg age overlay (right axis)</span></div>
+  <div class="sec" data-anchor="age">Students enrolled per batch by age bracket <span class="sec-sub">— avg age overlay (right axis)</span></div>
   <div class="chart-wrap" style="height:280px;"><canvas id="cAgeBar" role="img" aria-label="Stacked bar chart of enrollment by age bracket with average age overlay"></canvas></div>
   <div class="leg" id="ageLeg" style="margin-top:10px;"></div>
-  <div class="sec" style="margin-top:24px;">Age bracket mix % — trends across all batches</div>
+  <div class="sec" data-anchor="age-mix" style="margin-top:24px;">Age bracket mix % — trends across all batches</div>
   <div class="chart-wrap" style="height:250px;"><canvas id="cAgeLine" role="img" aria-label="Line chart of age bracket percentage across batches"></canvas></div>
   <div class="leg" id="ageLineLeg" style="margin-top:8px;"></div>
 
-  <div class="sec">Students enrolled per batch by gender <span class="sec-sub">— female share overlay (right axis)</span></div>
+  <div class="sec" data-anchor="gender">Students enrolled per batch by gender <span class="sec-sub">— female share overlay (right axis)</span></div>
   <div class="chart-wrap" style="height:260px;"><canvas id="cGenBar" role="img" aria-label="Stacked bar chart of enrollment by gender with female share overlay"></canvas></div>
   <div class="leg" id="genLeg" style="margin-top:10px;margin-bottom:0px;"></div>
-  <div class="sec" style="margin-top:24px;">Gender mix % — trends across all batches</div>
+  <div class="sec" data-anchor="gender-mix" style="margin-top:24px;">Gender mix % — trends across all batches</div>
   <div class="chart-wrap" style="height:220px;"><canvas id="cGenLine" role="img" aria-label="Line chart of gender percentage across batches"></canvas></div>
   <div class="leg" id="genLineLeg" style="margin-top:8px;"></div>
 
   <!-- ── AGE & GENDER BATCH BREAKDOWN ── -->
-  <div class="sec" style="margin-top:32px;border-top:0.5px solid var(--bd);padding-top:28px;">Age &amp; gender batch-level breakdown</div>
+  <div class="sec" data-anchor="breakdown" style="margin-top:32px;border-top:0.5px solid var(--bd);padding-top:28px;">Age &amp; gender batch-level breakdown</div>
   <div class="btabs" id="demoTabs"></div>
   <div id="demoDet"></div>
 
   <!-- ── NATIONALITY SECTION ── -->
-  <div class="sec" style="margin-top:36px;border-top:0.5px solid var(--bd);padding-top:28px;">Nationality</div>
+  <div class="sec" data-anchor="nationality" style="margin-top:36px;border-top:0.5px solid var(--bd);padding-top:28px;">Nationality</div>
 
   <div class="cards" style="grid-template-columns:repeat(4,minmax(0,1fr));">
     <div class="card"><div class="card-label">Estonian nationals (avg B2–B9)</div><div class="card-value">~81%</div></div>
@@ -173,7 +178,7 @@ tr:last-child td{border-bottom:none;}
     <div class="card"><div class="card-label">B1 nationality data</div><div class="card-value" style="font-size:14px;padding-top:4px;">Not collected</div></div>
   </div>
 
-  <div class="sec" style="margin-top:24px;">Estonian nationals vs non-Estonian <span class="sec-sub">— B2–B9 · dashed bar = lower data quality</span></div>
+  <div class="sec" data-anchor="nationality-share" style="margin-top:24px;">Estonian nationals vs non-Estonian <span class="sec-sub">— B2–B9 · dashed bar = lower data quality</span></div>
   <div id="natScaleWrap" style="margin-bottom:4px;"></div>
   <div style="display:flex;gap:16px;font-size:11px;color:var(--tx2);margin-top:6px;margin-bottom:0;">
     <span class="leg-line"><span class="ld" style="background:#185FA5;"></span><span>Estonian nationals</span></span>
@@ -182,12 +187,12 @@ tr:last-child td{border-bottom:none;}
     <span class="leg-line"><span style="width:18px;border-top:1.5px dashed var(--tx3);display:inline-block;vertical-align:middle;"></span><span>Lower data quality (B2)</span></span>
   </div>
 
-  <div class="sec" style="margin-top:28px;">Non-Estonian nationality mix % <span class="sec-sub">— distinct nationality count (right axis, dotted)</span></div>
+  <div class="sec" data-anchor="nationality-mix" style="margin-top:28px;">Non-Estonian nationality mix % <span class="sec-sub">— distinct nationality count (right axis, dotted)</span></div>
   <div class="chart-wrap" style="height:290px;"><canvas id="cNatLine" role="img" aria-label="Line chart of non-Estonian nationality percentages across batches B2 to B9, with distinct nationality count as a dotted right-axis line"></canvas></div>
   <div class="leg" id="natLeg" style="margin-top:10px;"></div>
   <div class="caveat" id="natCaveat" style="margin-top:10px;"></div>
 
-  <div class="sec" style="margin-top:24px;">Nationality breakdown per batch</div>
+  <div class="sec" data-anchor="nationality-breakdown" style="margin-top:24px;">Nationality breakdown per batch</div>
   <div class="btabs" id="natTabs"></div>
   <div id="natDet"></div>
 
@@ -204,9 +209,9 @@ tr:last-child td{border-bottom:none;}
 
   <div id="dd-pane-female">
     <div class="dd-hero" id="dd-hero-female"></div>
-    <div class="sec">Female share per batch — trend</div>
+    <div class="sec" data-anchor="trend">Female share per batch — trend</div>
     <div class="chart-wrap" style="height:240px;"><canvas id="cDDfemale"></canvas></div>
-    <div class="sec" style="margin-top:24px;">Where do female students come from? <span class="sec-sub">— region breakdown B3–B8 pooled (n=119)</span></div>
+    <div class="sec" data-anchor="regions" style="margin-top:24px;">Where do female students come from? <span class="sec-sub">— region breakdown B3–B8 pooled (n=119)</span></div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:4px;">
       <div>
         <div style="font-size:11px;color:var(--tx3);margin-bottom:4px;">Female students by region vs. overall</div>
@@ -217,7 +222,7 @@ tr:last-child td{border-bottom:none;}
         <div class="chart-wrap" style="height:200px;"><canvas id="cDDfemaleRegShare"></canvas></div>
       </div>
     </div>
-    <div class="sec" style="margin-top:24px;">Age profile <span class="sec-sub">— female vs overall (B2–B8)</span></div>
+    <div class="sec" data-anchor="age" style="margin-top:24px;">Age profile <span class="sec-sub">— female vs overall (B2–B8)</span></div>
     <div class="chart-wrap" style="height:220px;"><canvas id="cDDfemaleAge"></canvas></div>
     <div id="dd-findings-female" style="margin-top:24px;"></div>
     <div class="dd-caveat">Data coverage: gender recorded for all 1,434 students (B1–B9). Age bracket cross-tab based on B2–B8 aggregate data (n=1,125 with birthdates; 13 missing). Region cross-tab charts use the pre-B8-update individual pool (n=637, original 82 B8 students); the B8 trend charts above reflect the full 114-student cohort and are not yet reconciled with the cross-tab breakdown below. B9 is included in the trend charts only.</div>
@@ -225,9 +230,9 @@ tr:last-child td{border-bottom:none;}
 
   <div id="dd-pane-young" class="hidden">
     <div class="dd-hero" id="dd-hero-young"></div>
-    <div class="sec">Under-21 share per batch — trend</div>
+    <div class="sec" data-anchor="trend">Under-21 share per batch — trend</div>
     <div class="chart-wrap" style="height:240px;"><canvas id="cDDyoung"></canvas></div>
-    <div class="sec" style="margin-top:24px;">Where do under-21 students come from? <span class="sec-sub">— region breakdown B3–B8 pooled (n=84)</span></div>
+    <div class="sec" data-anchor="regions" style="margin-top:24px;">Where do under-21 students come from? <span class="sec-sub">— region breakdown B3–B8 pooled (n=84)</span></div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:4px;">
       <div>
         <div style="font-size:11px;color:var(--tx3);margin-bottom:4px;">Under-21 students by region vs. overall</div>
@@ -238,7 +243,7 @@ tr:last-child td{border-bottom:none;}
         <div class="chart-wrap" style="height:200px;"><canvas id="cDDyoungRegShare"></canvas></div>
       </div>
     </div>
-    <div class="sec" style="margin-top:24px;">Gender split <span class="sec-sub">— under-21 vs. overall (B2–B8)</span></div>
+    <div class="sec" data-anchor="gender" style="margin-top:24px;">Gender split <span class="sec-sub">— under-21 vs. overall (B2–B8)</span></div>
     <div class="chart-wrap" style="height:200px;"><canvas id="cDDyoungGen"></canvas></div>
     <div id="dd-findings-young" style="margin-top:24px;"></div>
     <div class="dd-caveat">Data coverage: age recorded for B2–B8 (n=1,125 with birthdates; 13 missing including 2 in B8). B1 excluded — no birthdates collected. Region cross-tab charts use the pre-B8-update individual pool (n=637); B8 trend charts reflect the full 114-student cohort; B9 (2 missing birthdates) is included in the trend charts only. Under-21 defined as age &lt;21 at batch start date.</div>
@@ -246,9 +251,9 @@ tr:last-child td{border-bottom:none;}
 
   <div id="dd-pane-eastern" class="hidden">
     <div class="dd-hero" id="dd-hero-eastern"></div>
-    <div class="sec">Eastern Estonia student count per batch — trend</div>
+    <div class="sec" data-anchor="trend">Eastern Estonia student count per batch — trend</div>
     <div class="chart-wrap" style="height:240px;"><canvas id="cDDeastern"></canvas></div>
-    <div class="sec" style="margin-top:24px;">Who are Eastern Estonia students? <span class="sec-sub">— age and gender profile vs. overall (B3–B8 pooled, n=76)</span></div>
+    <div class="sec" data-anchor="profile" style="margin-top:24px;">Who are Eastern Estonia students? <span class="sec-sub">— age and gender profile vs. overall (B3–B8 pooled, n=76)</span></div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:4px;">
       <div>
         <div style="font-size:11px;color:var(--tx3);margin-bottom:4px;">Age bracket distribution</div>
@@ -259,7 +264,7 @@ tr:last-child td{border-bottom:none;}
         <div class="chart-wrap" style="height:200px;"><canvas id="cDDeasternGen"></canvas></div>
       </div>
     </div>
-    <div class="sec" style="margin-top:24px;">Nationality mix <span class="sec-sub">— Eastern Estonia students B2–B8</span></div>
+    <div class="sec" data-anchor="nationality" style="margin-top:24px;">Nationality mix <span class="sec-sub">— Eastern Estonia students B2–B8</span></div>
     <div class="chart-wrap" style="height:200px;"><canvas id="cDDeasternNat"></canvas></div>
     <div id="dd-findings-eastern" style="margin-top:24px;"></div>
     <div class="dd-caveat">Eastern Estonia defined as students with addresses in Ida-Virumaa (Narva, Jõhvi, Kohtla-Järve, Sillamäe, Ahtme, Kiviõli, Püssi). Trend chart reflects updated data: B9 shows 5 Eastern students (208 total across B1–B9). Age/gender cross-tab uses the pre-B8-update individual pool (n=76 Eastern students, of which 12 were from B8's original 82-student cohort); not yet recomputed for the full 114-student B8.</div>
@@ -529,8 +534,9 @@ function toggleMode(){
 }
 
 /* ═══════════════════════════════════════════════════════ TABS ══════════ */
-function switchTab(tab){
+function switchTab(tab,fromRoute){
   activeTab=tab;
+  if(!fromRoute) setHash(routeHash(),true);
   ['geo','demo','deep'].forEach(t=>{
     document.getElementById('pane-'+t).classList.toggle('hidden',t!==tab);
     document.getElementById('tab-'+t).classList.toggle('active',t===tab);
@@ -544,7 +550,7 @@ function switchTab(tab){
     if(!document.getElementById('natTabs').children.length)
       makeNatTabs();
   }
-  if(tab==='deep') buildDeepCharts('female');
+  if(tab==='deep') switchDeepSeg(activeDeepSeg,true);
 }
 
 /* ═══════════════════════════════════════════════════ METRIC CARDS ══════ */
@@ -758,25 +764,36 @@ function buildCharts(){
 }
 
 /* ══════════════════════════════════════════════ BATCH BREAKDOWN TABS ═══ */
+const BATCH_RENDER={};
 function makeBatchTabs(cId,dId,fn,pfx){
   const te=document.getElementById(cId); te.innerHTML='';
+  BATCH_RENDER[cId]=n=>fn(n,dId);
   LB.forEach((_,i)=>{const n=i+1;
     const b=document.createElement('button');
-    b.className='btab'+(n===1?' on':''); b.textContent='Batch '+n;
-    b.onclick=()=>{te.querySelectorAll('.btab').forEach(x=>x.classList.remove('on'));b.classList.add('on');fn(n,dId);};
+    b.className='btab'+(n===1?' on':''); b.textContent='Batch '+n; b.dataset.batch=n;
+    b.onclick=()=>{selectBatch(cId,n);setBatchHash(cId,n);};
     te.appendChild(b);
   });
   fn(1,dId);
 }
 
+function selectBatch(cId,n){
+  const te=document.getElementById(cId), b=te&&te.querySelector(`[data-batch="${n}"]`);
+  if(!b) return false;
+  te.querySelectorAll('.btab').forEach(x=>x.classList.toggle('on',x===b));
+  BATCH_RENDER[cId](n);
+  return true;
+}
+
 function makeNatTabs(){
   const te=document.getElementById('natTabs'); te.innerHTML='';
+  BATCH_RENDER.natTabs=n=>renderNatDet('B'+n);
   LB_NAT.forEach((bl,i)=>{
     const b=document.createElement('button');
     b.className='btab'+(i===0?' on':'');
     const num=bl.replace('B','');
-    b.textContent='Batch '+num+(NAT[bl].caveat?' ⚠':'');
-    b.onclick=()=>{te.querySelectorAll('.btab').forEach(x=>x.classList.remove('on'));b.classList.add('on');renderNatDet(bl);};
+    b.textContent='Batch '+num+(NAT[bl].caveat?' ⚠':''); b.dataset.batch=num;
+    b.onclick=()=>{selectBatch('natTabs',num);setBatchHash('natTabs',num);};
     te.appendChild(b);
   });
   renderNatDet('B2');
@@ -863,8 +880,9 @@ function renderDemoDet(n,dId){
 let activeDeepSeg='female';
 let deepCharts=[];
 
-function switchDeepSeg(seg){
+function switchDeepSeg(seg,fromRoute){
   activeDeepSeg=seg;
+  if(!fromRoute) setHash(routeHash(),true);
   ['female','young','eastern'].forEach(s=>{
     document.getElementById('dd-pane-'+s).classList.toggle('hidden',s!==seg);
     document.getElementById('ddseg-'+s).classList.toggle('active',s===seg);
@@ -1104,6 +1122,78 @@ function buildEasternCharts(c,ov,col){
     ddNeutral('Messaging implication',
       'With the age profile now closer to baseline, career-change messaging is less clearly wrong for Eastern students than the B3+B5 data suggested. The low female share (9%) is the more consistent signal — outreach that specifically targets women in Ida-Virumaa may be more effective than age-targeted messaging.');
 }
+/* ════════════════════════════════════════════════════ URL ROUTING ═══ */
+/* Deep links, e.g. #demographics · #demographics/nationality
+   #geography/breakdown/batch-3 · #demographics/nationality-breakdown/batch-5
+   #deep-dives/under-21 · #deep-dives/eastern-estonia/profile
+   Sections are the .sec[data-anchor] headings inside each pane. */
+const TAB_SLUG={geo:'geography',demo:'demographics',deep:'deep-dives'};
+const SEG_SLUG={female:'female',young:'under-21',eastern:'eastern-estonia'};
+const BATCH_SECS={geo:{breakdown:'geoTabs'},demo:{breakdown:'demoTabs','nationality-breakdown':'natTabs'}};
+const slugKey=(map,slug)=>Object.keys(map).find(k=>map[k]===slug);
+
+function routeHash(sec,batch){
+  const p=[TAB_SLUG[activeTab]];
+  if(activeTab==='deep') p.push(SEG_SLUG[activeDeepSeg]);
+  if(sec) p.push(sec);
+  if(batch) p.push('batch-'+batch);
+  return '#'+p.join('/');
+}
+function setHash(h,push){
+  if(location.hash===h) return;
+  history[push?'pushState':'replaceState'](null,'',h);
+}
+function setBatchHash(cId,n){
+  const secs=BATCH_SECS[activeTab]||{};
+  setHash(routeHash(Object.keys(secs).find(k=>secs[k]===cId),n),false);
+}
+function activePane(){
+  return document.getElementById(activeTab==='deep'?'dd-pane-'+activeDeepSeg:'pane-'+activeTab);
+}
+
+function applyRoute(){
+  const parts=decodeURIComponent(location.hash.slice(1)).toLowerCase().split('/').filter(Boolean);
+  const tab=slugKey(TAB_SLUG,parts[0])||'geo';
+  if(tab!==activeTab) switchTab(tab,true);
+  let i=1;
+  if(tab==='deep'){
+    const seg=slugKey(SEG_SLUG,parts[1]);
+    if(seg){i=2; if(seg!==activeDeepSeg) switchDeepSeg(seg,true);}
+  }
+  let sec=parts[i];
+  const m=/^batch-(\d+)$/.exec(parts[parts.length-1]||'');
+  if(sec&&sec.startsWith('batch-')) sec='breakdown';
+  const cId=(BATCH_SECS[tab]||{})[sec];
+  if(m&&cId) selectBatch(cId,+m[1]);
+  const el=sec&&activePane().querySelector(`[data-anchor="${sec}"]`);
+  if(el) el.scrollIntoView();
+  else if(parts.length) window.scrollTo(0,0);
+}
+
+function initSectionLinks(){
+  document.querySelectorAll('.sec[data-anchor]').forEach(secEl=>{
+    const a=document.createElement('a');
+    a.className='sec-link'; a.textContent='#';
+    a.setAttribute('aria-label','Copy link to this section');
+    const tab=secEl.closest('[id^="pane-"]').id.slice(5);
+    const segPane=secEl.closest('[id^="dd-pane-"]');
+    const anchor=secEl.dataset.anchor;
+    a.href='#'+[TAB_SLUG[tab],segPane&&SEG_SLUG[segPane.id.slice(8)],anchor].filter(Boolean).join('/');
+    a.onclick=e=>{
+      e.preventDefault();
+      const cId=(BATCH_SECS[activeTab]||{})[anchor];
+      const on=cId&&document.querySelector(`#${cId} .btab.on`);
+      setHash(routeHash(anchor,on&&on.dataset.batch),true);
+      secEl.scrollIntoView({behavior:'smooth'});
+      if(navigator.clipboard) navigator.clipboard.writeText(location.href).then(()=>{
+        a.classList.add('copied'); setTimeout(()=>a.classList.remove('copied'),1500);
+      }).catch(()=>{});
+    };
+    secEl.appendChild(a);
+  });
+}
+window.addEventListener('popstate',applyRoute);
+
 document.getElementById('freshTxt').textContent='Updated '+LAST_UPDATED;
 renderMetrics('geo');
 buildCharts();
@@ -1112,6 +1202,8 @@ document.getElementById('tab-demo').addEventListener('click',()=>{
   if(!document.getElementById('demoTabs').children.length)
     makeBatchTabs('demoTabs','demoDet',renderDemoDet,'d');
 });
+initSectionLinks();
+if(location.hash) applyRoute();
 </script>
 </body>
 </html>

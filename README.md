@@ -16,6 +16,22 @@ The dashboard is organised into three tabs, each answering a distinct question:
 | **Demographics** | How have age, gender, and nationality distributions changed over time? |
 | **Deep Dives** | Do female students, under-21 students, and Eastern Estonia students behave differently — in enrolment and in graduation? |
 
+### Linking to a specific view
+
+Every tab, Deep Dive segment, section and batch selection has its own URL, so you can send someone straight to it. Hover a section heading and click the `#` that appears to copy its link (the selected batch is included for batch breakdowns).
+
+| Link | Opens |
+|---|---|
+| `#demographics` | Demographics tab |
+| `#demographics/nationality` | Demographics → Nationality section |
+| `#demographics/batch-4` | Demographics → age & gender breakdown for Batch 4 |
+| `#demographics/nationality-breakdown/batch-5` | Nationality breakdown for Batch 5 |
+| `#geography/breakdown/batch-3` | Geography → batch breakdown for Batch 3 |
+| `#deep-dives/under-21` | Deep Dives → Under-21 segment |
+| `#deep-dives/eastern-estonia/profile` | Deep Dives → Eastern Estonia → age & gender profile |
+
+Section slugs — Geography: `enrolment`, `regional-mix`, `breakdown`. Demographics: `age`, `age-mix`, `gender`, `gender-mix`, `breakdown`, `nationality`, `nationality-share`, `nationality-mix`, `nationality-breakdown`. Deep Dive segments: `female`, `under-21`, `eastern-estonia`, each with `trend`, `regions`/`profile`, and `age`/`gender`/`nationality`.
+
 ---
 
 ## Data source
