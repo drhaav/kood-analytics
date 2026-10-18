@@ -54,7 +54,8 @@ nav{display:flex;gap:0;border-bottom:1px solid var(--bd);margin-bottom:28px;}
 .card-value.green{color:#2d8a4e;} .card-value.red{color:#b03030;}
 .sec{font-size:10px;font-weight:500;color:var(--tx3);text-transform:uppercase;letter-spacing:.1em;margin:28px 0 8px;display:flex;align-items:baseline;gap:8px;}
 .sec-sub{font-weight:400;text-transform:none;letter-spacing:0;font-size:11px;color:var(--tx3);}
-.leg{display:flex;flex-wrap:wrap;gap:14px;font-size:12px;color:var(--tx2);margin-bottom:6px;}
+.leg{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:11px;color:var(--tx3);margin:2px 0 0;}
+.leg + .sec,.leg + .caveat + .sec{margin-top:52px !important;}
 .ld{width:9px;height:9px;border-radius:2px;display:inline-block;flex-shrink:0;}
 .leg-line{display:flex;align-items:center;gap:6px;}
 .chart-wrap{position:relative;width:100%;}
@@ -135,12 +136,12 @@ tr:last-child td{border-bottom:none;}
 
 <!-- ════════════════════════════════════ GEOGRAPHY TAB ════════════════ -->
 <div id="pane-geo">
-  <div class="sec" data-anchor="enrolment">Students enrolled per batch by region <span class="sec-sub">— annual intake overlay (right axis)</span></div>
-  <div class="chart-wrap" style="height:280px;"><canvas id="cGeoBar" role="img" aria-label="Stacked bar chart of enrollment per batch by region with annual intake overlay"></canvas></div>
-  <div class="leg" id="regLeg" style="margin-top:10px;"></div>
+  <div class="sec" data-anchor="enrolment">Students enrolled per batch by region <span class="sec-sub">— grouped by calendar year · grey backdrop = year total</span></div>
+  <div class="chart-wrap" style="height:300px;"><canvas id="cGeoBar" role="img" aria-label="Stacked bar chart of enrollment per batch by region, grouped by calendar year, with a backdrop showing the calendar-year total for two-batch years"></canvas></div>
+  <div class="leg" id="regLeg"></div>
   <div class="sec" data-anchor="regional-mix" style="margin-top:24px;">Regional mix % — trends across all batches</div>
   <div class="chart-wrap" style="height:260px;"><canvas id="cGeoLine" role="img" aria-label="Line chart of regional mix percentage across batches"></canvas></div>
-  <div class="leg" id="geoLineLeg" style="margin-top:8px;"></div>
+  <div class="leg" id="geoLineLeg"></div>
   <div class="sec" data-anchor="breakdown" style="margin-top:24px;">Batch-level breakdown</div>
   <div class="btabs" id="geoTabs"></div>
   <div id="geoDet"></div>
@@ -151,17 +152,17 @@ tr:last-child td{border-bottom:none;}
 
   <div class="sec" data-anchor="age">Students enrolled per batch by age bracket <span class="sec-sub">— avg age overlay (right axis)</span></div>
   <div class="chart-wrap" style="height:280px;"><canvas id="cAgeBar" role="img" aria-label="Stacked bar chart of enrollment by age bracket with average age overlay"></canvas></div>
-  <div class="leg" id="ageLeg" style="margin-top:10px;"></div>
+  <div class="leg" id="ageLeg"></div>
   <div class="sec" data-anchor="age-mix" style="margin-top:24px;">Age bracket mix % — trends across all batches</div>
   <div class="chart-wrap" style="height:250px;"><canvas id="cAgeLine" role="img" aria-label="Line chart of age bracket percentage across batches"></canvas></div>
-  <div class="leg" id="ageLineLeg" style="margin-top:8px;"></div>
+  <div class="leg" id="ageLineLeg"></div>
 
   <div class="sec" data-anchor="gender">Students enrolled per batch by gender <span class="sec-sub">— female share overlay (right axis)</span></div>
   <div class="chart-wrap" style="height:260px;"><canvas id="cGenBar" role="img" aria-label="Stacked bar chart of enrollment by gender with female share overlay"></canvas></div>
-  <div class="leg" id="genLeg" style="margin-top:10px;margin-bottom:0px;"></div>
+  <div class="leg" id="genLeg"></div>
   <div class="sec" data-anchor="gender-mix" style="margin-top:24px;">Gender mix % — trends across all batches</div>
   <div class="chart-wrap" style="height:220px;"><canvas id="cGenLine" role="img" aria-label="Line chart of gender percentage across batches"></canvas></div>
-  <div class="leg" id="genLineLeg" style="margin-top:8px;"></div>
+  <div class="leg" id="genLineLeg"></div>
 
   <!-- ── AGE & GENDER BATCH BREAKDOWN ── -->
   <div class="sec" data-anchor="breakdown" style="margin-top:32px;border-top:0.5px solid var(--bd);padding-top:28px;">Age &amp; gender batch-level breakdown</div>
@@ -189,7 +190,7 @@ tr:last-child td{border-bottom:none;}
 
   <div class="sec" data-anchor="nationality-mix" style="margin-top:28px;">Non-Estonian nationality mix % <span class="sec-sub">— distinct nationality count (right axis, dotted)</span></div>
   <div class="chart-wrap" style="height:290px;"><canvas id="cNatLine" role="img" aria-label="Line chart of non-Estonian nationality percentages across batches B2 to B9, with distinct nationality count as a dotted right-axis line"></canvas></div>
-  <div class="leg" id="natLeg" style="margin-top:10px;"></div>
+  <div class="leg" id="natLeg"></div>
   <div class="caveat" id="natCaveat" style="margin-top:10px;"></div>
 
   <div class="sec" data-anchor="nationality-breakdown" style="margin-top:24px;">Nationality breakdown per batch</div>
@@ -358,9 +359,10 @@ const C_ESTONIAN = '#185FA5'; // Estonian nationals bar fill
    8. Add to BM:          9:{grad:0, cg:false, st:'active', end:'DD.MM.YYYY', note:''}
                           st: 'active' → 'finishing' after nominal end date → 'complete'
                           (set cg:true together with st:'complete')
-   9. Add to INTAKE_LINE: append annual intake figure (shared across two batches per year)
-  10. Add to INTAKE_LBL: append display label e.g. '300 (2026)'
-  11. Add to INTAKE_R/HR: append 5,7 if new year, or 0,0 if same year as previous batch
+   9. (Calendar-year grouping and totals on the Geography chart are derived
+       from YEARS and GEO — nothing to add.)
+  10. (reserved)
+  11. (reserved)
   12. Append to Deep Dives arrays:
       DD_TOTAL:   enrolled count
       DD_FEMALE:  female count
@@ -390,11 +392,16 @@ const GEO = {
   8:{t:114,g:0,  cg:false,r:[ 62, 8,28,14, 2, 0]},
   9:{t: 90,g:0,  cg:false,r:[ 54, 5,17,11, 3, 0]}, // B9 regions: county-suffix rule + 1 manual override, see README
 };
-// Annual intake line: one figure per calendar year, repeated for two-batch years
-const INTAKE_LINE = [206,280,212,293,293,239,239,204,204];
-const INTAKE_R    = [5,5,5,5,0,5,0,5,0];   // point radius — 0 hides duplicate-year dot
-const INTAKE_HR   = [7,7,7,7,0,7,0,7,0];   // hover radius
-const INTAKE_LBL  = ['206 (2021)','280 (2022)','212 (2023)','293 (2024)','293 (2024)','239 (2025)','239 (2025)','204 (2026)','204 (2026)'];
+// Calendar-year groups derived from YEARS: [{y:'2024', b:[4,5], t:293}, ...]
+const YEAR_GROUPS = YEARS.reduce((a,yr,i)=>{
+  const y=yr.slice(-4), n=i+1, last=a[a.length-1];
+  if(last&&last.y===y){last.b.push(n);last.t+=GEO[n].t;} else a.push({y,b:[n],t:GEO[n].t});
+  return a;
+},[]);
+// x position per batch: 1 unit within a year, 1.5 between years
+const GEO_X = {};
+YEAR_GROUPS.reduce((x,g,i)=>{g.b.forEach((n,j)=>{GEO_X[n]=x+j;});return x+g.b.length-1+(i<YEAR_GROUPS.length-1?1.5:0);},0);
+const batchMonth = n => YEARS[n-1].length>4 ? YEARS[n-1].slice(0,3) : '';
 
 /* ── Age ────────────────────────────────────────────────────────────────
    b: [Under 21, 21–24, 25–29, 30–39, 40+]   nd: no-birthdate count
@@ -621,9 +628,38 @@ const twoTierPlugin={id:'twoTier',afterDraw(chart){
   ctx.restore();
 }};
 Chart.register(twoTierPlugin);
+// Geography enrolment chart: grey year-total backdrop behind two-batch years,
+// total labels above each year/batch, bold year row under the batch ticks.
+const yearGroupPlugin={id:'yearGroup',
+  beforeDatasetsDraw(chart){
+    const{ctx,scales:{x,y}}=chart, s=getComputedStyle(document.documentElement);
+    const half=chart.getDatasetMeta(0).data[0].width/2;
+    ctx.save(); ctx.fillStyle=s.getPropertyValue('--surface3').trim();
+    YEAR_GROUPS.forEach(g=>{ if(g.b.length<2) return;
+      const x0=x.getPixelForValue(GEO_X[g.b[0]])-half-7, x1=x.getPixelForValue(GEO_X[g.b[g.b.length-1]])+half+7;
+      ctx.beginPath(); ctx.roundRect(x0,y.getPixelForValue(g.t),x1-x0,y.getPixelForValue(0)-y.getPixelForValue(g.t),[4,4,0,0]); ctx.fill();
+    });
+    ctx.restore();
+  },
+  afterDatasetsDraw(chart){
+    const{ctx,scales:{x,y},chartArea:{bottom}}=chart, c=gc(), s=getComputedStyle(document.documentElement);
+    const tx=s.getPropertyValue('--tx').trim(), tx2=s.getPropertyValue('--tx2').trim(), f='"DM Sans",system-ui,sans-serif';
+    ctx.save(); ctx.textAlign='center';
+    YEAR_GROUPS.forEach(g=>{
+      const xs=g.b.map(n=>x.getPixelForValue(GEO_X[n])), mid=(xs[0]+xs[xs.length-1])/2;
+      ctx.textBaseline='bottom';
+      ctx.font=`500 11px ${f}`; ctx.fillStyle=tx2;
+      ctx.fillText(g.b.length>1?`${g.t} in ${g.y}`:`${g.t}`,mid,y.getPixelForValue(g.t)-5);
+      if(g.b.length>1){ ctx.font=`400 10px ${f}`; ctx.fillStyle=c.tx3;
+        g.b.forEach((n,j)=>ctx.fillText(GEO[n].t,xs[j],y.getPixelForValue(GEO[n].t)-3)); }
+      ctx.textBaseline='top'; ctx.font=`600 11px ${f}`; ctx.fillStyle=tx;
+      ctx.fillText(g.y,mid,bottom+30);
+    });
+    ctx.restore();
+  }};
 const xS=()=>{const c=gc();return{ticks:{color:c.tx3,maxRotation:0,padding:4},grid:{display:false}};};
 const yG=()=>{const c=gc();return{ticks:{color:c.tx3},grid:{color:c.grid}};};
-const base={responsive:true,maintainAspectRatio:false,layout:{padding:{bottom:30,right:24}}};
+const base={responsive:true,maintainAspectRatio:false,layout:{padding:{bottom:16,right:24}}};
 
 /* ══════════════════════════════════════════════════ BUILD ALL CHARTS ══ */
 function buildCharts(){
@@ -634,22 +670,30 @@ function buildCharts(){
 
   /* ── Geography ── */
   if(activeTab==='geo'){
-    charts.push(new Chart(document.getElementById('cGeoBar'),{type:'bar',data:{labels:LB,datasets:[
-      ...RK.map((r,i)=>({label:r,data:Object.values(GEO).map(b=>b.r[i]),backgroundColor:RC[r],stack:'s',yAxisID:'y',order:1})),
-      {label:'Annual intake',type:'line',data:INTAKE_LINE,yAxisID:'y2',borderColor:ov,backgroundColor:ov,pointBackgroundColor:ov,pointRadius:INTAKE_R,pointHoverRadius:INTAKE_HR,pointBorderColor:ov,tension:0,fill:false,borderWidth:2.5,order:0}
-    ]},options:{...base,plugins:{...plugBase,tooltip:{mode:'index',callbacks:{label:ctx=>{
-      if(ctx.dataset.label==='Annual intake') return ` Annual intake: ${INTAKE_LBL[ctx.dataIndex]}`;
-      return ` ${ctx.dataset.label}: ${ctx.parsed.y}`;
-    }}}},scales:{x:{stacked:true,...xS()},y:{stacked:true,...yG(),title:{display:true,text:'Students per batch',color:c.tx3,font:{size:11}}},
-      y2:{type:'linear',position:'right',min:0,max:650,ticks:{color:ov,stepSize:100},grid:{display:false},title:{display:true,text:'Annual intake',color:ov,font:{size:11}}}}}}));
+    const nB=LB.length;
+    charts.push(new Chart(document.getElementById('cGeoBar'),{type:'bar',data:{datasets:
+      RK.map((r,i)=>({label:r,data:LB.map((_,k)=>({x:GEO_X[k+1],y:GEO[k+1].r[i]})),backgroundColor:RC[r],stack:'s',barPercentage:0.86,categoryPercentage:1}))
+    },plugins:[yearGroupPlugin],options:{...base,layout:{padding:{top:22,bottom:26,right:8}},
+      interaction:{mode:'x',intersect:false},
+      plugins:{legend:{display:false},annotation:{annotations:{}},tooltip:{callbacks:{
+        title:items=>{const n=LB.findIndex((_,k)=>GEO_X[k+1]===items[0].parsed.x)+1;return `B${n} · ${YEARS[n-1]}`;},
+        label:ctx=>` ${ctx.dataset.label}: ${ctx.parsed.y}`,
+        footer:items=>{const n=LB.findIndex((_,k)=>GEO_X[k+1]===items[0].parsed.x)+1,g=YEAR_GROUPS.find(g=>g.b.includes(n));
+          return `Batch total: ${GEO[n].t}`+(g.b.length>1?`\n${g.y} total: ${g.t}`:'');}}}},
+      scales:{x:{type:'linear',stacked:true,offset:false,min:-0.6,max:GEO_X[nB]+0.6,grid:{display:false},
+        afterBuildTicks:ax=>{ax.ticks=LB.map((_,k)=>({value:GEO_X[k+1]}));},
+        ticks:{color:c.tx3,maxRotation:0,autoSkip:false,padding:4,callback:function(v){
+          const n=LB.findIndex((_,k)=>GEO_X[k+1]===v)+1,g=YEAR_GROUPS.find(g=>g.b.includes(n));
+          return g&&g.b.length>1&&this.chart.width>=600?`B${n} · ${batchMonth(n)}`:`B${n}`;}}},
+        y:{stacked:true,min:0,max:300,...yG(),title:{display:true,text:'Students',color:c.tx3,font:{size:11}}}}}}));
     const gd=[null,[5,4],[9,3],[3,3],[6,3,2,3]];
     charts.push(new Chart(document.getElementById('cGeoLine'),{type:'line',data:{labels:LB,datasets:RK.slice(0,5).map((r,i)=>({
       label:r,data:Object.values(GEO).map(b=>Math.round(b.r[i]/b.t*100)),
       borderColor:RC[r],backgroundColor:RC[r],pointBackgroundColor:RC[r],
       pointRadius:4,pointHoverRadius:6,tension:0.3,fill:false,borderWidth:2,borderDash:gd[i]||[]
     }))},options:{...base,plugins:{...plugBase,tooltip:{mode:'index',callbacks:{label:ctx=>` ${ctx.dataset.label}: ${ctx.parsed.y}%`}}},
-      scales:{y:{min:0,max:75,ticks:{color:c.tx3,callback:v=>v+'%'},grid:{color:c.grid}},x:xS()}}}));
-    buildLegend(document.getElementById('regLeg'),[...RK.map(r=>[r,RC[r]]),['— Annual intake (one dot/year)',ov,[]]]);
+      scales:{y:{min:0,max:80,ticks:{color:c.tx3,stepSize:10,callback:v=>v+'%'},grid:{color:c.grid}},x:xS()}}}));
+    buildLegend(document.getElementById('regLeg'),[...RK.map(r=>[r,RC[r]]),['Calendar-year total (two-batch years)',getComputedStyle(document.documentElement).getPropertyValue('--surface3').trim()]]);
     buildLegend(document.getElementById('geoLineLeg'),[
       ['Tallinn & Harjumaa',RC['Tallinn & Harjumaa'],[]],['Eastern Estonia',RC['Eastern Estonia'],[5,4]],
       ['Southern Estonia',RC['Southern Estonia'],[9,3]],['W. Estonia & Islands',RC['W. Estonia & Islands'],[3,3]],
